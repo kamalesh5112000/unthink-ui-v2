@@ -122,8 +122,15 @@ export const useAuraChatState = ({
   );
 
   const shouldCenterModalContent = useMemo(
-    () => !isShowAuraResponse && !isSearchOptionManuallySelected,
-    [isShowAuraResponse, isSearchOptionManuallySelected],
+    () =>
+      !isShowAuraResponse &&
+      !isSearchOptionManuallySelected &&
+      !isActiveSearchOptionAvailable,
+    [
+      isActiveSearchOptionAvailable,
+      isShowAuraResponse,
+      isSearchOptionManuallySelected,
+    ],
   );
 
   const isShopALookOptionActive = useMemo(

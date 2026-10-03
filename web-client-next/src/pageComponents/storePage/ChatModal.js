@@ -619,7 +619,7 @@ const ChatModal = ({
                   isSearchOptionManuallySelected ? "pt-0" : "border-b-0"
                 } `}
               >
-                <div className={"flex h-full w-full flex-col items-center"}>
+                <div className={"flex min-h-0 w-full flex-col items-center overflow-y-visible pb-10"}>
                   {!isSearchOptionManuallySelected && (
                     <div
                       className={

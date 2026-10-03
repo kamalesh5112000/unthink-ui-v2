@@ -8,8 +8,8 @@ const AuraModalShell = ({
 }) => {
   return (
     <div
-      className={`relative z-10 flex w-full flex-col overflow-x-hidden overflow-y-auto m-0 p-4 ${getCurrentTheme()} ${
-        isFixed ? "lg:h-screen lg:overflow-y-hidden" : ""
+      className={`relative z-10 flex  w-full flex-col overflow-x-hidden overflow-y-auto m-0 p-4 ${getCurrentTheme()} ${
+        isFixed ? "lg:min-h-screen lg:overflow-y-auto" : ""
       } ${shouldCenter ? "justify-center" : ""} `}
       id="chatmodal_modal_container"
     >

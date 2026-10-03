@@ -187,12 +187,14 @@ const Header = ({
   };
 
   useEffect(() => {
-    if (showChatModal || showWishlistModal) {
+    if (!isAuraChatPage && (showChatModal || showWishlistModal)) {
       makeBodyOverflowHidden();
     } else {
       makeBodyOverflowUnset();
     }
-  }, [showChatModal, showWishlistModal]);
+
+    return () => makeBodyOverflowUnset();
+  }, [isAuraChatPage, showChatModal, showWishlistModal]);
 
   const onWishlistClick = () => {
     dispatch(openWishlistModal());
