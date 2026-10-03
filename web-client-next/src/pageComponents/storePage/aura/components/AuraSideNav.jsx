@@ -9,6 +9,7 @@ import { resetAuraSearchResponse } from "../../../../hooks/chat/redux/actions";
 import { useDispatch } from "react-redux";
 
 const AuraSideNav = ({
+  chatHistory = [],
   handleChangeImageConfirm,
   layoutMode,
   onWishlistClick,
@@ -25,7 +26,7 @@ const AuraSideNav = ({
   return (
     <div className=" hidden  lg:flex  lg:flex-col lg:w-[70px]  lg:items-center h-full ">
       <div className="flex-1 flex flex-col gap-8 items-center w-full justify-center">
-        <div
+        {/* <div
           className="flex w-full cursor-pointer flex-col items-center gap-1 rounded-lg text-slate-900 hover:bg-slate-100 hover:text-slate-950"
           onClick={handleGoBack}
         >
@@ -35,7 +36,7 @@ const AuraSideNav = ({
           <span className="text-xs font-medium text-center">
             Back
           </span>
-        </div>
+        </div> */}
         <div
           className="flex w-full cursor-pointer flex-col items-center rounded-lg   text-slate-900 hover:bg-slate-100 hover:text-slate-950"
           onClick={handleChangeImageConfirm}
@@ -119,6 +120,14 @@ const AuraSideNav = ({
             History
           </span>
         </div>
+        {chatHistory.length >= 2 && (
+          <div className="flex w-full flex-col items-center gap-1 px-1 text-center text-xs text-slate-600">
+            <HistoryOutlined className="text-base" />
+            <p className="m-0 line-clamp-2 w-full break-words leading-snug">
+              {chatHistory[chatHistory.length - 2]}
+            </p>
+          </div>
+        )}
       </div>
        
     </div>

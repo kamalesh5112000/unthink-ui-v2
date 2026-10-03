@@ -22,8 +22,8 @@ import AuraResponseShopALook from "../auraResponseShopALook/AuraResponseShopALoo
 import { setSuggestionsSelectedTag } from "../../hooks/chat/redux/actions";
 import styles from "./ChatProducts.module.css";
 import AuraInputBox from "./AuraInputBox";
-import { FiRefreshCw } from 'react-icons/fi';
 import AuraSideNav from "./aura/components/AuraSideNav";
+import AuraMainContent from "./aura/components/AuraMainContent";
 
 const ChatProducts = ({
   enableClickFetchRec,
@@ -877,6 +877,7 @@ const ChatProducts = ({
         {shouldShowShopLookSplitLayout ? (
           <div className={`${styles["chat-products-shop-look-wrapper"]} flex flex-col lg:flex-row`}>
             <AuraSideNav
+              chatHistory={chatHistory}
               handleChangeImageConfirm={handleChangeImageConfirm}
               layoutMode={layoutMode}
               onWishlistClick={onWishlistClick}
@@ -884,210 +885,47 @@ const ChatProducts = ({
               setLayoutMode={setLayoutMode}
             />
             <div className={`${styles["chat-products-shop-look-layout"]} ${styles[`layout-${layoutMode}`]} ${isMobile ? styles["chat-products-mobile-layout"] : ""}`}>
-              <div
-                id="aura-description-section"
-                className={styles["chat-products-shop-look-sidebar"]}
-              >
-                {!isMobile && (
-                  <div className={styles["chat-products-sidebar-header"]}>
-                    <h2 className={styles["chatmodal-category-title"]}>
-                      {activeSearchOption?.title?.toUpperCase()}
-                    </h2>
-                  </div>
-                )}
-                <div className={`${styles["chat-products-sidebar-body"]} flex flex-col gap-2`}>
-
-                  <div>
-                    <div className={styles["chat-products-shop-look-sidebar-content"]}>
-                      {chatHistory.length >= 2 &&
-                        <div className="flex items-center gap-1 mb-3 ml-2  ">
-                          <HistoryOutlined />
-                          <p>{chatHistory[chatHistory.length - 2]}</p>
-                        </div>
-                      }
-                      {storeData?.plan_settings?.image_generate?.is_enable && (auraServerImage === '' || auraServerImage === null) && isImageLoading && !regenarateImage ? (
-                        <div className={styles["chat-products-shop-look-image-wrapper"]}>
-                          <div className={styles["chat-products-image-loading-box"]}>
-                            <span>Loading image...</span>
-                          </div>
-                        </div>
-                      ) : auraServerImage ? (
-                        <div
-                          className={`${styles["chat-products-shop-look-image-wrapper"]} `}
-                        >
-                          <div
-                            className={`${styles["chat-products-shop-look-image-inner"]} block`}
-                          >
-                            <img
-                              src={auraServerImage}
-                              alt="PreviewImage"
-                              className={`${styles["chat-products-shop-look-image"]}`}
-                            />
-                            {Array.isArray(auraOverlayCoordinates) &&
-                              auraOverlayCoordinates.map((item, index) => {
-                                const leftPercent =
-                                  (item.point[0] / originalWidth) * 100;
-                                const topPercent =
-                                  (item.point[1] / originalHeight) * 100;
-                                return (
-                                  <Tooltip
-                                    key={index}
-                                    title={item.attributes.label}
-                                    color="blue"
-                                  >
-                                    <div
-                                      onClick={() =>
-                                        handleSuggestionClick(item.attributes.label)
-                                      }
-                                      className={styles["chat-products-overlay-point"]}
-                                      style={{
-                                        left: `${leftPercent}%`,
-                                        top: `${topPercent}%`,
-                                      }}
-                                    />
-                                  </Tooltip>
-                                );
-                              })}
-                          </div>
-                        </div>
-                      ) : null}
-                      {isFollowUpQuery &&
-                        isShowFollowUpSearch && chatHistory.length >= 2 && (shopLookPreviewImage || auraServerImage) &&
-                        regenarateImage ? (
-                        <button
-                          className="chatmodal-figma-change-btn"
-                          onClick={handleRegenrateImage}
-                        >
-                          <ReloadOutlined />
-                          Regenerate Image
-                        </button>
-                      ) : null}
-                      {(widgetHeader || shopLookKeywords.length > 0) ? (
-                        <div>
-                          {widgetHeader ? (
-                            <div
-                              className={
-                                styles["chat-products-shop-look-description-block"]
-                              }
-                            >
-                              {/* Description Loading - SPLIT VIEW LAYOUT (Desktop/Tablet Side-by-Side) */}
-                              {showChatLoader ? (
-                                <div className="flex flex-col items-center justify-center py-6 gap-3 animate-pulse w-full">
-                                  <Spin
-                                    indicator={
-                                      <Loading3QuartersOutlined
-                                        style={{ fontSize: 24, color: "var(--color-secondary)" }}
-                                        spin
-                                      />
-                                    }
-                                  />
-                                  <span className="text-secondary font-medium text-sm tracking-wide">
-                                    Loading new description...
-                                  </span>
-                                </div>
-                              ) : (
-                                <div
-                                  className={`${styles["chat-products-shop-look-description-text"]} ${!isDescriptionExpanded
-                                    ? (!shopLookPreviewImage && !auraServerImage
-                                      ? styles["chat-products-description-collapsed-no-image"]
-                                      : styles["chat-products-description-collapsed"])
-                                    : ""}`}
-                                  dangerouslySetInnerHTML={{ __html: widgetHeader }}
-                                />
-                              )}
-                              <div className="flex flex-col items-start gap-0">
-                                {!showChatLoader && widgetHeader?.length > 80 && (
-                                  <button
-                                    className={styles["chat-products-read-more-btn"]}
-                                    onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
-                                  >
-                                    {isDescriptionExpanded ? "Read Less" : "Read More"}
-                                  </button>
-                                )}
-
-                                {shopLookKeywords.length && layoutMode === 'left' ? (
-                                  <div
-                                    className={`${styles["chat-products-shop-look-keywords"]} mt-1 mb-2`}
-                                  >
-                                    {shopLookKeywords.map((keyword) => (
-                                      <span
-                                        key={keyword}
-                                        className={
-                                          styles["chat-products-shop-look-keyword-chip"]
-                                        }
-                                      >
-                                        {keyword}
-                                      </span>
-                                    ))}
-                                  </div>
-                                ) : null}
-                                <div className=" w-full hidden">
-
-                                  {isShowTryAgain && (
-                                    <div className="w-full md:w-72 m-auto">
-                                      <div className="bg-purple-50 rounded-2xl border border-purple-200 p-6 flex flex-col items-center text-center">
-                                        <p className="text-slate-700 font-medium text-base">
-                                          Need different suggestions?
-                                        </p>
-
-                                        {/* <Tooltip title="Regenerate the products with AI."> */}
-                                        <button
-                                          type="button"
-                                          onClick={handleTryAgainClick}
-                                          disabled={showChatLoader}
-                                          className="mt-4 bg-secondary hover:bg-brand text-white rounded-full px-6 py-3 flex items-center justify-center gap-2 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                                        >
-                                          <FiRefreshCw className="w-5 h-5" />
-                                          <span>Regenerate with AI</span>
-                                        </button>
-                                        {/* </Tooltip> */}
-                                      </div>
-                                    </div>
-                                  )}
-                                </div>
-
-                              </div>
-                            </div>
-                          ) : null}
-
-                          {shouldMoveInputBelowResults ? (
-                            <div className="mt-4 mb-2">
-                              <AuraInputBox
-                                isShowTryAgain={isShowTryAgain}
-                                showChatLoader={showChatLoader}
-                                handleTryAgainClick={handleTryAgainClick}
-                                handleGoBack={handleGoBack}
-                                isShopByThemeOptionActive={isShopByThemeOptionActive}
-                                isCompleteTheLookOptionActive={isCompleteTheLookOptionActive}
-                                uploadImageProps={uploadImageProps}
-                                chatImageUrl={chatImageUrl}
-                                chatImagePreviewUrl={chatImagePreviewUrl}
-                                isUploadingImage={isUploadingImage}
-                                handleClearChatImage={handleClearChatImage}
-                                activeSearchOption={activeSearchOption}
-                                chatTypeKey={chatTypeKey}
-                                inputRef={inputRef}
-                                localChatMessage={localChatMessage}
-                                handleInputChange={handleInputChange}
-                                handlePromptKeyDown={handlePromptKeyDown}
-                                isShopALookOptionActive={isShopALookOptionActive}
-                                handleSubmitChatInput={handleSubmitChatInput}
-                                setIsHistoryOpen={setIsHistoryOpen}
-                                followUpQuery={followUpQuery}
-                                hideActions={!isMobile && shouldShowShopLookSplitLayout}
-                                chatHistory={chatHistory}
-                                isFollowUpQuery={isFollowUpQuery}
-                                isMobile={isMobile}
-                              />
-                            </div>
-                          ) : null}
-                        </div>
-                      ) : null}
-                    </div>
-                  </div>
-                </div>
-
-              </div>
+              <AuraMainContent
+                activeSearchOption={activeSearchOption}
+                auraOverlayCoordinates={auraOverlayCoordinates}
+                auraServerImage={auraServerImage}
+                chatHistory={chatHistory}
+                chatImagePreviewUrl={chatImagePreviewUrl}
+                chatImageUrl={chatImageUrl}
+                chatTypeKey={chatTypeKey}
+                handleClearChatImage={handleClearChatImage}
+                handleInputChange={handleInputChange}
+                handlePromptKeyDown={handlePromptKeyDown}
+                handleRegenrateImage={handleRegenrateImage}
+                handleSubmitChatInput={handleSubmitChatInput}
+                handleSuggestionClick={handleSuggestionClick}
+                handleTryAgainClick={handleTryAgainClick}
+                inputRef={inputRef}
+                isCompleteTheLookOptionActive={isCompleteTheLookOptionActive}
+                isDescriptionExpanded={isDescriptionExpanded}
+                isFollowUpQuery={isFollowUpQuery}
+                isImageLoading={isImageLoading}
+                isMobile={isMobile}
+                isShopALookOptionActive={isShopALookOptionActive}
+                isShopByThemeOptionActive={isShopByThemeOptionActive}
+                isShowFollowUpSearch={isShowFollowUpSearch}
+                isShowTryAgain={isShowTryAgain}
+                isUploadingImage={isUploadingImage}
+                layoutMode={layoutMode}
+                localChatMessage={localChatMessage}
+                originalHeight={originalHeight}
+                originalWidth={originalWidth}
+                regenarateImage={regenarateImage}
+                setIsDescriptionExpanded={setIsDescriptionExpanded}
+                shopLookKeywords={shopLookKeywords}
+                shopLookPreviewImage={shopLookPreviewImage}
+                shouldMoveInputBelowResults={shouldMoveInputBelowResults}
+                shouldShowShopLookSplitLayout={shouldShowShopLookSplitLayout}
+                showChatLoader={showChatLoader}
+                storeData={storeData}
+                uploadImageProps={uploadImageProps}
+                widgetHeader={widgetHeader}
+              />
 
               <div className={styles["chat-products-shop-look-main"]}>
                 <div className={`${styles["chat-products-main-navbar"]} ${isMobile ? styles["chatmodal-hidden-mobile"] : ""}`}>
@@ -1280,10 +1118,7 @@ const ChatProducts = ({
                     {/* Aura Input Box (Search Bar) */}
                     <div className="mt-2">
                       <AuraInputBox
-                        isShowTryAgain={isShowTryAgain}
                         showChatLoader={showChatLoader}
-                        handleTryAgainClick={handleTryAgainClick}
-                        handleGoBack={handleGoBack}
                         isShopByThemeOptionActive={isShopByThemeOptionActive}
                         isCompleteTheLookOptionActive={isCompleteTheLookOptionActive}
                         uploadImageProps={uploadImageProps}
@@ -1302,12 +1137,7 @@ const ChatProducts = ({
                           handleSubmitChatInput();
                           setIsSwipeDrawerOpen(false);
                         }}
-                        setIsHistoryOpen={setIsHistoryOpen}
-                        followUpQuery={followUpQuery}
-                        hideActions={false}
-                        chatHistory={chatHistory}
                         isFollowUpQuery={isFollowUpQuery}
-                        isMobile={isMobile}
                         isDrawer={true}
                       />
                     </div>

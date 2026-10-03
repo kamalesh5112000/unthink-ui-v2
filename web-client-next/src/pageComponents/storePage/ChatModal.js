@@ -937,7 +937,6 @@ const ChatModal = ({
                 }
               >
                 <AuraInputBox
-                  isShowTryAgain={false}
                   showChatLoader={showChatLoader}
                   activeSearchOption={activeSearchOption}
                   chatTypeKey={chatTypeKey}
@@ -951,9 +950,6 @@ const ChatModal = ({
                   chatImagePreviewUrl={chatImagePreviewUrl}
                   isUploadingImage={isUploadingImage}
                   handleClearChatImage={handleClearChatImage}
-                  chatHistory={chatHistory}
-                  hideActions={true}
-                  isMobile={true}
                 />
               </div>
             )}

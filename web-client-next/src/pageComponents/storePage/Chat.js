@@ -237,7 +237,7 @@ const Chat = ({
       <div id={`header_chat_container_${chatTypeKey}`} className="flex items-center gap-2 lg:gap-3 w-full">
         <div
           id={`chat_search_input_container_${chatTypeKey}`}
-          className={`flex items-center justify-center rounded-full bg-white px-2 w-full shadow-sm relative h-12 md:h-14 ${
+          className={`flex items-center justify-center rounded-full bg-white px-2 w-full shadow-sm relative h-10 md:h-12 ${
             !isBTInstance ? "border border-gray-300" : ""
           }`}
           onClick={() => {

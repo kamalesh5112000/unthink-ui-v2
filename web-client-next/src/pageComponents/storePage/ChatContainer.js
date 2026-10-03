@@ -238,7 +238,7 @@ const ChatContainer = ({ disabledOutSideClick, config, trackCollectionData, isBT
   return (
     <>
       {!renderInline && storeData?.is_searchOptions_enabled ? (
-        <div className={`${!isNotHomePage ? 'hidden lg:flex justify-center items-center gap-2 mx-1 lg:gap-3 lg:w-[542px] xl:w-1/2' : 'hidden'} `}>
+        <div className={`${!isNotHomePage ? 'hidden lg:flex justify-center items-center gap-2 mx-1 lg:gap-3 lg:w-[512px] xl:w-1/2' : 'hidden'} `}>
           <Chat
             submitChatInput={submitChatInput}
             onChatClick={onChatClick}
@@ -253,7 +253,7 @@ const ChatContainer = ({ disabledOutSideClick, config, trackCollectionData, isBT
           />
         </div>
       ) : !renderInline ? (
-        <div className="hidden lg:flex justify-center items-center gap-2 mx-1 lg:gap-3 lg:w-[542px] xl:w-1/2" />
+        <div className="hidden lg:flex justify-center items-center gap-2 mx-1 lg:gap-3 lg:w-[442px] xl:w-1/2" />
       ) : null}
       {renderInline && shouldShowChatModal ? chatModalLayer : null}
       {!renderInline && portalTarget && shouldShowChatModal && isNotHomePage ? createPortal(chatModalLayer, portalTarget) : null}
