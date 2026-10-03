@@ -6,11 +6,10 @@ import {
   ArrowUpOutlined,
   LoadingOutlined,
 } from "@ant-design/icons";
+import { CHAT_SEARCH_OPTION_ID } from "../../constants/codes";
 
 const AuraInputBox = ({
   showChatLoader = false,
-  isShopByThemeOptionActive = false,
-  isCompleteTheLookOptionActive = false,
   uploadImageProps = {},
   chatImageUrl = "",
   chatImagePreviewUrl = "",
@@ -22,12 +21,17 @@ const AuraInputBox = ({
   localChatMessage = "",
   handleInputChange = () => {},
   handlePromptKeyDown = () => {},
-  isShopALookOptionActive = false,
   handleSubmitChatInput = () => {},
   isFollowUpQuery,
   isDrawer = false,
 }) => {
   const previewImageUrl = chatImagePreviewUrl || chatImageUrl;
+  const isShopByThemeOptionActive =
+    activeSearchOption?.id === CHAT_SEARCH_OPTION_ID.smart_search;
+  const isCompleteTheLookOptionActive =
+    activeSearchOption?.id === CHAT_SEARCH_OPTION_ID.complete_the_look;
+  const isShopALookOptionActive =
+    activeSearchOption?.id === CHAT_SEARCH_OPTION_ID.shop_a_look;
   const isSubmitDisabled =
     showChatLoader ||
     isUploadingImage ||

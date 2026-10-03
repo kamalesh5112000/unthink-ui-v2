@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Checkbox, Tooltip, Upload, Spin } from "antd";
-import { ReloadOutlined, ArrowUpOutlined, ArrowLeftOutlined, SearchOutlined, CloudUploadOutlined, HistoryOutlined, PlusOutlined, MessageOutlined, FormOutlined, CloseOutlined, Loading3QuartersOutlined, MenuOutlined, FolderOutlined, CheckSquareOutlined } from "@ant-design/icons";
+import { Checkbox, Tooltip, Spin } from "antd";
+import { ArrowUpOutlined, SearchOutlined, HistoryOutlined, FormOutlined, CloseOutlined, Loading3QuartersOutlined, FolderOutlined, CheckSquareOutlined } from "@ant-design/icons";
 
 import {
   openWishlistModal,
@@ -38,19 +38,12 @@ const ChatProducts = ({
   inputRef,
   handleInputChange,
   handlePromptKeyDown,
-  isFigmaUploadPanelOpen,
-  handleFigmaUploadButtonClick,
-  isShowSubmittedChatPreview,
-  isShopALookOptionActive,
   handleSubmitChatInput,
   isShowFollowUpSearch,
-  isSidExpired,
   isFollowUpQuery,
-  handleFollowUpSearch,
   isShowTryAgain,
   showChatLoader,
   handleTryAgainClick,
-  upload_icon,
   uploadImageProps,
   chatImagePreviewUrl,
   isUploadingImage,
@@ -61,8 +54,6 @@ const ChatProducts = ({
   closeChatModal,
   onOpenSearchPopup,
   isMobile,
-  mobileTab,
-  followUpQuery,
   regenarateImage,
   handleRegenrateImage,
   handleChangeImageConfirm,
@@ -107,7 +98,6 @@ const ChatProducts = ({
     state.store.data,
     state.chatV2.chatHistory,
   ]);
-  // console.log('chatHistory',chatHistory);
 
   const [enableSelectProduct, setEnableSelectProduct] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -117,10 +107,8 @@ const ChatProducts = ({
   const containerRef = useRef(null);
   const [showScrollBtn, setShowScrollBtn] = useState(false);
 
-  const [hasScrolledToProducts, setHasScrolledToProducts] = useState(false);
   const [isSwipeDrawerOpen, setIsSwipeDrawerOpen] = useState(false);
 
-  // Touch gesture state variables for opening drawer
   const [touchStartX, setTouchStartX] = useState(null);
   const [touchEndX, setTouchEndX] = useState(null);
 
@@ -142,7 +130,6 @@ const ChatProducts = ({
     setTouchEndX(null);
   };
 
-  // Touch gesture state variables for closing drawer
   const [drawerTouchStartX, setDrawerTouchStartX] = useState(null);
   const [drawerTouchEndX, setDrawerTouchEndX] = useState(null);
 
@@ -164,7 +151,6 @@ const ChatProducts = ({
     setDrawerTouchEndX(null);
   };
 
-  // Expose setIsMobileSidebarOpen via the onOpenMobileSidebar prop reference
   useEffect(() => {
     if (onOpenMobileSidebar) {
       onOpenMobileSidebar.current = () => setIsMobileSidebarOpen(true);
@@ -203,9 +189,6 @@ const ChatProducts = ({
       }
 
       setShowScrollBtn(shouldShow);
-      if (shouldShow && scrollYPos > 100) {
-        setHasScrolledToProducts(true);
-      }
     };
 
     const scrollContainers = [];
@@ -233,27 +216,27 @@ const ChatProducts = ({
     };
   }, [isMobile]);
 
-  const handleScrollToDescription = () => {
-    const descElement = document.getElementById("aura-description-section");
-    if (descElement) {
-      let scrollContainer = null;
-      let parent = descElement.parentElement;
-      while (parent) {
-        const overflowY = window.getComputedStyle(parent).overflowY;
-        if (overflowY === "auto" || overflowY === "scroll") {
-          scrollContainer = parent;
-          break;
-        }
-        parent = parent.parentElement;
-      }
+  // const handleScrollToDescription = () => {
+  //   const descElement = document.getElementById("aura-description-section");
+  //   if (descElement) {
+  //     let scrollContainer = null;
+  //     let parent = descElement.parentElement;
+  //     while (parent) {
+  //       const overflowY = window.getComputedStyle(parent).overflowY;
+  //       if (overflowY === "auto" || overflowY === "scroll") {
+  //         scrollContainer = parent;
+  //         break;
+  //       }
+  //       parent = parent.parentElement;
+  //     }
 
-      if (scrollContainer) {
-        scrollContainer.scrollTo({ top: 0, behavior: "smooth" });
-      } else {
-        descElement.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }
-  };
+  //     if (scrollContainer) {
+  //       scrollContainer.scrollTo({ top: 0, behavior: "smooth" });
+  //     } else {
+  //       descElement.scrollIntoView({ behavior: "smooth", block: "start" });
+  //     }
+  //   }
+  // };
 
   const handleScrollToTop = () => {
     const tagsContainer = document.getElementById("aura-response-products-with-tags-container");
@@ -276,23 +259,6 @@ const ChatProducts = ({
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
-  // const [pastChats, setPastChats] = useState(() => {
-  //   if (typeof window !== "undefined") {
-  //     try {
-  //       const stored = localStorage.getItem("unthink_aura_past_chats");
-  //       if (stored) {
-  //         const parsed = JSON.parse(stored);
-  //         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-  //       }
-  //     } catch (e) {}
-  //   }
-  //   return [
-  //     { id: "1", text: "Minimalist modular velvet sofa", timestamp: "10 mins ago" },
-  //     { id: "2", text: "Scandinavian oak dining table with chairs", timestamp: "2 hours ago" },
-  //     { id: "3", text: "Abstract ceramic accent vases", timestamp: "1 day ago" },
-  //     { id: "4", text: "Boho woven hanging light fixtures", timestamp: "3 days ago" },
-  //   ];
-  // });
 
   const handleSelectPastChat = (chatText) => {
     if (handleInputChange) {
@@ -301,36 +267,13 @@ const ChatProducts = ({
     setIsHistoryOpen(false);
   };
 
-  // useEffect(() => {
-  //   if (showChatLoader && localChatMessage && typeof localChatMessage === "string") {
-  //     const trimmed = localChatMessage.trim();
-  //     if (trimmed) {
-  //       setPastChats((prev) => {
-  //         if (prev.some((c) => c.text.toLowerCase() === trimmed.toLowerCase())) {
-  //           return prev;
-  //         }
-  //         const updated = [
-  //           { id: Date.now().toString(), text: trimmed, timestamp: "Just now" },
-  //           ...prev,
-  //         ].slice(0, 15);
-  //         if (typeof window !== "undefined") {
-  //           try {
-  //             localStorage.setItem("unthink_aura_past_chats", JSON.stringify(updated));
-  //           } catch (e) {}
-  //         }
-  //         return updated;
-  //       });
-  //     }
-  //   }
-  // }, [showChatLoader, localChatMessage]);
-
   const dispatch = useDispatch();
 
   const handleSuggestionClick = (tag) => {
     if (suggestionsWithProducts?.suggestions?.tags?.includes(tag)) {
       dispatch(setSuggestionsSelectedTag(tag));
     }
-    // Scroll to the tag div
+
     const tagElement = document.getElementById(`tag-${tag}`);
     if (tagElement) {
       tagElement.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -339,29 +282,10 @@ const ChatProducts = ({
 
   const originalWidth = 1024;
   const originalHeight = 1027;
-  const newWidth = 404;
-  const newHeight = 400;
-
-  // const { sendMessage } = useChat();
 
   const onProductClick = () => {
     if (enableClickFetchRec) dispatch(handleRecProductClick());
   };
-
-  //scroll on top when new data searched
-  // useEffect(() => {
-  // 	if (!showChatLoader) {
-  // 		const parentContainer = document.querySelector(
-  // 			".chat-product-data-container"
-  // 		);
-  // 		parentContainer?.scrollTo({ top: 0, behavior: "smooth" });
-  // 	}
-  // }, [showChatLoader]);
-
-  // const onAuraSuggestionChipClick = (message, metadata) => {
-  // 	// dispatch(setChatMessage(message));
-  // 	sendMessage(message, metadata);
-  // };
 
   const NEW_AURA_PRODUCTS_UI_ENABLED = useMemo(() => true, []);
 
@@ -370,7 +294,7 @@ const ChatProducts = ({
       filterAvailableProductList(
         isEmpty(suggestionsWithProducts.suggestions) ? chatProductsData : [],
       ),
-    [suggestionsWithProducts.suggestions, chatProductsData, authUser.user_name],
+    [suggestionsWithProducts.suggestions, chatProductsData],
   );
 
   const isTagAvailable = useMemo(
@@ -429,15 +353,11 @@ const ChatProducts = ({
       chatProductsData,
     ],
   );
-  // console.log('shouldShowShopLookSplitLayout',shouldShowShopLookSplitLayout);
-
 
   const shopLookPreviewImage = useMemo(
     () => widgetImage || chatImageUrl || products?.image_url || "",
     [widgetImage, chatImageUrl, products?.image_url],
   );
-  // console.log(shopLookPreviewImage);
-
 
   const shopLookKeywords = useMemo(
     () => (suggestionsWithProducts?.suggestions?.tags || []).slice(0, 6),
@@ -445,7 +365,6 @@ const ChatProducts = ({
   );
 
   const handleResetSelectProduct = useCallback(
-    // reset select product feature // unselect every products
     () => {
       setEnableSelectProduct(false);
       setSelectedProducts([]);
@@ -455,9 +374,8 @@ const ChatProducts = ({
 
   useEffect(() => {
     handleResetSelectProduct();
-    setHasScrolledToProducts(false);
     setIsSwipeDrawerOpen(false);
-  }, [chatProductsDataToShow, activeSearchOption]);
+  }, [chatProductsDataToShow, activeSearchOption, handleResetSelectProduct]);
 
   const onSelectProductClick = (mfr_code) => {
     if (selectedProducts.includes(mfr_code)) {
@@ -467,15 +385,15 @@ const ChatProducts = ({
     }
   };
 
-  const onSelectAllChange = () => {
+  const onSelectAllChange = useCallback(() => {
     setSelectedProducts(
       selectedProducts.length < chatProductsDataToShow.length
         ? chatProductsDataToShow.map((i) => i.mfr_code)
         : [],
     );
-  };
+  }, [chatProductsDataToShow, selectedProducts.length]);
 
-  const onAddSelectedProductsToCollection = () => {
+  const onAddSelectedProductsToCollection = useCallback(() => {
     const SelectedProductsData = chatProductsDataToShow.filter((p) =>
       selectedProducts.includes(p.mfr_code),
     );
@@ -483,7 +401,7 @@ const ChatProducts = ({
     dispatch(setProductsToAddInWishlist(SelectedProductsData));
     dispatch(openWishlistModal());
     handleResetSelectProduct();
-  };
+  }, [chatProductsDataToShow, dispatch, handleResetSelectProduct, selectedProducts]);
 
   useEffect(() => {
     if (!NEW_AURA_PRODUCTS_UI_ENABLED && registerSelectActions) {
@@ -495,9 +413,7 @@ const ChatProducts = ({
         handleResetSelectProduct,
         setEnableSelectProduct,
         onSelectAllChange,
-        onAddSelectedProductsToCollection: (e, options) => {
-          onAddSelectedProductsToCollection();
-        },
+        onAddSelectedProductsToCollection,
       });
     }
   }, [
@@ -505,19 +421,12 @@ const ChatProducts = ({
     enableSelectProduct,
     selectedProducts,
     chatProductsDataToShow,
-    is_store_instance,
     handleResetSelectProduct,
     onSelectAllChange,
     onAddSelectedProductsToCollection,
     registerSelectActions,
   ]);
 
-  const scrollToCollectionsContainer = () => {
-    const collection = document.getElementById("chat_shop_a_look_container");
-    if (collection) {
-      collection.scrollIntoView({ behavior: "smooth" });
-    }
-  };
   const onWishlistClick = () => {
     dispatch(openWishlistModal());
   };
@@ -529,26 +438,20 @@ const ChatProducts = ({
       products.scrollIntoView({ behavior: "smooth" });
     }
   };
-  // console.log('showChatLoader',showChatLoader);
- 
-  
-  // Mobile sidebar drawer - shown on mobile/tablet when hamburger is tapped
+
   const MobileSideDrawer = () => (
     <>
-      {/* Backdrop */}
       {isMobileSidebarOpen && (
         <div
           className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[1000]"
           onClick={() => setIsMobileSidebarOpen(false)}
         />
       )}
-      {/* Drawer */}
       <div
         className={`fixed top-0 left-0 h-full z-[1001] bg-white flex flex-col transition-transform duration-300 ease-in-out ${isMobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         style={{ width: "260px", boxShadow: "4px 0 24px rgba(114,104,236,0.12)" }}
       >
-        {/* Drawer Header */}
         <div className="flex items-center justify-between px-5 py-5 border-b border-[#f0eeff]">
           <span className="text-secondary font-bold text-lg tracking-wide">Menu</span>
           <CloseOutlined
@@ -556,7 +459,6 @@ const ChatProducts = ({
             onClick={() => setIsMobileSidebarOpen(false)}
           />
         </div>
-        {/* Drawer Items */}
         <div className="flex flex-col gap-2 py-4 flex-1">
           <div
             className="flex items-center gap-4 px-5 py-4 cursor-pointer text-[#1a1a1a] hover:bg-[#f8f7ff] hover:text-secondary transition-all"
@@ -757,11 +659,6 @@ const ChatProducts = ({
       ) : null}
     </>
   );
-  // useEffect(()=>{
-
-  // },[auraServerImage])
-  // console.log(storeData?.plan_settings?.image_generate?.is_enable && (auraServerImage === '' || auraServerImage === null)  && isImageLoading && !regenarateImage   );
-  // debugger  
 
   return (
     <div
@@ -769,23 +666,11 @@ const ChatProducts = ({
       id="chat_products_inner_container"
       className={`${styles["chat-products-container"]} ${!shouldShowShopLookSplitLayout ? styles["chat-products-container-single"] : ""}`}
     >
-      {/* Mobile slide-in sidebar drawer */}
       {isMobile && <MobileSideDrawer />}
       <div
         id="chat_products_content"
         className={styles["chat-products-content"]}
       >
-        {/* <div
-					id='chat_product_back_icon'
-					className='mb-6 max-w-max flex items-center cursor-pointer z-10'
-					onClick={() => dispatch(setShowChatModal(false))}>
-					<ArrowLeftOutlined className='text-base text-purple-101 pr-3 flex' />
-					<span className='text-base text-purple-101'>
-						Back
-						// {` ${backToText}`}
-					</span>
-				</div> */}
-
         {!shouldShowShopLookSplitLayout &&
           (products.widgetHeader ? (
             <div className={styles["chat-products-header"]}>
@@ -801,6 +686,7 @@ const ChatProducts = ({
                 {products.image_url ? (
                   <img
                     src={products.image_url}
+                    alt={products.text || "Product"}
                     className={styles["chat-products-image"]}
                   />
                 ) : null}
@@ -826,26 +712,9 @@ const ChatProducts = ({
             </div>
           ) : (
             <>
-              {/* {widgetHeader ? (
-							<h1
-								id='current_data_widgetHeader'
-								className='text-black-102 text-base lg:text-lg'
-								dangerouslySetInnerHTML={{ __html: widgetHeader }}
-							/>
-						) : null} */}
-
               <div className={styles["chat-products-content-wrapper"]}>
-                {/* {widgetImage ? (
-								<img
-									id='current_data_widgetHeader_image_url'
-									src={widgetImage}
-									width={208}
-									className='rounded-2xl h-content m-auto'
-								/>
-							) : null} */}
                 {widgetHeader ? (
                   <div id="current_data_widgetHeader">
-                    {/* Description Loading - SINGLE LAYOUT VIEW */}
                     {showChatLoader ? (
                       <div className="flex flex-col items-center justify-center py-4 gap-2 animate-pulse w-full">
                         <Spin
@@ -879,6 +748,8 @@ const ChatProducts = ({
             <AuraSideNav
               chatHistory={chatHistory}
               handleChangeImageConfirm={handleChangeImageConfirm}
+              handleSelectPastChat={handleSelectPastChat}
+              isHistoryOpen={isHistoryOpen}
               layoutMode={layoutMode}
               onWishlistClick={onWishlistClick}
               setIsHistoryOpen={setIsHistoryOpen}
@@ -901,13 +772,9 @@ const ChatProducts = ({
                 handleSuggestionClick={handleSuggestionClick}
                 handleTryAgainClick={handleTryAgainClick}
                 inputRef={inputRef}
-                isCompleteTheLookOptionActive={isCompleteTheLookOptionActive}
                 isDescriptionExpanded={isDescriptionExpanded}
                 isFollowUpQuery={isFollowUpQuery}
                 isImageLoading={isImageLoading}
-                isMobile={isMobile}
-                isShopALookOptionActive={isShopALookOptionActive}
-                isShopByThemeOptionActive={isShopByThemeOptionActive}
                 isShowFollowUpSearch={isShowFollowUpSearch}
                 isShowTryAgain={isShowTryAgain}
                 isUploadingImage={isUploadingImage}
@@ -920,7 +787,6 @@ const ChatProducts = ({
                 shopLookKeywords={shopLookKeywords}
                 shopLookPreviewImage={shopLookPreviewImage}
                 shouldMoveInputBelowResults={shouldMoveInputBelowResults}
-                shouldShowShopLookSplitLayout={shouldShowShopLookSplitLayout}
                 showChatLoader={showChatLoader}
                 storeData={storeData}
                 uploadImageProps={uploadImageProps}
@@ -958,53 +824,9 @@ const ChatProducts = ({
         )}
       </div>
 
-      {isHistoryOpen && (
-        <div
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[200] flex items-center justify-center p-4 transition-all"
-          onClick={() => setIsHistoryOpen(false)}
-        >
-          <div
-            className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-solid border-[#e8e4fb] overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="px-5 py-4 bg-[#fbfafe] border-b border-solid border-[#e8e4fb] flex items-center justify-between">
-              <h3 className="text-secondary font-bold text-base m-0 flex items-center gap-2">
-                <HistoryOutlined /> Past Chats
-              </h3>
-              <CloseOutlined
-                className="text-gray-400 hover:text-gray-600 cursor-pointer text-sm p-1 transition-all"
-                onClick={() => setIsHistoryOpen(false)}
-                title="Close"
-              />
-            </div>
-            <div className="p-4 flex flex-col gap-2.5 max-h-[60vh] overflow-y-auto">
-              {chatHistory.length > 0 ? (
-                [...chatHistory].reverse().map((item) => (
-                  <div
-                    key={item}
-                    onClick={() => handleSelectPastChat(item)}
-                    className="flex items-start justify-between p-3 rounded-xl bg-[#fbfafe]/60 border border-solid border-[#e8e4fb] hover:bg-secondary/5 hover:border-secondary/30 cursor-pointer transition-all text-left text-sm font-medium text-gray-700 group"
-                  >
-                    <span className="line-clamp-2 pr-2 group-hover:text-secondary transition-colors">
-                      {item}
-                    </span>
-
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-8 text-gray-400 text-sm font-medium">
-                  No past chats found
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
       {isMobile && (
         isAuraSwipeSectionActive ? (
           <>
-            {/* Floating glowing button below the close cross */}
             {showScrollBtn && !isSwipeDrawerOpen && (
               <div
                 className="fixed top-[75px] right-4 z-[1050] cursor-pointer rounded-full bg-brand border border-white/35 py-2 px-4 text-white font-bold flex items-center justify-center shadow-[0_4px_15px_rgba(114,104,236,0.35),inset_0_1px_0_rgba(255,255,255,0.2)] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:scale-[1.03] hover:shadow-[0_8px_25px_rgba(114,104,236,0.5),inset_0_1px_0_rgba(255,255,255,0.4)] hover:border-white/60 active:scale-[0.97] animate-[auraGlowPulse_2.5s_infinite_ease-in-out,auraGradientShift_4s_infinite_linear]"
@@ -1024,7 +846,6 @@ const ChatProducts = ({
               </div>
             )}
 
-            {/* Swipeable Drawer */}
             {isSwipeDrawerOpen && (
               <>
                 <div
@@ -1041,9 +862,9 @@ const ChatProducts = ({
                 >
                   <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-[60px] bg-secondary/20 rounded-r" />
                   <div className="flex items-center justify-between mb-4 border-b border-secondary/10 pb-3">
-                    <h3 className="text-base font-bold text-[#1a2035] m-0 uppercase tracking-wider">
+                    {/* <h3 className="text-base font-bold text-[#1a2035] m-0 uppercase tracking-wider">
                       {activeSearchOption?.title || "Aura Info"}
-                    </h3>
+                    </h3> */}
                     <button
                       type="button"
                       className="bg-transparent border-none cursor-pointer text-[#384467] text-lg flex items-center justify-center p-1 rounded-full transition-colors duration-200 hover:bg-secondary/10 hover:text-secondary"
@@ -1053,7 +874,6 @@ const ChatProducts = ({
                     </button>
                   </div>
                   <div className="flex-1 overflow-y-auto p-1 flex flex-col gap-3 min-h-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-                    {/* Preview Image with overlays */}
                     {(shopLookPreviewImage || auraServerImage) && (
                       <div className={styles["chat-products-shop-look-image-wrapper"]} style={{ margin: "0 auto" }}>
                         <img
@@ -1088,10 +908,8 @@ const ChatProducts = ({
                       </div>
                     )}
 
-                    {/* Description text */}
                     {widgetHeader && (
                       <div className={styles["chat-products-shop-look-description-block"]} style={{ margin: "0.25rem 0" }}>
-                        {/* Description Loading - MOBILE SWIPE DRAWER VIEW */}
                         {showChatLoader ? (
                           <div className="flex flex-col items-center justify-center py-4 gap-2 animate-pulse w-full">
                             <Spin
@@ -1115,12 +933,9 @@ const ChatProducts = ({
                       </div>
                     )}
 
-                    {/* Aura Input Box (Search Bar) */}
                     <div className="mt-2">
                       <AuraInputBox
                         showChatLoader={showChatLoader}
-                        isShopByThemeOptionActive={isShopByThemeOptionActive}
-                        isCompleteTheLookOptionActive={isCompleteTheLookOptionActive}
                         uploadImageProps={uploadImageProps}
                         chatImageUrl={chatImageUrl}
                         chatImagePreviewUrl={chatImagePreviewUrl}
@@ -1132,7 +947,6 @@ const ChatProducts = ({
                         localChatMessage={localChatMessage}
                         handleInputChange={handleInputChange}
                         handlePromptKeyDown={handlePromptKeyDown}
-                        isShopALookOptionActive={isShopALookOptionActive}
                         handleSubmitChatInput={() => {
                           handleSubmitChatInput();
                           setIsSwipeDrawerOpen(false);
@@ -1147,15 +961,16 @@ const ChatProducts = ({
             )}
           </>
         ) : (
-          <button
-            className={`${styles["chat-products-scroll-top-btn"]} ${showScrollBtn ? styles["chat-products-scroll-top-btn-visible"] : ""}`}
-            onClick={handleScrollToDescription}
-            title="Go to Description"
-            type="button"
-          >
-            <ArrowUpOutlined style={{ marginRight: '6px' }} />
-            <span>Go to Description</span>
-          </button>
+          ''
+          // <button
+          //   className={`${styles["chat-products-scroll-top-btn"]} ${showScrollBtn ? styles["chat-products-scroll-top-btn-visible"] : ""}`}
+          //   onClick={handleScrollToDescription}
+          //   title="Go to Description"
+          //   type="button"
+          // >
+          //   <ArrowUpOutlined style={{ marginRight: '6px' }} />
+          //   <span>Go to Description</span>
+          // </button>
         )
       )}
 

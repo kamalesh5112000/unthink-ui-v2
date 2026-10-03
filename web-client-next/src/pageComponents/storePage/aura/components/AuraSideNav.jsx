@@ -1,5 +1,6 @@
 import {
   ArrowLeftOutlined,
+  CloseOutlined,
   FolderOutlined,
   FormOutlined,
   HistoryOutlined,
@@ -11,6 +12,8 @@ import { useDispatch } from "react-redux";
 const AuraSideNav = ({
   chatHistory = [],
   handleChangeImageConfirm,
+  handleSelectPastChat,
+  isHistoryOpen,
   layoutMode,
   onWishlistClick,
   setIsHistoryOpen,
@@ -24,8 +27,9 @@ const AuraSideNav = ({
     sessionStorage.removeItem("widgetHeaderRequestHistory");
   };
   return (
-    <div className=" hidden  lg:flex  lg:flex-col lg:w-[70px]  lg:items-center h-full ">
-      <div className="flex-1 flex flex-col gap-8 items-center w-full justify-center">
+    <>
+      <div className=" hidden  lg:flex  lg:flex-col lg:w-[70px]  lg:items-center h-full ">
+        <div className="flex-1 flex flex-col gap-8 items-center w-full justify-center">
         {/* <div
           className="flex w-full cursor-pointer flex-col items-center gap-1 rounded-lg text-slate-900 hover:bg-slate-100 hover:text-slate-950"
           onClick={handleGoBack}
@@ -128,9 +132,51 @@ const AuraSideNav = ({
             </p>
           </div>
         )}
+        </div>
       </div>
-       
-    </div>
+
+      {isHistoryOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[200] flex items-center justify-center p-4 transition-all"
+          onClick={() => setIsHistoryOpen(false)}
+        >
+          <div
+            className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-solid border-[#e8e4fb] overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="px-5 py-4 bg-[#fbfafe] border-b border-solid border-[#e8e4fb] flex items-center justify-between">
+              <h3 className="text-secondary font-bold text-base m-0 flex items-center gap-2">
+                <HistoryOutlined /> Past Chats
+              </h3>
+              <CloseOutlined
+                className="text-gray-400 hover:text-gray-600 cursor-pointer text-sm p-1 transition-all"
+                onClick={() => setIsHistoryOpen(false)}
+                title="Close"
+              />
+            </div>
+            <div className="p-4 flex flex-col gap-2.5 max-h-[60vh] overflow-y-auto">
+              {chatHistory.length > 0 ? (
+                [...chatHistory].reverse().map((item) => (
+                  <div
+                    key={item}
+                    onClick={() => handleSelectPastChat(item)}
+                    className="flex items-start justify-between p-3 rounded-xl bg-[#fbfafe]/60 border border-solid border-[#e8e4fb] hover:bg-secondary/5 hover:border-secondary/30 cursor-pointer transition-all text-left text-sm font-medium text-gray-700 group"
+                  >
+                    <span className="line-clamp-2 pr-2 group-hover:text-secondary transition-colors">
+                      {item}
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8 text-gray-400 text-sm font-medium">
+                  No past chats found
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

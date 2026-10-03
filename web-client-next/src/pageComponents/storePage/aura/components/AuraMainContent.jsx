@@ -21,12 +21,9 @@ const AuraMainContent = ({
   handleSuggestionClick,
   handleTryAgainClick,
   inputRef,
-  isCompleteTheLookOptionActive,
   isDescriptionExpanded,
   isFollowUpQuery,
   isImageLoading,
-  isShopALookOptionActive,
-  isShopByThemeOptionActive,
   isShowFollowUpSearch,
   isShowTryAgain,
   isUploadingImage,
@@ -199,8 +196,6 @@ const AuraMainContent = ({
                 <div className="my-4 relative">
                   <AuraInputBox
                     showChatLoader={showChatLoader}
-                    isShopByThemeOptionActive={isShopByThemeOptionActive}
-                    isCompleteTheLookOptionActive={isCompleteTheLookOptionActive}
                     uploadImageProps={uploadImageProps}
                     chatImageUrl={chatImageUrl}
                     chatImagePreviewUrl={chatImagePreviewUrl}
@@ -212,7 +207,6 @@ const AuraMainContent = ({
                     localChatMessage={localChatMessage}
                     handleInputChange={handleInputChange}
                     handlePromptKeyDown={handlePromptKeyDown}
-                    isShopALookOptionActive={isShopALookOptionActive}
                     handleSubmitChatInput={handleSubmitChatInput}
                     isFollowUpQuery={isFollowUpQuery}
                   />
