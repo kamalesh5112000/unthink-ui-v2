@@ -269,17 +269,23 @@
   border: none !important;
 }
 
-.loadingIndicator .ant-spin-dot-item,
-.loadingIndicator .ant-spin-dot .ant-spin-dot-item {
-  background-color: var(--color-brand) !important;
-}
-
+.ant-spin,
+.ant-spin .ant-spin-dot,
+.ant-spin .ant-spin-dot-holder,
+.ant-spin .anticon,
 .loadingIndicator.ant-spin,
 .loadingIndicator .ant-spin-dot,
-.loadingIndicator .ant-spin-dot-holder {
+.loadingIndicator .ant-spin-dot-holder,
+.loadingIndicator .anticon {
   color: var(--color-brand) !important;
 }
 
+.ant-spin .ant-spin-dot-item,
+.ant-spin .ant-spin-dot .ant-spin-dot-item,
+.ant-spin .ant-spin-dot-holder .ant-spin-dot-item,
+.ant-spin :where(.ant-spin-dot-item),
+.loadingIndicator .ant-spin-dot-item,
+.loadingIndicator .ant-spin-dot .ant-spin-dot-item,
 .loadingIndicator.ant-spin .ant-spin-dot-item,
 .loadingIndicator.ant-spin .ant-spin-dot-holder .ant-spin-dot-item,
 .loadingIndicator :where(.ant-spin-dot-item) {
