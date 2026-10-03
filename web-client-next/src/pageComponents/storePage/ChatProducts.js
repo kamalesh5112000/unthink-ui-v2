@@ -23,6 +23,7 @@ import { setSuggestionsSelectedTag } from "../../hooks/chat/redux/actions";
 import styles from "./ChatProducts.module.css";
 import AuraInputBox from "./AuraInputBox";
 import { FiRefreshCw } from 'react-icons/fi';
+import AuraSideNav from "./aura/components/AuraSideNav";
 
 const ChatProducts = ({
   enableClickFetchRec,
@@ -530,91 +531,7 @@ const ChatProducts = ({
   };
   // console.log('showChatLoader',showChatLoader);
  
-  const AuraSideNav = () => (
-    <div className={styles["aura-sidenav"]}>
-      <div className="h-[60px] flex items-center justify-center w-full shrink-0 text-[#4c5672] hover:text-secondary">
-        <ArrowLeftOutlined
-          className="cursor-pointer text-2xl"
-          onClick={handleGoBack}
-        />
-      </div>
-      <div className="flex-1 flex flex-col gap-8 items-center w-full justify-center">
-        <div
-          className="flex flex-col items-center gap-1.5 cursor-pointer text-[#1a1a1a] transition-all duration-200 ease-in-out py-2 w-full relative hover:bg-[#f8f7ff] hover:text-secondary"
-          onClick={handleChangeImageConfirm}
-          title="New Chat"
-        >
-          <FormOutlined className="text-[20px]" />
-          <span className="text-[10px] font-semibold text-center capitalize">New Chat</span>
-        </div>
-        <div
-          className="flex flex-col items-center gap-2 py-2 w-full relative select-none"
-          title="Switch Layout"
-        >
-          <div className="flex items-center bg-[#f1f5f9] p-[3px] rounded-xl border border-slate-200 shadow-inner gap-[2px] w-[64px] h-[32px] justify-between">
-            <button
-              onClick={() => setLayoutMode("left")}
-              className={`w-[18px] h-[26px] rounded-[8px] transition-all duration-200 flex items-center justify-center cursor-pointer ${layoutMode === "left"
-                ? "bg-white shadow-[0_2px_8px_rgba(0,0,0,0.12)] text-[#4F46E5]"
-                : "bg-transparent hover:bg-slate-200/60 text-slate-400 hover:text-slate-600"
-                }`}
-              title="Left View"
-            >
-              <div className="w-[13px] h-[10px] border-[1.5px] border-current rounded-[2px] flex overflow-hidden">
-                <div className={`w-[7px] h-full border-r-[1.5px] border-current ${layoutMode === "left" ? "bg-current opacity-20" : ""}`} />
-                <div className="flex-1 h-full" />
-              </div>
-            </button>
-            <button
-              onClick={() => setLayoutMode("both")}
-              className={`w-[18px] h-[26px] rounded-[8px] transition-all duration-200 flex items-center justify-center cursor-pointer ${layoutMode === "both"
-                ? "bg-white shadow-[0_2px_8px_rgba(0,0,0,0.12)] text-[#4F46E5]"
-                : "bg-transparent hover:bg-slate-200/60 text-slate-400 hover:text-slate-600"
-                }`}
-              title="Split View"
-            >
-              <div className="w-[13px] h-[10px] border-[1.5px] border-current rounded-[2px] flex overflow-hidden">
-                <div className={`w-[5.5px] h-full border-r-[1.5px] border-current ${layoutMode === "both" ? "bg-current opacity-20" : ""}`} />
-                <div className={`flex-1 h-full ${layoutMode === "both" ? "bg-current opacity-20" : ""}`} />
-              </div>
-            </button>
-            <button
-              onClick={() => setLayoutMode("right")}
-              className={`w-[18px] h-[26px] rounded-[8px] transition-all duration-200 flex items-center justify-center cursor-pointer ${layoutMode === "right"
-                ? "bg-white shadow-[0_2px_8px_rgba(0,0,0,0.12)] text-[#4F46E5]"
-                : "bg-transparent hover:bg-slate-200/60 text-slate-400 hover:text-slate-600"
-                }`}
-              title="Right View"
-            >
-              <div className="w-[13px] h-[10px] border-[1.5px] border-current rounded-[2px] flex overflow-hidden">
-                <div className="w-[4.5px] h-full border-r-[1.5px] border-current" />
-                <div className={`flex-1 h-full ${layoutMode === "right" ? "bg-current opacity-20" : ""}`} />
-              </div>
-            </button>
-          </div>
-          <span className="text-[10px] font-semibold text-center capitalize text-[#1a1a1a]">Split</span>
-        </div>
-        <div
-          className="flex flex-col items-center gap-1.5 cursor-pointer text-[#1a1a1a] transition-all duration-200 ease-in-out py-2 w-full relative hover:bg-[#f8f7ff] hover:text-secondary"
-          onClick={onWishlistClick}
-          title="Collections"
-        >
-          <FolderOutlined className="text-[20px]" />
-          <span className="text-[10px] font-semibold text-center capitalize">Collections</span>
-        </div>
-        <div
-          className="flex flex-col items-center gap-1.5 cursor-pointer text-[#1a1a1a] transition-all duration-200 ease-in-out py-2 w-full relative hover:bg-[#f8f7ff] hover:text-secondary"
-          onClick={() => setIsHistoryOpen(true)}
-          title="History"
-        >
-          <HistoryOutlined className="text-[20px]" />
-          <span className="text-[10px] font-semibold text-center capitalize">History</span>
-        </div>
-      </div>
-      <div className="h-[60px] flex items-center justify-center w-full shrink-0 text-[#4c5672]" />
-    </div>
-  );
-
+  
   // Mobile sidebar drawer - shown on mobile/tablet when hamburger is tapped
   const MobileSideDrawer = () => (
     <>
@@ -959,7 +876,13 @@ const ChatProducts = ({
 
         {shouldShowShopLookSplitLayout ? (
           <div className={`${styles["chat-products-shop-look-wrapper"]} flex flex-col lg:flex-row`}>
-            <AuraSideNav />
+            <AuraSideNav
+              handleChangeImageConfirm={handleChangeImageConfirm}
+              layoutMode={layoutMode}
+              onWishlistClick={onWishlistClick}
+              setIsHistoryOpen={setIsHistoryOpen}
+              setLayoutMode={setLayoutMode}
+            />
             <div className={`${styles["chat-products-shop-look-layout"]} ${styles[`layout-${layoutMode}`]} ${isMobile ? styles["chat-products-mobile-layout"] : ""}`}>
               <div
                 id="aura-description-section"
