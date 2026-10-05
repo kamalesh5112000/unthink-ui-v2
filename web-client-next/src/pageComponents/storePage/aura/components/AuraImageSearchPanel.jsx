@@ -43,7 +43,7 @@ const AuraImageSearchPanel = ({
             <img
               src={chatImageUrl}
               alt="Uploaded Image"
-              className="lg:h-80 lg:w-80   lg:max-h-[420px] max-h-[320px] max-w-[320px] max-lg:w-[420px]  rounded-[20px] object-contain   "
+              className="lg:h-80 lg:w-80  shadow-md  lg:max-h-[420px] max-h-[320px] max-w-[320px] max-lg:w-[420px]  rounded-[20px] object-contain   "
             />
             {Array.isArray(auraOverlayCoordinates) &&
               auraOverlayCoordinates.map((item, index) => {

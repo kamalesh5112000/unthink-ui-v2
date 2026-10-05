@@ -1,27 +1,24 @@
 import React, { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Checkbox, Tooltip, Spin } from "antd";
-import { ArrowUpOutlined, SearchOutlined, HistoryOutlined, FormOutlined, CloseOutlined, Loading3QuartersOutlined, FolderOutlined, CheckSquareOutlined } from "@ant-design/icons";
+import { Tooltip, Spin } from "antd";
+import { ArrowUpOutlined, HistoryOutlined, FormOutlined, CloseOutlined, Loading3QuartersOutlined, FolderOutlined } from "@ant-design/icons";
 
 import {
   openWishlistModal,
   setProductsToAddInWishlist,
 } from "../wishlist/redux/actions";
 import { handleRecProductClick } from "../recommendations/redux/actions";
-import ProductCard from "../../components/ProductCard";
-import AuraResponseProductsWithTags from "../auraResponseProductsWithTags/AuraResponseProductsWithTags";
 import { filterAvailableProductList, isEmpty } from "../../helper/utils";
 import { is_store_instance } from "../../constants/config";
 import {
   CHAT_TYPES_KEYS,
   CHAT_TYPE_CHAT,
   CHAT_SEARCH_OPTION_ID,
-  WISHLIST_TITLE,
 } from "../../constants/codes";
-import AuraResponseShopALook from "../auraResponseShopALook/AuraResponseShopALook";
 import { setSuggestionsSelectedTag } from "../../hooks/chat/redux/actions";
 import styles from "./ChatProducts.module.css";
 import AuraInputBox from "./AuraInputBox";
+import AuraProductsPanel from "./aura/components/AuraProductsPanel";
 import AuraSideNav from "./aura/components/AuraSideNav";
 import AuraMainContent from "./aura/components/AuraMainContent";
 
@@ -486,180 +483,6 @@ const ChatProducts = ({
     </>
   );
 
-  const productsResultsContent = (
-    <>
-      {showChatLoader && chatProductsDataToShow.length === 0 && isEmpty(suggestionsWithProducts.suggestions) && !NEW_AURA_PRODUCTS_UI_ENABLED && (
-        <div className="flex flex-col items-center justify-center w-full py-20 gap-4 animate-pulse">
-          <Spin
-            indicator={
-              <Loading3QuartersOutlined
-                style={{ fontSize: 36, color: "var(--color-secondary)" }}
-                spin
-              />
-            }
-          />
-          <span className="text-secondary font-semibold text-sm tracking-wide">
-            Searching products...
-          </span>
-        </div>
-      )}
-
-      {!isEmpty(shopALookData) &&
-        isTagAvailable &&
-        !isBTNormalUserLoggedIn &&
-        !shouldShowShopLookSplitLayout ? (
-        <div className={styles["chat-products-nav-container"]}>
-          <div
-            className={`${styles["chat-products-nav-item"]} ${styles["chat-products-nav-item-active"]}`}
-            onClick={scrollToProductsContainer}
-          >
-            Products
-          </div>
-          <div
-            className={styles["chat-products-nav-item"]}
-            onClick={onWishlistClick}
-          >
-            Collections
-          </div>
-        </div>
-      ) : null}
-
-      {NEW_AURA_PRODUCTS_UI_ENABLED ? (
-        <>
-          <AuraResponseProductsWithTags
-            handleLoadMore={handleLoadMore}
-            enableClickFetchRec={enableClickFetchRec}
-            enableClickTracking={enableClickTracking}
-            trackCollectionCampCode={trackCollectionCampCode}
-            trackCollectionId={trackCollectionId}
-            trackCollectionName={trackCollectionName}
-            trackCollectionICode={trackCollectionICode}
-            chatTypeKey={chatTypeKey}
-            widgetHeader={widgetHeader}
-            widgetImage={widgetImage}
-            isAuraChatPage={isAuraChatPage}
-            localChatMessage={localChatMessage}
-            showTitle={!shouldShowShopLookSplitLayout}
-            layoutMode={shouldShowShopLookSplitLayout ? layoutMode : "full"}
-            showChatLoader={showChatLoader}
-            isMobile={isMobile}
-            registerSelectActions={registerSelectActions}
-            handleGoBack={handleGoBack}
-            isProductSearchOptionActive={isProductSearchOptionActive}
-          />
-        </>
-      ) : null}
-
-      {!isBTNormalUserLoggedIn && !shouldShowShopLookSplitLayout ? (
-        <>
-          <AuraResponseShopALook
-            enableClickFetchRec={enableClickFetchRec}
-            enableClickTracking={enableClickTracking}
-            trackCollectionCampCode={trackCollectionCampCode}
-            trackCollectionId={trackCollectionId}
-            trackCollectionName={trackCollectionName}
-            trackCollectionICode={trackCollectionICode}
-          />
-        </>
-      ) : null}
-
-      {chatProductsDataToShow.length ? (
-        <div>
-          {isUserLogin && !isMobile ? (
-            <div className={styles["chat-products-selection-controls"]}>
-              {enableSelectProduct ? (
-                <div className={styles["chat-products-selected-items"]}>
-                  <button
-                    type="button"
-                    className={styles["chat-products-select-all-button"]}
-                    onClick={onSelectAllChange}
-                    title="Select all products"
-                  >
-                    <Checkbox
-                      indeterminate={
-                        selectedProducts.length > 0 &&
-                        selectedProducts.length < chatProductsDataToShow.length
-                      }
-                      onChange={onSelectAllChange}
-                      checked={
-                        selectedProducts.length ===
-                        chatProductsDataToShow.length
-                      }
-                      onClick={(event) => event.stopPropagation()}
-                    />
-                    <span>{selectedProducts.length} Selected</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={
-                      selectedProducts.length
-                        ? onAddSelectedProductsToCollection
-                        : undefined
-                    }
-                    className={`${styles["chat-products-action-text"]} ${selectedProducts.length
-                      ? styles["chat-products-action-button"]
-                      : styles["chat-products-action-button-disabled"]
-                      }`}
-                    title="Click to add selected products in collection"
-                    disabled={!selectedProducts.length}
-                  >
-                    Add to {WISHLIST_TITLE}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => handleResetSelectProduct()}
-                    className={`${styles["chat-products-action-text"]} ${styles["chat-products-action-button"]}`}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              ) : (
-                <button
-                  type="button"
-                  className={styles["chat-products-select-prompt"]}
-                  onClick={() => setEnableSelectProduct(true)}
-                  title="Click and select multiple products to add to collection"
-                >
-                  <CheckSquareOutlined />
-                  <span>Select Products</span>
-                </button>
-              )}
-            </div>
-          ) : null}
-
-          <div
-            id="chat_products_inner_content"
-            className={`${styles["chat-products-grid"]} ${shouldShowShopLookSplitLayout ? styles["chat-products-grid-split"] : ""}`}
-          >
-            {chatProductsDataToShow.map((product) => (
-              <React.Fragment key={product.mfr_code}>
-                <ProductCard
-                  product={product}
-                  onProductClick={onProductClick}
-                  enableClickTracking={enableClickTracking}
-                  productClickParam={{
-                    iCode: authUser.influencer_code,
-                    campCode: trackCollectionCampCode,
-                    collectionId: trackCollectionId,
-                    collectionName: trackCollectionName,
-                    collectionICode: trackCollectionICode,
-                  }}
-                  hideAddToWishlist={is_store_instance && !isUserLogin}
-                  enableSelect={enableSelectProduct}
-                  isSelected={selectedProducts.includes(product.mfr_code)}
-                  setSelectValue={() => onSelectProductClick(product.mfr_code)}
-                  localChatMessage={localChatMessage}
-                  auramodel={true}
-                />
-              </React.Fragment>
-            ))}
-          </div>
-        </div>
-      ) : null}
-    </>
-  );
-
   return (
     <div
       ref={containerRef}
@@ -797,36 +620,93 @@ const ChatProducts = ({
                 />
               </div>
 
-              <div className={`${styles["chat-products-shop-look-main"]} ${layoutMode === "left" ? "min-[1025px]:hidden" : ""}`}>
-                <div className={`${styles["chat-products-main-navbar"]} ${isMobile ? styles["chatmodal-hidden-mobile"] : ""}`}>
-                  <h2 className={styles["chat-products-navbar-title"]}>
-                    Products
-                  </h2>
-                  <div className={styles["chat-products-navbar-controls"]}>
-                    {isProductSearchOptionActive && onOpenSearchPopup && (
-                      <SearchOutlined
-                        className={styles["chat-products-search-icon"]}
-                        onClick={onOpenSearchPopup}
-                        title="Open Search"
-                      />
-                    )}
-                    {closeChatModal && (
-                      <CloseOutlined
-                        onClick={closeChatModal}
-                        className={styles["chat-products-close-icon"]}
-                        title="Close"
-                      />
-                    )}
-                  </div>
-                </div>
-                <div className={styles["chat-products-results-scroll"]}>
-                  {productsResultsContent}
-                </div>
-              </div>
+              <AuraProductsPanel
+                authUser={authUser}
+                chatProductsDataToShow={chatProductsDataToShow}
+                chatTypeKey={chatTypeKey}
+                closeChatModal={closeChatModal}
+                enableClickFetchRec={enableClickFetchRec}
+                enableClickTracking={enableClickTracking}
+                enableSelectProduct={enableSelectProduct}
+                handleGoBack={handleGoBack}
+                handleLoadMore={handleLoadMore}
+                handleResetSelectProduct={handleResetSelectProduct}
+                isMobile={isMobile}
+                isBTNormalUserLoggedIn={isBTNormalUserLoggedIn}
+                isAuraChatPage={isAuraChatPage}
+                isTagAvailable={isTagAvailable}
+                isProductSearchOptionActive={isProductSearchOptionActive}
+                isUserLogin={isUserLogin}
+                layoutMode={layoutMode}
+                localChatMessage={localChatMessage}
+                newAuraProductsUiEnabled={NEW_AURA_PRODUCTS_UI_ENABLED}
+                onAddSelectedProductsToCollection={onAddSelectedProductsToCollection}
+                onOpenSearchPopup={onOpenSearchPopup}
+                onProductClick={onProductClick}
+                onSelectAllChange={onSelectAllChange}
+                onSelectProductClick={onSelectProductClick}
+                onWishlistClick={onWishlistClick}
+                registerSelectActions={registerSelectActions}
+                scrollToProductsContainer={scrollToProductsContainer}
+                selectedProducts={selectedProducts}
+                setEnableSelectProduct={setEnableSelectProduct}
+                shouldShowPanelChrome={shouldShowShopLookSplitLayout}
+                shouldShowShopLookSplitLayout={shouldShowShopLookSplitLayout}
+                shopALookData={shopALookData}
+                showChatLoader={showChatLoader}
+                suggestionsWithProducts={suggestionsWithProducts}
+                trackCollectionCampCode={trackCollectionCampCode}
+                trackCollectionICode={trackCollectionICode}
+                trackCollectionId={trackCollectionId}
+                trackCollectionName={trackCollectionName}
+                widgetHeader={widgetHeader}
+                widgetImage={widgetImage}
+              />
             </div>
           </div>
         ) : (
-          productsResultsContent
+          <AuraProductsPanel
+            authUser={authUser}
+            chatProductsDataToShow={chatProductsDataToShow}
+            chatTypeKey={chatTypeKey}
+            closeChatModal={closeChatModal}
+            enableClickFetchRec={enableClickFetchRec}
+            enableClickTracking={enableClickTracking}
+            enableSelectProduct={enableSelectProduct}
+            handleGoBack={handleGoBack}
+            handleLoadMore={handleLoadMore}
+            handleResetSelectProduct={handleResetSelectProduct}
+            isMobile={isMobile}
+            isBTNormalUserLoggedIn={isBTNormalUserLoggedIn}
+            isAuraChatPage={isAuraChatPage}
+            isTagAvailable={isTagAvailable}
+            isProductSearchOptionActive={isProductSearchOptionActive}
+            isUserLogin={isUserLogin}
+            layoutMode={layoutMode}
+            localChatMessage={localChatMessage}
+            newAuraProductsUiEnabled={NEW_AURA_PRODUCTS_UI_ENABLED}
+            onAddSelectedProductsToCollection={onAddSelectedProductsToCollection}
+            onOpenSearchPopup={onOpenSearchPopup}
+            onProductClick={onProductClick}
+            onSelectAllChange={onSelectAllChange}
+            onSelectProductClick={onSelectProductClick}
+            onWishlistClick={onWishlistClick}
+            registerSelectActions={registerSelectActions}
+            scrollToProductsContainer={scrollToProductsContainer}
+            selectedProducts={selectedProducts}
+            setEnableSelectProduct={setEnableSelectProduct}
+            shouldShowPanelChrome={false}
+            shouldShowShopLookSplitLayout={shouldShowShopLookSplitLayout}
+            shopALookData={shopALookData}
+            showChatLoader={showChatLoader}
+            suggestionsWithProducts={suggestionsWithProducts}
+            trackCollectionCampCode={trackCollectionCampCode}
+            trackCollectionICode={trackCollectionICode}
+            trackCollectionId={trackCollectionId}
+            trackCollectionName={trackCollectionName}
+            widgetHeader={widgetHeader}
+            widgetImage={widgetImage}
+          />
         )}
       </div>
 
