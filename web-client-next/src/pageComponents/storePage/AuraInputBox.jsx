@@ -85,7 +85,7 @@ const AuraInputBox = ({
         className={`${
           isDrawer
             ? "w-full rounded-[18px] border border-secondary/25 bg-white px-3 py-2 shadow-[0_4px_12px_rgba(150,144,240,0.06)] box-border focus-within:border-secondary focus-within:shadow-[0_4px_16px_rgba(150,144,240,0.15)]"
-            : "w-full rounded-[25px] border border-brand/15 bg-white px-4 py-2.5 shadow-md focus-within:border-secondary focus-within:shadow-[0_4px_20px_rgba(114,104,236,0.15)] max-[1024px]:flex max-[1024px]:items-center max-[1024px]:gap-2 max-[1024px]:px-4 max-[1024px]:py-2.5"
+            : "w-full rounded-full border border-brand/15 bg-white px-4 py-2.5 shadow-md focus-within:border-secondary focus-within:shadow-[0_4px_20px_rgba(114,104,236,0.15)] "
         } ${
           isShopByThemeOptionActive || isCompleteTheLookOptionActive
             ? "border-accent px-2.5 py-2 relative"
@@ -138,9 +138,7 @@ const AuraInputBox = ({
             onChange={handleInputChange}
             onKeyDown={onTextareaKeyDown}
             className={
-              isDrawer
-                ? "w-full min-h-[38px] max-h-[120px] resize-none overflow-hidden border-none bg-transparent px-0 py-1 text-sm font-medium leading-relaxed text-[#1a1a1a] outline-none placeholder:text-[13px] placeholder:font-normal placeholder:text-[#8a8fa3]"
-                : "pr-5 w-full min-h-[38px] max-h-[120px] resize-none overflow-hidden border-none     py-1 text-base font-medium   text-highlight outline-none   "
+              "pr-5 w-full resize-none overflow-hidden border-none      text-base font-medium   text-highlight outline-none   "
             }
           />
           {!(

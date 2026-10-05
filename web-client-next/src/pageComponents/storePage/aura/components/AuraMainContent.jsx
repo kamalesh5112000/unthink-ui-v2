@@ -63,7 +63,7 @@ const AuraMainContent = ({
   return (
     <div
       id="aura-description-section"
-      className="box-border flex max-h-[80vh] w-full  flex-col   rounded-2xl border border-gray-300   p-2 shadow-sm   "
+      className="box-border flex  h-[80vh] w-full  flex-col   rounded-2xl border border-gray-300   p-2 shadow-sm   "
     >
  
         <div className=" z-10 mb-4 flex h-16 shrink-0 items-center border-b border-gray-100/80 bg-white py-3">

@@ -755,45 +755,49 @@ const ChatProducts = ({
               setIsHistoryOpen={setIsHistoryOpen}
               setLayoutMode={setLayoutMode}
             />
-            <div className={`${styles["chat-products-shop-look-layout"]} ${styles[`layout-${layoutMode}`]} ${isMobile ? styles["chat-products-mobile-layout"] : ""}`}>
-              <AuraMainContent
-                activeSearchOption={activeSearchOption}
-                auraOverlayCoordinates={auraOverlayCoordinates}
-                auraServerImage={auraServerImage}
-                chatHistory={chatHistory}
-                chatImagePreviewUrl={chatImagePreviewUrl}
-                chatImageUrl={chatImageUrl}
-                chatTypeKey={chatTypeKey}
-                handleClearChatImage={handleClearChatImage}
-                handleInputChange={handleInputChange}
-                handlePromptKeyDown={handlePromptKeyDown}
-                handleRegenrateImage={handleRegenrateImage}
-                handleSubmitChatInput={handleSubmitChatInput}
-                handleSuggestionClick={handleSuggestionClick}
-                handleTryAgainClick={handleTryAgainClick}
-                inputRef={inputRef}
-                isDescriptionExpanded={isDescriptionExpanded}
-                isFollowUpQuery={isFollowUpQuery}
-                isImageLoading={isImageLoading}
-                isShowFollowUpSearch={isShowFollowUpSearch}
-                isShowTryAgain={isShowTryAgain}
-                isUploadingImage={isUploadingImage}
-                layoutMode={layoutMode}
-                localChatMessage={localChatMessage}
-                originalHeight={originalHeight}
-                originalWidth={originalWidth}
-                regenarateImage={regenarateImage}
-                setIsDescriptionExpanded={setIsDescriptionExpanded}
-                shopLookKeywords={shopLookKeywords}
-                shopLookPreviewImage={shopLookPreviewImage}
-                shouldMoveInputBelowResults={shouldMoveInputBelowResults}
-                showChatLoader={showChatLoader}
-                storeData={storeData}
-                uploadImageProps={uploadImageProps}
-                widgetHeader={widgetHeader}
-              />
+            <div
+              className={`flex w-full flex-col gap-4 lg:grid lg:items-stretch lg:gap-6 lg:flex-1 lg:min-h-0 lg:overflow-hidden lg:pb-0 ${layoutMode === "both" ? "lg:grid-cols-[minmax(340px,35%)_minmax(0,1fr)] xl:grid-cols-[minmax(400px,39%)_minmax(0,1fr)]" : "lg:grid-cols-1"} ${layoutMode === "left" ? "lg:px-48" : ""}`}
+            >
+              <div className={layoutMode === "right" ? "hidden" : ""}>
+                <AuraMainContent
+                  activeSearchOption={activeSearchOption}
+                  auraOverlayCoordinates={auraOverlayCoordinates}
+                  auraServerImage={auraServerImage}
+                  chatHistory={chatHistory}
+                  chatImagePreviewUrl={chatImagePreviewUrl}
+                  chatImageUrl={chatImageUrl}
+                  chatTypeKey={chatTypeKey}
+                  handleClearChatImage={handleClearChatImage}
+                  handleInputChange={handleInputChange}
+                  handlePromptKeyDown={handlePromptKeyDown}
+                  handleRegenrateImage={handleRegenrateImage}
+                  handleSubmitChatInput={handleSubmitChatInput}
+                  handleSuggestionClick={handleSuggestionClick}
+                  handleTryAgainClick={handleTryAgainClick}
+                  inputRef={inputRef}
+                  isDescriptionExpanded={isDescriptionExpanded}
+                  isFollowUpQuery={isFollowUpQuery}
+                  isImageLoading={isImageLoading}
+                  isShowFollowUpSearch={isShowFollowUpSearch}
+                  isShowTryAgain={isShowTryAgain}
+                  isUploadingImage={isUploadingImage}
+                  layoutMode={layoutMode}
+                  localChatMessage={localChatMessage}
+                  originalHeight={originalHeight}
+                  originalWidth={originalWidth}
+                  regenarateImage={regenarateImage}
+                  setIsDescriptionExpanded={setIsDescriptionExpanded}
+                  shopLookKeywords={shopLookKeywords}
+                  shopLookPreviewImage={shopLookPreviewImage}
+                  shouldMoveInputBelowResults={shouldMoveInputBelowResults}
+                  showChatLoader={showChatLoader}
+                  storeData={storeData}
+                  uploadImageProps={uploadImageProps}
+                  widgetHeader={widgetHeader}
+                />
+              </div>
 
-              <div className={styles["chat-products-shop-look-main"]}>
+              <div className={`${styles["chat-products-shop-look-main"]} ${layoutMode === "left" ? "min-[1025px]:hidden" : ""}`}>
                 <div className={`${styles["chat-products-main-navbar"]} ${isMobile ? styles["chatmodal-hidden-mobile"] : ""}`}>
                   <h2 className={styles["chat-products-navbar-title"]}>
                     Products
@@ -815,7 +819,9 @@ const ChatProducts = ({
                     )}
                   </div>
                 </div>
-                {productsResultsContent}
+                <div className={styles["chat-products-results-scroll"]}>
+                  {productsResultsContent}
+                </div>
               </div>
             </div>
           </div>
