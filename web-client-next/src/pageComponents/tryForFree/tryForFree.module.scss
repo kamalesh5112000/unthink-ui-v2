@@ -486,7 +486,7 @@
     }
 
     :global(.steps_bar_div .ant-steps-item-finish .ant-steps-item-title) {
-        color: #B4ACF4 !important;
+        color: var(--color-brand) !important;
     }
 
     :global(.ant-steps.ant-steps-dot .ant-steps-item-tail::after),
@@ -551,7 +551,7 @@
     }
 
     :global(.steps-icon.finished) {
-        background-color: var(--color-accent)80;
+        background-color: var(--color-accent);
         transform: translateX(-50%);
         border: none;
     }
