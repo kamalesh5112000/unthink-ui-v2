@@ -321,12 +321,12 @@ const [
             htmlFor="store-name"
             className="mb-1 block text-center text-base font-semibold"
           >
-            [Store Name ]
+            [Store Assistance Name ]
           </label>
           <input
             id="store-name"
             type="text"
-            placeholder="Enter Store Name"
+            placeholder="Enter Store Assistance Name"
             value={storeName}
             onChange={handleStoreNameChange}
             disabled={!hasCalculatedPoints}
