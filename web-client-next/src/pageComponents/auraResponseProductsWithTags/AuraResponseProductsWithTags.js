@@ -12,7 +12,6 @@ import {
 	setMoreSearchSelectedTag,
 } from "../../hooks/chat/redux/actions";
 import { isEmpty } from "../../helper/utils";
-import styles from './AuraResponseProductsWithTags.module.css';
 
 const AuraResponseProductsWithTags = ({
 	enableClickFetchRec,
@@ -183,20 +182,20 @@ const AuraResponseProductsWithTags = ({
 	}
 
 	return (
-		<div className={styles['aura-tags-container']} id='aura-response-products-with-tags-container'>
+		<div className="grid grid-cols-1 gap-4 max-[768px]:box-border max-[768px]:w-full max-[768px]:max-w-full max-[768px]:overflow-x-hidden max-[768px]:px-2.5" id='aura-response-products-with-tags-container'>
 			{title ? (
 				<h1
 					id='_data_widget_text'
-					className={styles['aura-tags-title']}
+					className="m-0 text-lg font-bold leading-7 text-highlight lg:text-xl"
 					dangerouslySetInnerHTML={{
 						__html: title,
 					}}
 				/>
 			) : null}
 
-			<div className={styles['aura-tags-wrapper']}>
+			<div className="mb-4 flex flex-wrap gap-3 max-[768px]:mb-3 max-[768px]:w-full max-[768px]:gap-2">
 				{isProductSearchOptionActive ? (
-					<div className="h-[60px] flex w-full shrink-0 text-[#4c5672] hover:text-secondary">
+					<div className="flex h-[60px] w-full shrink-0 text-highlight hover:text-secondary">
 						<ArrowLeftOutlined
 							className="cursor-pointer text-2xl"
 							onClick={handleGoBack}
@@ -206,20 +205,20 @@ const AuraResponseProductsWithTags = ({
 					{!isEmpty(allProductList) && tags.length > 1 ? (
 						<div
 							key='All'
-							className={`${styles['aura-tag-item']} ${!selectedTag && isAllEnabled
+							className={`relative flex h-[34px] w-max min-w-12 items-center justify-center rounded-full px-1 transition-all duration-200 ease-in-out max-[768px]:min-w-0 max-[768px]:py-0.5 ${!selectedTag && isAllEnabled
 								? 'bg-secondary text-white '
 								: isAllEnabled
-									? styles['aura-tag-enabled']
-									: styles['aura-tag-disabled']
+									? 'cursor-pointer border border-secondary/30 [&_h5]:cursor-pointer [&_h5]:font-medium [&_h5]:text-highlight [&_.aura-tag-close-icon]:cursor-pointer [&_.aura-tag-close-icon]:border-highlight'
+									: 'cursor-pointer border border-secondary/30 [&_h5]:cursor-pointer [&_h5]:font-medium [&_h5]:text-highlight [&_.aura-tag-close-icon]:cursor-pointer [&_.aura-tag-close-icon]:bg-secondary/10 [&_.aura-tag-close-icon]:text-secondary'
 								}`}
 							onClick={() => isAllEnabled && handleSuggestionClick("")}>
 							<h5
-								className={styles['aura-tag-text']}>
+								className="m-0 cursor-inherit px-2.5 text-xs font-normal leading-4 sm:px-3 md:text-sm max-[768px]:px-1.5 max-[768px]:py-0.5">
 								All
 							</h5>
 							{!isAllEnabled ? (
 								<Skeleton.Button
-									className={styles['aura-tag-loading-skeleton']}
+									className="absolute top-0 h-full [&_.ant-skeleton-button]:h-full"
 									active
 									shape='round'
 									block
@@ -231,14 +230,14 @@ const AuraResponseProductsWithTags = ({
 					<div
 						id={`tag-${suggestion}`}
 						key={suggestion}
-						className={`${styles['aura-tag-item']} ${suggestion === selectedTag
+						className={`relative flex h-[34px] w-max min-w-12 items-center justify-center rounded-full px-1 transition-all duration-200 ease-in-out max-[768px]:min-w-0 max-[768px]:py-0.5 ${suggestion === selectedTag
 							? 'bg-secondary text-white font-medium'
 							: checkIsTagEnabled(suggestion)
-								? styles['aura-tag-enabled']
-								: styles['aura-tag-disabled']
-							} ${tags.length > 1 ? styles['aura-tag-text-multiple'] : ''}`}>
+								? 'cursor-pointer border border-secondary/30 [&_h5]:cursor-pointer [&_h5]:font-medium [&_h5]:text-highlight [&_.aura-tag-close-icon]:cursor-pointer [&_.aura-tag-close-icon]:border-highlight'
+								: 'cursor-pointer border border-secondary/30 [&_h5]:cursor-pointer [&_h5]:font-medium [&_h5]:text-highlight [&_.aura-tag-close-icon]:cursor-pointer [&_.aura-tag-close-icon]:bg-secondary/10 [&_.aura-tag-close-icon]:text-secondary'
+							} ${tags.length > 1 ? 'gap-1 pl-2' : ''}`}>
 						<h5
-							className={`${styles['aura-tag-text']} ${tags.length === 1 ? styles['aura-tag-text-single'] : ''}`}
+							className="m-0 cursor-inherit px-2.5 text-xs font-normal leading-4 sm:px-3 md:text-sm max-[768px]:px-1.5 max-[768px]:py-0.5"
 							onClick={() =>
 								checkIsTagEnabled(suggestion) &&
 								handleSuggestionClick(suggestion)
@@ -247,7 +246,7 @@ const AuraResponseProductsWithTags = ({
 						</h5>
 						{tags.length > 1 ? (
 							<CloseOutlined
-								className={styles['aura-tag-close-icon']}
+								className="aura-tag-close-icon mr-1.5 ml-0.5 flex h-[18px] w-[18px] items-center justify-center rounded-full border border-white text-xs"
 								role='button'
 								onClick={() =>
 									checkIsTagEnabled(suggestion) &&
@@ -257,7 +256,7 @@ const AuraResponseProductsWithTags = ({
 						) : null}
 						{!checkIsTagEnabled(suggestion) ? (
 							<Skeleton.Button
-								className={styles['aura-tag-loading-skeleton']}
+								className="absolute top-0 h-full [&_.ant-skeleton-button]:h-full"
 								active
 								shape='round'
 								block

@@ -1057,7 +1057,7 @@ setNotData(newOptionalFilters)
 	return (
 		<>
 			<div id={elementId} style={{ minHeight: "85vh" }}>
-				<div className="flex-1 min-w-0">
+				<div className="flex-1 min-w-0 px-1 ">
 					{!isCurrentTagLoading ? (
 						<>
 							{enableFilters ? (
