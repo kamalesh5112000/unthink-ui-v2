@@ -242,7 +242,7 @@ const [
           points_exchanged: validPoints,
           image_url: claimImageUrl,
           voucher_code:voucherCode,
-          store_name:storeName,
+          storename:storeName,
           store_assistance_id:storeAssistanceId,
         },
         eventId:storeData?.event_id,
