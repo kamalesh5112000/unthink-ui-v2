@@ -242,7 +242,7 @@ const [
           points_exchanged: validPoints,
           image_url: claimImageUrl,
           voucher_code:voucherCode,
-          store_name:storeName,
+          store_assistance_name:storeName,
           store_assistance_id:storeAssistanceId,
         },
         eventId:storeData?.event_id,
@@ -314,7 +314,7 @@ const [
             disabled={!hasCalculatedPoints}
             className="h-9 w-full border border-kiosk-secondary focus:border focus:border-black bg-white px-2 text-[11px] outline-none disabled:cursor-not-allowed  "
           />
-          <div className="mt-3 flex   gap-2">
+          <div className="mt-3 flex items-center  gap-2">
           <div className="flex-1">
 
           <label
@@ -333,6 +333,7 @@ const [
             className="h-9 w-full border disabled:cursor-not-allowed border-kiosk-secondary focus:border focus:border-black bg-white px-2 text-[11px] outline-none"
           />
           </div>
+          <p className="mt-3 p-1">or</p>
           <div className="flex-1">
 
 
