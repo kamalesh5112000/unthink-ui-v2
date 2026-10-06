@@ -64,3 +64,7 @@ export const event_app_api_base_url =
 export const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_TRACKING_ID;
 
 export const secretToken = process.env.NEXT_PUBLIC_FERNET_SECRET_KEY
+
+export const isGivaStore =
+  current_store_name === "giva_indiranagar2_hs" ||
+  current_store_name === "giva_neeladri_hs";

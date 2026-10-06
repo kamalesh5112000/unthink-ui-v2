@@ -1618,18 +1618,13 @@ export const ClaimStorePointsApiCall = (data = {}) => {
     data,
   });
 };
-export const CreateBadgeApiCall = ({name ,points, badge_image_url,qr_page_url}) => {
+export const CreateBadgeApiCall = ({data}) => {
   const url = `${auraYfretUserCollBaseUrl}${createBadge}`;
 // console.log("URL:", name, points, badge_image_url);
   return apiInstance({
     url,
     method: "post",
-    data: {
-      name,
-      points,
-      badge_image_url,  
-      qr_page_url,
-    },
+    data,
     responseType: "blob",
   }); 
 };

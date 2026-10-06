@@ -13,7 +13,7 @@ import { getUserInfo, GuestPopUpShow } from "../Auth/redux/actions";
 import GuestPopUp from "../Auth/GuestPopUp";
 import { COOKIE_TT_ID, SIGN_IN_EXPIRE_DAYS } from "../../constants/codes";
 import { authAPIs, collectionAPIs } from "../../helper/serverAPIs";
-import { current_store_name } from "../../constants/config";
+import { current_store_name, isGivaStore } from "../../constants/config";
 import { collectionQRCodeGenerator, setCookie } from "../../helper/utils";
 import Modal from "../../components/modal/Modal";
 import { buildKioskAutoLoginUrls } from "../../helper/autoLogin";
@@ -51,8 +51,8 @@ const DeliveryDetails = () => {
   });
   
   const mycartcollectionpath = `${ kioskUser_id || authUserId || getTTid()}`;
-  const shouldShowCheckoutClaimQr =
-    authUserId && storeData?.store_name === "giva_indiranagar2_hs";
+ 
+  const shouldShowCheckoutClaimQr = authUserId && isGivaStore;
   const checkoutClaimMessage =
     storeData?.cart_settings?.checkout_claim_message;
 
@@ -515,7 +515,7 @@ const DeliveryDetails = () => {
                     </div>
                   ) : null,
                 )}
-              {storeData?.store_name !== 'giva_indiranagar2_hs' && (
+              {!isGivaStore &&  (
 
                 <div>
                   <p
@@ -574,7 +574,7 @@ const DeliveryDetails = () => {
               <h2 className="text-center font-bold md:text-3xl text-2xl mb-6 md:mb-10">
                 ORDER SUMMARY
               </h2>
-              {storeData?.store_name !== 'giva_indiranagar2_hs' && ( 
+              {!isGivaStore &&( 
                 <>
               <div className="flex justify-between mb-5">
                 <p className="md:text-lg text-base">Subtotal</p>
@@ -612,7 +612,7 @@ const DeliveryDetails = () => {
                   ₹ {collection?.total_amount?.toLocaleString()}
                 </p>
               </div>
-              {storeData?.store_name !== 'giva_indiranagar2_hs' && (
+              {!isGivaStore && (
 
               <div className="flex justify-between text-gray-600 text-sm">
                 <p>Estimated Delivery by</p>

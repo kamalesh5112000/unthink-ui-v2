@@ -9,8 +9,9 @@ import { current_store_name } from "../../constants/config";
 import { useRouter } from "next/router";
 import { IoCartOutline } from "react-icons/io5";
 import { getUserInfo } from "../Auth/redux/actions";
+import { DEFAULT_NFT_INSTANCE_ID } from "../../constants/kioskCodes";
 
-const DEFAULT_NFT_INSTANCE_ID = "GIVA loyalty points";
+
 
 const getPointValue = (source, keys, fallback = 0) => {
   const rawValue = keys.reduce(
@@ -38,15 +39,17 @@ const ClaimPoints = ({
   const dispatch = useDispatch();
   const router = useRouter();
   const [redeemPoints, setRedeemPoints] = useState(null);
-  const [confirmedPoints, setConfirmedPoints] = useState(0);
+  const [voucherCode, setVoucherCode] = useState(null);
+  const [storeName, setStoreName] = useState(null);
+  const [storeAssistanceId, setStoreAssistanceId] = useState(null);
+  const [confirmedPoints, setConfirmedPoints] = useState(0); 
   const [redeemPointsError, setRedeemPointsError] = useState("");
   const [pendingRedeemPoints, setPendingRedeemPoints] = useState(null);
   const routeUserId = getRouteValue(router.query.user_id);
   // console.log('redeemPoints',redeemPoints);
 
 const [
-    collection,
-    loading,
+ 
     authUser,
     checkoutUpdatedPoints,
     checkoutUpdatePointsLoading,
@@ -57,8 +60,6 @@ const [
     earningPointsLoading,
     storeData,
   ] = useSelector((state) => [
-    state.cart?.collection,
-    state.cart?.loading,
     state.auth?.user?.data,
     state.cart?.checkoutUpdatedPoints,
     state.cart?.checkoutUpdatePointsLoading,
@@ -83,7 +84,7 @@ const [
     : earningPointsLoading;
   const userDID = authUser?.userDID;
   const checkoutStoreName = storeData?.store_name || current_store_name;
-   const checkoutUserId = routeUserId || authUser?.user_id || authUser?._id;
+   const checkoutUserId = routeUserId || authUser?.user_id  
   const pointsData = checkoutPage
     ? checkoutUpdatedPoints?.events?.[0] ||
       checkoutUpdatedPoints?.event ||
@@ -149,6 +150,15 @@ const [
 
     setRedeemPointsError("");
   };
+  const handleVoucherCodeChange = (event) => {
+    setVoucherCode(event.target.value);
+  };
+  const handleStoreNameChange = (event) => {
+    setStoreName(event.target.value);
+  }
+  const handleStoreAssistanceIdChange = (event) => {
+    setStoreAssistanceId(event.target.value);
+  }
 
   const handleCalculatePoints = () => {
     if (!checkoutUserId || !checkoutStoreName) {
@@ -215,10 +225,7 @@ const [
     setConfirmedPoints(validPoints);
     setPendingRedeemPoints(null);
 
-    // const checkoutRefreshPayload = {
-    //   user_id: checkoutUserId?.toString(),
-    //   store_name: checkoutStoreName,
-    // };
+    
 
     dispatch(
       redeemSessionHCS20Points({
@@ -234,6 +241,9 @@ const [
           nft_instance_id: DEFAULT_NFT_INSTANCE_ID,
           points_exchanged: validPoints,
           image_url: claimImageUrl,
+          voucher_code:voucherCode,
+          store_assistance_name:storeName,
+          store_assistance_id:storeAssistanceId,
         },
         eventId:storeData?.event_id,
         ischeckoutPage: checkoutPage,
@@ -302,13 +312,72 @@ const [
             value={redeemPoints}
             onChange={handlePointsChange}
             disabled={!hasCalculatedPoints}
-            className="h-9 w-full border border-kiosk-secondary focus:border focus:border-black bg-white px-2 text-[11px] outline-none disabled:cursor-not-allowed disabled:bg-[#f2f2f2] disabled:text-[#9a9a9a]"
+            className="h-9 w-full border border-kiosk-secondary focus:border focus:border-black bg-white px-2 text-[11px] outline-none disabled:cursor-not-allowed  "
           />
-          {redeemPointsError && (
+          <div className="mt-3 flex items-center  gap-2">
+          <div className="flex-1">
+
+          <label
+            htmlFor="store-name"
+            className="mb-1 block text-center text-base font-semibold"
+          >
+            [Store Assistance Name ]
+          </label>
+          <input
+            id="store-name"
+            type="text"
+            placeholder="Enter Store Assistance Name"
+            value={storeName}
+            onChange={handleStoreNameChange}
+            disabled={!hasCalculatedPoints}
+            className="h-9 w-full border disabled:cursor-not-allowed border-kiosk-secondary focus:border focus:border-black bg-white px-2 text-[11px] outline-none"
+          />
+          </div>
+          <p className="mt-3 p-1">or</p>
+          <div className="flex-1">
+
+
+            <label
+            htmlFor="store-assistance-id"
+            className="mb-1 block text-center text-base font-semibold"
+          >
+            [Store Assistance Id ]
+          </label>
+          <input
+            id="store-assistance-id"
+            type="text"
+            placeholder="Enter Store Assistance Id"
+            value={storeAssistanceId}
+            onChange={handleStoreAssistanceIdChange}
+            disabled={!hasCalculatedPoints}
+            className="h-9 w-full border disabled:cursor-not-allowed border-kiosk-secondary focus:border focus:border-black bg-white px-2 text-[11px] outline-none"
+          /> 
+          </div>
+
+          </div>
+        
+          <label
+            htmlFor="Voucer COde"
+            className="mb-1 block text-center text-base font-semibold"
+          >
+            [Enter voucher code]
+          </label>
+          <input
+            id="voucher-code"
+            type="text"
+            placeholder="Enter Voucher Code"
+            value={voucherCode}
+            onChange={handleVoucherCodeChange}
+            disabled={!hasCalculatedPoints}
+            className="h-9 w-full border disabled:cursor-not-allowed border-kiosk-secondary focus:border focus:border-black bg-white px-2 text-[11px] outline-none"
+          />
+            
+       
+          {/* {redeemPointsError && (
             <p className="mt-1 text-[10px] leading-4 text-red-600">
               {redeemPointsError}
             </p>
-          )}
+          )} */}
           <button
             type="button"
             onClick={handleConfirmRedemption}

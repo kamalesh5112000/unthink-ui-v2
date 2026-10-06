@@ -591,7 +591,16 @@
   font-size: 12px;
   line-height: 1.6;
   font-weight: 400;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
+  white-space: pre-line;
+}
+
+.chat-products-shop-look-description-text p {
+  margin: 0 0 0.5rem;
+}
+
+.chat-products-shop-look-description-text p:last-child {
+  margin-bottom: 0;
 }
 
 @media (min-width: 768px) {

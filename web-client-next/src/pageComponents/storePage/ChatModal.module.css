@@ -2108,7 +2108,7 @@
 
 /* Aura category heading (eg.-Shop the Look, Shop by Theme, Search) */
 .chatmodal-category-title {
-  margin: 0 0 1rem;
+  margin: 0 0 4px;
   font-size: 24px;
   /* Base size for mobile/small screens */
   line-height: 1.1;
@@ -2124,12 +2124,26 @@
 @media (min-width: 1025px) {
   .chatmodal-category-title {
     font-size: 62px;
-    margin-bottom: 2.5rem;
+    margin-bottom:  19px;
     letter-spacing: 0.1em;
   }
 }
+.chatmodal-initial-layout-wrapperp {
+  margin-bottom: 28px !important;
+  font-size: 25px;
+  font-weight: 400;
+  color:#2c3552;
+  text-align: center;
+  @media (max-width: 1025px) {
+    font-size: 20px;
+    
+  }
+  @media (max-width: 480px) {
+    font-size: 14px;
+  }
 
-/* Tablet Styles */
+}
+/* Tablet Styles */ 
 @media (min-width: 768px) and (max-width: 1024px) {
   .chatmodal-category-title {
     font-size: 32px;

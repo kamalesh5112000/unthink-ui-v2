@@ -1,0 +1,1 @@
+export const DEFAULT_NFT_INSTANCE_ID = "GIVA loyalty points";
