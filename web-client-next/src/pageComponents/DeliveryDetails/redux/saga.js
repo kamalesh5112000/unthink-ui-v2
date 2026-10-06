@@ -168,7 +168,7 @@ function* fetchCartSaga(action) {
 
     const data =
       response?.data?.data && response?.data?.data?.length
-        ? response?.data?.data[1] ||   response?.data?.data[0]
+        ?   response?.data?.data[0] ||  response?.data?.data[1] 
         : null; 
         // console.log('dsdsdsdsdsdsd', data);
 
