@@ -30,6 +30,10 @@ import AuthInput from "./components/AuthInput";
 import { addToCart } from "../../pageComponents/DeliveryDetails/redux/action";
 import { current_store_name, is_kiosk } from "../../constants/config";
 import GoBack from "../common/GoBack";
+import {
+  gTagKioskCollectionView,
+  gTagKioskProductClick,
+} from "../../helper/webTracker/gtag";
 
 const CollectionPage = ({ params }) => {
   // console.log(params);
@@ -174,6 +178,16 @@ useEffect(() => {
       );
     }
   }, [requestedCollectionPath, singleCollectionKiosk,dispatch]);
+
+  useEffect(() => {
+    if (!currentCollection?._id && !currentCollection?.collection_id) return;
+
+    gTagKioskCollectionView({
+      collection: currentCollection,
+      tab_name: sessionStorage.getItem("selectedTag") || "",
+    });
+  }, [currentCollection]);
+
   //   console.log('colleztctionData',singleCollectionKiosk);
   const handleGuestPopupOpen = useCallback((action) => {
   if (action === "") {
@@ -196,6 +210,14 @@ useEffect(() => {
       <ProductCard
         product={productdata}
         isPriority={i < 2}
+        onProductClick={() =>
+          gTagKioskProductClick({
+            product: productdata,
+            collection: currentCollection,
+            tab_name: sessionStorage.getItem("selectedTag") || "",
+            source: "kiosk_collection_page",
+          })
+        }
         bannerImage
         enableKioskGuestPopup
         onGuestPopupOpen={handleGuestPopupOpen}

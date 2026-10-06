@@ -183,7 +183,7 @@ const ProductCard = ({
     if (open && !hasKioskAccess) {
       window.open(`/product/${product.mfr_code}`, "_blank");
     } else {
-      router.push(`/product/${product.mfr_code}`);
+      router.push(hasKioskAccess ? `/kiosk/product/${product.mfr_code}` : `/product/${product.mfr_code}`);
     }
     if (showChatModal) {
       dispatch(setShowChatModal(false));

@@ -17,8 +17,12 @@ import {
 import LoggedInInfo from "../../components/kiosk/components/LoggedInInfo";
 import AuthInput from "../../components/kiosk/components/AuthInput";
 import { current_store_name } from "../../constants/config";
+import {
+  gTagKioskTabAutoSwitch,
+  gTagKioskTabClick,
+} from "../../helper/webTracker/gtag";
 
-// const KIOSK_TAGS = ["Social Media", "Look Books", "#Trending"];
+const KIOSK_TAGS = ["Social Media", "Look Books", "#Trending"];
 const GIVA_NEELADRI_TAB_ROTATION_DELAY = 60 * 1000;
 
 const KioskHome = ({ props }) => {
@@ -34,7 +38,7 @@ const KioskHome = ({ props }) => {
       ?.map((tab) => tab?.label)
       ?.filter(Boolean);
 
-    return configuredTabs?.length ? configuredTabs : null;
+    return configuredTabs?.length ? configuredTabs : KIOSK_TAGS;
   }, [storeData?.kiosk_settings?.tabs]);
 
   const [showTags, setShowTags] = useState(
@@ -107,6 +111,7 @@ const KioskHome = ({ props }) => {
         const nextTag = Tags[(currentTagIndex + 1) % Tags.length];
 
         sessionStorage.setItem("selectedTag", nextTag);
+        gTagKioskTabAutoSwitch({ tab_name: nextTag });
         return nextTag;
       });
     }, GIVA_NEELADRI_TAB_ROTATION_DELAY);
@@ -136,6 +141,7 @@ const KioskHome = ({ props }) => {
               <button
                 key={i}
                 onClick={() => {
+                  gTagKioskTabClick({ tab_name: tag });
                   (setShowTags(tag),
                     sessionStorage.setItem("selectedTag", tag));
                 }}

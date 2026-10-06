@@ -383,7 +383,7 @@ const isAdminLog = authUser?.user_name ===  super_admin;
 			
 			// if (hasKioskAccess === null) return;
 			if(LoginData ||kioskLogin ){
-				if(hasKioskAccess && kioskLogin && (window.location.pathname.startsWith('/product') || window.location.pathname.startsWith('/cart') )){
+				if(hasKioskAccess && kioskLogin && (window.location.pathname.startsWith('/product') || window.location.pathname.startsWith('/cart') || window.location.pathname.startsWith('/kiosk/product') || window.location.pathname.startsWith('/kiosk/cart') )){
 					// console.log('iam working ')
 				    dispatch(fetchCart(`my_cart_${kioskLogin}`))
 					 dispatch(
