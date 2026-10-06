@@ -44,7 +44,7 @@ export const useAuraPrompt = ({
   chatTypeKey,
   clearLocalChatImagePreview,
   firstSubmittedImageUrl,
-  handleClearChatImage,
+  handleClearChatImage = () => {},
   inputRef,
   isFollowUpQuery,
   isShowFollowUpSearch,
@@ -81,6 +81,7 @@ export const useAuraPrompt = ({
     setPrevShowChatLoader(showChatLoader);
     if (!showChatLoader && prevShowChatLoader) {
       setLocalChatMessage("");
+      handleClearChatImage();
     }
   }
 
@@ -248,7 +249,6 @@ export const useAuraPrompt = ({
       dispatch(setAuraHelperMessage(activeSearchOption?.search_message));
       dispatch(setAuraSreverImage(""));
       dispatch(setOverlayCoordinates([]));
-      handleClearChatImage();
       setIsFigmaUploadPanelOpen(false);
       setIsSearchPopupOpen(false);
     }

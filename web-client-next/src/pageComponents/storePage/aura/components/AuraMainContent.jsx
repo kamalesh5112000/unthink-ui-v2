@@ -63,7 +63,7 @@ const AuraMainContent = ({
   return (
     <div
       id="aura-description-section"
-      className="box-border flex  h-[80vh] w-full  flex-col   rounded-2xl border border-gray-300   p-2 shadow-sm   "
+      className="box-border flex h-[70vh] xl:h-[80vh] w-full  flex-col   rounded-2xl border border-gray-300   p-2 shadow-sm   "
     >
  
         <div className=" z-10 mb-4 flex h-16 shrink-0 items-center border-b border-gray-100/80 bg-white py-3">
@@ -76,18 +76,18 @@ const AuraMainContent = ({
      
         <div className="h-full overflow-y-scroll ">
           {shouldShowImageLoader ? (
-            <div className="relative mx-auto aspect-[11/10] w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-sm max-lg:max-w-xs">
+            <div className="relative mx-auto aspect-[11/10] w-full max-w-xs overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-sm sm:max-w-sm md:max-w-md lg:max-h-[52vh] lg:max-w-lg xl:max-h-[58vh]">
               <div className="flex h-full w-full items-center justify-center text-sm font-semibold text-secondary">
                 Loading image...
               </div>
             </div>
           ) : imageSrc ? (
-            <div className="relative mx-auto aspect-[11/10] w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-sm max-lg:max-w-xs">
+            <div className="relative mx-auto aspect-[11/10] w-full max-w-xs overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-sm sm:max-w-sm md:max-w-md lg:max-h-[52vh] lg:max-w-lg xl:max-h-[58vh]">
               <div className="relative flex h-full w-full items-center justify-center">
                 <img
                   src={imageSrc}
                   alt="PreviewImage"
-                  className="h-full w-full object-contain"
+                  className="max-h-full max-w-full object-contain"
                 />
                 {Array.isArray(auraOverlayCoordinates) &&
                   auraOverlayCoordinates.map((item, index) => {
