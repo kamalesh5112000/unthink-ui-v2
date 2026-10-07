@@ -65,7 +65,7 @@ const ChatSuggestionsWithProducts = ({ wrapperClassName = "" }) => {
 							suggestion === selectedTag
 								? "bg-slate-400"
 								: checkIsTagEnabled(suggestion)
-								? "bg-lightgray-102"
+								? "bg-gray-100"
 								: "bg-white"
 						} ${
 							checkIsTagEnabled(suggestion)

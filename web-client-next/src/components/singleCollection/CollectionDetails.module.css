@@ -209,7 +209,7 @@
 
 .username {
   font-size: 16px;
-  color: #7C74EC;
+  color: var(--color-brand);
   font-weight: 600;
 }
 
@@ -310,7 +310,7 @@
   padding-right: 8px;
   padding-top: 4px;
   padding-bottom: 4px;
-  background-color: #7C74EC;
+  background-color: var(--color-brand);
   color: #ffffff;
   border-radius: 8px;
   font-size: 12px;
@@ -349,7 +349,7 @@
   padding: 0;
   padding-left: 4px;
   text-decoration: underline;
-  color: #7C74EC;
+  color: var(--color-brand);
   font-size: 16px;
   font-weight: 600;
 }
@@ -376,7 +376,7 @@
 .blogLinkAnchor {
   padding: 0;
   text-decoration: underline;
-  color: #7C74EC;
+  color: var(--color-brand);
 }
 
 .imageLookText {
@@ -467,7 +467,7 @@
   transition-property: transform;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
-  border-color: #7C74EC;
+  border-color: var(--color-brand);
   justify-content: center;
   font-size: 12px;
   font-weight: 600;
@@ -499,7 +499,7 @@
 
 .bannerBtn:hover {
   color: #ffffff;
-  background-color: #7C74EC;
+  background-color: var(--color-brand);
 }
 
 .publishBtn {
@@ -511,7 +511,7 @@
   transition-property: transform;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
-  border-color: #7C74EC;
+  border-color: var(--color-brand);
   justify-content: center;
   font-size: 12px;
   font-weight: 600;
@@ -543,7 +543,7 @@
 
 .publishBtn:hover {
   color: #ffffff;
-  background-color: #7C74EC;
+  background-color: var(--color-brand);
 }
 
 .featureButtonsRow {
@@ -572,7 +572,7 @@
   height: 28px;
   align-self: flex-end;
   color: #000000;
-  border-color: #7C74EC;
+  border-color: var(--color-brand);
 }
 
 @media (min-width: 640px) {
@@ -599,7 +599,7 @@
 
 .featureBtn:hover {
   color: #ffffff;
-  background-color: #7C74EC;
+  background-color: var(--color-brand);
 }
 
 .bannerLink {

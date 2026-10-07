@@ -435,7 +435,7 @@ const DeliveryDetails = () => {
                                   (attr, idx) => (
                                     <div
                                       key={idx}
-                                      className="inline-flex bg-support items-center px-3 py-1 rounded-md text-xs font-medium"
+                                      className="inline-flex bg-common items-center px-3 py-1 rounded-md text-xs font-medium"
                                       style={{
                                         //  boxShadow: `inset 8px -8px 12px rgba(0, 0, 0, 0.5),9px 9px 15px rgba(0, 0, 0, 0.3)`,
                                       }}
@@ -498,7 +498,7 @@ const DeliveryDetails = () => {
                               </button>
                             </div>
                             <button
-                              className="text-red hover:underline"
+                              className="text-danger hover:underline"
                               disabled={loading}
                               onClick={() => handleRemove(item?.mfr_code)}
                             >
@@ -634,9 +634,7 @@ const DeliveryDetails = () => {
               <div className="p-0">
                 <button
                   onClick={handleContinueClick}
-                  className={`text-white mt-5 w-full rounded-xl lg:h-13 h-11 ${
-                    hasKioskAccess ? "bg-kiosk-primary" : "bg-brand"
-                  }`}
+                  className="text-white mt-5 w-full rounded-xl lg:h-13 h-11 bg-brand"
                 >
                   Continue
                 </button>

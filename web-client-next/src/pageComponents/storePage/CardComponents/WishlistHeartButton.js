@@ -13,7 +13,7 @@ import { removeFromWishlist } from "../../wishlistActions/removeFromWishlist/red
 import { getTTid } from "../../../helper/getTrackerInfo";
 
 const DEFAULT_BUTTON_CLASS =
-  "box-border flex h-8 w-8 items-center justify-center rounded-full bg-white p-0 shadow-[0px_2px_12px_rgba(0,0,0,0.1)] min-[1000px]:transition-all min-[1000px]:duration-200 min-[1000px]:ease-in-out min-[1000px]:hover:bg-hover-light min-[1000px]:hover:shadow-[0px_4px_16px_rgba(0,0,0,0.15)] max-[1024px]:p-1";
+  "box-border flex h-8 w-8 items-center justify-center rounded-full bg-white p-0 shadow-[0px_2px_12px_rgba(0,0,0,0.1)] min-[1000px]:transition-all min-[1000px]:duration-200 min-[1000px]:ease-in-out min-[1000px]:hover:bg-gray-100 min-[1000px]:hover:shadow-[0px_4px_16px_rgba(0,0,0,0.15)] max-[1024px]:p-1";
 
 const WishlistHeartButton = ({
   isActive = false,
@@ -34,7 +34,7 @@ const WishlistHeartButton = ({
   store = current_store_name,
   containerClassName = "",
   buttonClassName = DEFAULT_BUTTON_CLASS,
-  activeIconClassName = "text-red",
+  activeIconClassName = "text-danger",
   inactiveIconClassName = "",
   title = "Add to wishlist",
   userLogin,

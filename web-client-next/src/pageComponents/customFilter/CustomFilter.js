@@ -88,7 +88,7 @@ export const CustomFilter = ({
 										<button
 											onClick={handleGoClick}
 											className='flex items-center justify-center text-white rounded-full w-9 h-9 cursor-pointer border-none transition-all hover:scale-105'
-											style={{ background: "linear-gradient(90deg, var(--color-secondary) 0%, #5a4af4 100%)", boxShadow: "0 2px 8px rgba(114, 104, 236, 0.3)" }}
+											style={{ background: "linear-gradient(90deg, var(--color-secondary) 0%, var(--color-brand) 100%)", boxShadow: "0 2px 8px rgba(114, 104, 236, 0.3)" }}
 											title='Apply hashtags'>
 											<CheckOutlined className='text-sm' />
 										</button>

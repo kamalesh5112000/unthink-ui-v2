@@ -80,7 +80,7 @@ const ProductMenuButton = ({
         className="absolute right-2.5 lg:right-4 top-10 z-10 mt-1.5 flex h-8 w-8 cursor-pointer
        items-center justify-center rounded-full bg-white p-1 
        text-2xl shadow-md transition-all duration-300 ease-in-out lg:top-12
-        lg:hover:bg-hover-light lg:hover:shadow-lg"
+        lg:hover:bg-gray-100 lg:hover:shadow-lg"
         onClick={(e) => {
             e.stopPropagation();
             setMenuIcon((prev) => !prev);
@@ -112,7 +112,7 @@ const ProductMenuButton = ({
                 setMenuIcon(false);
               }}
             >
-              <div className="mb-0 flex h-5 w-5 items-center justify-center rounded-full bg-support p-0.5 text-gray-dark lg:h-6 lg:w-6 lg:p-1 lg:text-2xl">
+              <div className="mb-0 flex h-5 w-5 items-center justify-center rounded-full bg-common p-0.5 text-gray-dark lg:h-6 lg:w-6 lg:p-1 lg:text-2xl">
                 <LuCopy className="max-md:h-3 max-md:w-3" />
               </div>
               <p className="mb-0 text-gray-dark">Copy</p>
@@ -126,8 +126,8 @@ const ProductMenuButton = ({
                 setMenuIcon(false);
               }}
             >
-              <p className="flex h-5 w-5 items-center justify-center rounded-lg bg-support text-gray-800 lg:h-6 lg:w-6">
-                <FiEdit className="h-4 w-4 bg-support text-gray-dark max-md:h-3 max-md:w-3" />
+              <p className="flex h-5 w-5 items-center justify-center rounded-lg bg-common text-gray-800 lg:h-6 lg:w-6">
+                <FiEdit className="h-4 w-4 bg-common text-gray-dark max-md:h-3 max-md:w-3" />
               </p>
               <p className="mb-0 text-gray-dark">Edit</p>
             </div>

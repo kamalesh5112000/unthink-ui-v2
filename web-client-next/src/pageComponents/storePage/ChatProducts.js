@@ -1,28 +1,26 @@
 import React, { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Checkbox, Tooltip, Upload, Spin } from "antd";
-import { ReloadOutlined, ArrowUpOutlined, ArrowLeftOutlined, SearchOutlined, CloudUploadOutlined, HistoryOutlined, PlusOutlined, MessageOutlined, FormOutlined, CloseOutlined, Loading3QuartersOutlined, MenuOutlined, FolderOutlined, CheckSquareOutlined } from "@ant-design/icons";
+import { Tooltip, Spin } from "antd";
+import { ArrowUpOutlined, HistoryOutlined, FormOutlined, CloseOutlined, Loading3QuartersOutlined, FolderOutlined } from "@ant-design/icons";
 
 import {
   openWishlistModal,
   setProductsToAddInWishlist,
 } from "../wishlist/redux/actions";
 import { handleRecProductClick } from "../recommendations/redux/actions";
-import ProductCard from "../../components/ProductCard";
-import AuraResponseProductsWithTags from "../auraResponseProductsWithTags/AuraResponseProductsWithTags";
 import { filterAvailableProductList, isEmpty } from "../../helper/utils";
 import { is_store_instance } from "../../constants/config";
 import {
   CHAT_TYPES_KEYS,
   CHAT_TYPE_CHAT,
   CHAT_SEARCH_OPTION_ID,
-  WISHLIST_TITLE,
 } from "../../constants/codes";
-import AuraResponseShopALook from "../auraResponseShopALook/AuraResponseShopALook";
 import { setSuggestionsSelectedTag } from "../../hooks/chat/redux/actions";
 import styles from "./ChatProducts.module.css";
 import AuraInputBox from "./AuraInputBox";
-import { FiRefreshCw } from 'react-icons/fi';
+import AuraProductsPanel from "./aura/components/AuraProductsPanel";
+import AuraSideNav from "./aura/components/AuraSideNav";
+import AuraMainContent from "./aura/components/AuraMainContent";
 
 const ChatProducts = ({
   enableClickFetchRec,
@@ -37,21 +35,12 @@ const ChatProducts = ({
   inputRef,
   handleInputChange,
   handlePromptKeyDown,
-  isFigmaUploadPanelOpen,
-  handleFigmaUploadButtonClick,
-  isShowSubmittedChatPreview,
-  handlePromptUtilityClick,
-  isShopALookOptionActive,
   handleSubmitChatInput,
   isShowFollowUpSearch,
-  isSidExpired,
   isFollowUpQuery,
-  handleFollowUpSearch,
   isShowTryAgain,
   showChatLoader,
   handleTryAgainClick,
-  upload_icon,
-  page_info,
   uploadImageProps,
   chatImagePreviewUrl,
   isUploadingImage,
@@ -62,8 +51,6 @@ const ChatProducts = ({
   closeChatModal,
   onOpenSearchPopup,
   isMobile,
-  mobileTab,
-  followUpQuery,
   regenarateImage,
   handleRegenrateImage,
   handleChangeImageConfirm,
@@ -108,7 +95,6 @@ const ChatProducts = ({
     state.store.data,
     state.chatV2.chatHistory,
   ]);
-  // console.log('chatHistory',chatHistory);
 
   const [enableSelectProduct, setEnableSelectProduct] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -118,10 +104,8 @@ const ChatProducts = ({
   const containerRef = useRef(null);
   const [showScrollBtn, setShowScrollBtn] = useState(false);
 
-  const [hasScrolledToProducts, setHasScrolledToProducts] = useState(false);
   const [isSwipeDrawerOpen, setIsSwipeDrawerOpen] = useState(false);
 
-  // Touch gesture state variables for opening drawer
   const [touchStartX, setTouchStartX] = useState(null);
   const [touchEndX, setTouchEndX] = useState(null);
 
@@ -143,7 +127,6 @@ const ChatProducts = ({
     setTouchEndX(null);
   };
 
-  // Touch gesture state variables for closing drawer
   const [drawerTouchStartX, setDrawerTouchStartX] = useState(null);
   const [drawerTouchEndX, setDrawerTouchEndX] = useState(null);
 
@@ -165,7 +148,6 @@ const ChatProducts = ({
     setDrawerTouchEndX(null);
   };
 
-  // Expose setIsMobileSidebarOpen via the onOpenMobileSidebar prop reference
   useEffect(() => {
     if (onOpenMobileSidebar) {
       onOpenMobileSidebar.current = () => setIsMobileSidebarOpen(true);
@@ -204,9 +186,6 @@ const ChatProducts = ({
       }
 
       setShowScrollBtn(shouldShow);
-      if (shouldShow && scrollYPos > 100) {
-        setHasScrolledToProducts(true);
-      }
     };
 
     const scrollContainers = [];
@@ -234,27 +213,27 @@ const ChatProducts = ({
     };
   }, [isMobile]);
 
-  const handleScrollToDescription = () => {
-    const descElement = document.getElementById("aura-description-section");
-    if (descElement) {
-      let scrollContainer = null;
-      let parent = descElement.parentElement;
-      while (parent) {
-        const overflowY = window.getComputedStyle(parent).overflowY;
-        if (overflowY === "auto" || overflowY === "scroll") {
-          scrollContainer = parent;
-          break;
-        }
-        parent = parent.parentElement;
-      }
+  // const handleScrollToDescription = () => {
+  //   const descElement = document.getElementById("aura-description-section");
+  //   if (descElement) {
+  //     let scrollContainer = null;
+  //     let parent = descElement.parentElement;
+  //     while (parent) {
+  //       const overflowY = window.getComputedStyle(parent).overflowY;
+  //       if (overflowY === "auto" || overflowY === "scroll") {
+  //         scrollContainer = parent;
+  //         break;
+  //       }
+  //       parent = parent.parentElement;
+  //     }
 
-      if (scrollContainer) {
-        scrollContainer.scrollTo({ top: 0, behavior: "smooth" });
-      } else {
-        descElement.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }
-  };
+  //     if (scrollContainer) {
+  //       scrollContainer.scrollTo({ top: 0, behavior: "smooth" });
+  //     } else {
+  //       descElement.scrollIntoView({ behavior: "smooth", block: "start" });
+  //     }
+  //   }
+  // };
 
   const handleScrollToTop = () => {
     const tagsContainer = document.getElementById("aura-response-products-with-tags-container");
@@ -277,23 +256,6 @@ const ChatProducts = ({
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
-  // const [pastChats, setPastChats] = useState(() => {
-  //   if (typeof window !== "undefined") {
-  //     try {
-  //       const stored = localStorage.getItem("unthink_aura_past_chats");
-  //       if (stored) {
-  //         const parsed = JSON.parse(stored);
-  //         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-  //       }
-  //     } catch (e) {}
-  //   }
-  //   return [
-  //     { id: "1", text: "Minimalist modular velvet sofa", timestamp: "10 mins ago" },
-  //     { id: "2", text: "Scandinavian oak dining table with chairs", timestamp: "2 hours ago" },
-  //     { id: "3", text: "Abstract ceramic accent vases", timestamp: "1 day ago" },
-  //     { id: "4", text: "Boho woven hanging light fixtures", timestamp: "3 days ago" },
-  //   ];
-  // });
 
   const handleSelectPastChat = (chatText) => {
     if (handleInputChange) {
@@ -302,36 +264,13 @@ const ChatProducts = ({
     setIsHistoryOpen(false);
   };
 
-  // useEffect(() => {
-  //   if (showChatLoader && localChatMessage && typeof localChatMessage === "string") {
-  //     const trimmed = localChatMessage.trim();
-  //     if (trimmed) {
-  //       setPastChats((prev) => {
-  //         if (prev.some((c) => c.text.toLowerCase() === trimmed.toLowerCase())) {
-  //           return prev;
-  //         }
-  //         const updated = [
-  //           { id: Date.now().toString(), text: trimmed, timestamp: "Just now" },
-  //           ...prev,
-  //         ].slice(0, 15);
-  //         if (typeof window !== "undefined") {
-  //           try {
-  //             localStorage.setItem("unthink_aura_past_chats", JSON.stringify(updated));
-  //           } catch (e) {}
-  //         }
-  //         return updated;
-  //       });
-  //     }
-  //   }
-  // }, [showChatLoader, localChatMessage]);
-
   const dispatch = useDispatch();
 
   const handleSuggestionClick = (tag) => {
     if (suggestionsWithProducts?.suggestions?.tags?.includes(tag)) {
       dispatch(setSuggestionsSelectedTag(tag));
     }
-    // Scroll to the tag div
+
     const tagElement = document.getElementById(`tag-${tag}`);
     if (tagElement) {
       tagElement.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -340,29 +279,10 @@ const ChatProducts = ({
 
   const originalWidth = 1024;
   const originalHeight = 1027;
-  const newWidth = 404;
-  const newHeight = 400;
-
-  // const { sendMessage } = useChat();
 
   const onProductClick = () => {
     if (enableClickFetchRec) dispatch(handleRecProductClick());
   };
-
-  //scroll on top when new data searched
-  // useEffect(() => {
-  // 	if (!showChatLoader) {
-  // 		const parentContainer = document.querySelector(
-  // 			".chat-product-data-container"
-  // 		);
-  // 		parentContainer?.scrollTo({ top: 0, behavior: "smooth" });
-  // 	}
-  // }, [showChatLoader]);
-
-  // const onAuraSuggestionChipClick = (message, metadata) => {
-  // 	// dispatch(setChatMessage(message));
-  // 	sendMessage(message, metadata);
-  // };
 
   const NEW_AURA_PRODUCTS_UI_ENABLED = useMemo(() => true, []);
 
@@ -371,7 +291,7 @@ const ChatProducts = ({
       filterAvailableProductList(
         isEmpty(suggestionsWithProducts.suggestions) ? chatProductsData : [],
       ),
-    [suggestionsWithProducts.suggestions, chatProductsData, authUser.user_name],
+    [suggestionsWithProducts.suggestions, chatProductsData],
   );
 
   const isTagAvailable = useMemo(
@@ -430,15 +350,11 @@ const ChatProducts = ({
       chatProductsData,
     ],
   );
-  // console.log('shouldShowShopLookSplitLayout',shouldShowShopLookSplitLayout);
-
 
   const shopLookPreviewImage = useMemo(
     () => widgetImage || chatImageUrl || products?.image_url || "",
     [widgetImage, chatImageUrl, products?.image_url],
   );
-  // console.log(shopLookPreviewImage);
-
 
   const shopLookKeywords = useMemo(
     () => (suggestionsWithProducts?.suggestions?.tags || []).slice(0, 6),
@@ -446,7 +362,6 @@ const ChatProducts = ({
   );
 
   const handleResetSelectProduct = useCallback(
-    // reset select product feature // unselect every products
     () => {
       setEnableSelectProduct(false);
       setSelectedProducts([]);
@@ -456,9 +371,8 @@ const ChatProducts = ({
 
   useEffect(() => {
     handleResetSelectProduct();
-    setHasScrolledToProducts(false);
     setIsSwipeDrawerOpen(false);
-  }, [chatProductsDataToShow, activeSearchOption]);
+  }, [chatProductsDataToShow, activeSearchOption, handleResetSelectProduct]);
 
   const onSelectProductClick = (mfr_code) => {
     if (selectedProducts.includes(mfr_code)) {
@@ -468,15 +382,15 @@ const ChatProducts = ({
     }
   };
 
-  const onSelectAllChange = () => {
+  const onSelectAllChange = useCallback(() => {
     setSelectedProducts(
       selectedProducts.length < chatProductsDataToShow.length
         ? chatProductsDataToShow.map((i) => i.mfr_code)
         : [],
     );
-  };
+  }, [chatProductsDataToShow, selectedProducts.length]);
 
-  const onAddSelectedProductsToCollection = () => {
+  const onAddSelectedProductsToCollection = useCallback(() => {
     const SelectedProductsData = chatProductsDataToShow.filter((p) =>
       selectedProducts.includes(p.mfr_code),
     );
@@ -484,7 +398,7 @@ const ChatProducts = ({
     dispatch(setProductsToAddInWishlist(SelectedProductsData));
     dispatch(openWishlistModal());
     handleResetSelectProduct();
-  };
+  }, [chatProductsDataToShow, dispatch, handleResetSelectProduct, selectedProducts]);
 
   useEffect(() => {
     if (!NEW_AURA_PRODUCTS_UI_ENABLED && registerSelectActions) {
@@ -496,9 +410,7 @@ const ChatProducts = ({
         handleResetSelectProduct,
         setEnableSelectProduct,
         onSelectAllChange,
-        onAddSelectedProductsToCollection: (e, options) => {
-          onAddSelectedProductsToCollection();
-        },
+        onAddSelectedProductsToCollection,
       });
     }
   }, [
@@ -506,19 +418,12 @@ const ChatProducts = ({
     enableSelectProduct,
     selectedProducts,
     chatProductsDataToShow,
-    is_store_instance,
     handleResetSelectProduct,
     onSelectAllChange,
     onAddSelectedProductsToCollection,
     registerSelectActions,
   ]);
 
-  const scrollToCollectionsContainer = () => {
-    const collection = document.getElementById("chat_shop_a_look_container");
-    if (collection) {
-      collection.scrollIntoView({ behavior: "smooth" });
-    }
-  };
   const onWishlistClick = () => {
     dispatch(openWishlistModal());
   };
@@ -530,110 +435,20 @@ const ChatProducts = ({
       products.scrollIntoView({ behavior: "smooth" });
     }
   };
-  // console.log('showChatLoader',showChatLoader);
- 
-  const AuraSideNav = () => (
-    <div className={styles["aura-sidenav"]}>
-      <div className="h-[60px] flex items-center justify-center w-full shrink-0 text-[#4c5672] hover:text-secondary">
-        <ArrowLeftOutlined
-          className="cursor-pointer text-2xl"
-          onClick={handleGoBack}
-        />
-      </div>
-      <div className="flex-1 flex flex-col gap-8 items-center w-full justify-center">
-        <div
-          className="flex flex-col items-center gap-1.5 cursor-pointer text-[#1a1a1a] transition-all duration-200 ease-in-out py-2 w-full relative hover:bg-[#f8f7ff] hover:text-secondary"
-          onClick={handleChangeImageConfirm}
-          title="New Chat"
-        >
-          <FormOutlined className="text-[20px]" />
-          <span className="text-[10px] font-semibold text-center capitalize">New Chat</span>
-        </div>
-        <div
-          className="flex flex-col items-center gap-2 py-2 w-full relative select-none"
-          title="Switch Layout"
-        >
-          <div className="flex items-center bg-[#f1f5f9] p-[3px] rounded-xl border border-slate-200 shadow-inner gap-[2px] w-[64px] h-[32px] justify-between">
-            <button
-              onClick={() => setLayoutMode("left")}
-              className={`w-[18px] h-[26px] rounded-[8px] transition-all duration-200 flex items-center justify-center cursor-pointer ${layoutMode === "left"
-                ? "bg-white shadow-[0_2px_8px_rgba(0,0,0,0.12)] text-[#4F46E5]"
-                : "bg-transparent hover:bg-slate-200/60 text-slate-400 hover:text-slate-600"
-                }`}
-              title="Left View"
-            >
-              <div className="w-[13px] h-[10px] border-[1.5px] border-current rounded-[2px] flex overflow-hidden">
-                <div className={`w-[7px] h-full border-r-[1.5px] border-current ${layoutMode === "left" ? "bg-current opacity-20" : ""}`} />
-                <div className="flex-1 h-full" />
-              </div>
-            </button>
-            <button
-              onClick={() => setLayoutMode("both")}
-              className={`w-[18px] h-[26px] rounded-[8px] transition-all duration-200 flex items-center justify-center cursor-pointer ${layoutMode === "both"
-                ? "bg-white shadow-[0_2px_8px_rgba(0,0,0,0.12)] text-[#4F46E5]"
-                : "bg-transparent hover:bg-slate-200/60 text-slate-400 hover:text-slate-600"
-                }`}
-              title="Split View"
-            >
-              <div className="w-[13px] h-[10px] border-[1.5px] border-current rounded-[2px] flex overflow-hidden">
-                <div className={`w-[5.5px] h-full border-r-[1.5px] border-current ${layoutMode === "both" ? "bg-current opacity-20" : ""}`} />
-                <div className={`flex-1 h-full ${layoutMode === "both" ? "bg-current opacity-20" : ""}`} />
-              </div>
-            </button>
-            <button
-              onClick={() => setLayoutMode("right")}
-              className={`w-[18px] h-[26px] rounded-[8px] transition-all duration-200 flex items-center justify-center cursor-pointer ${layoutMode === "right"
-                ? "bg-white shadow-[0_2px_8px_rgba(0,0,0,0.12)] text-[#4F46E5]"
-                : "bg-transparent hover:bg-slate-200/60 text-slate-400 hover:text-slate-600"
-                }`}
-              title="Right View"
-            >
-              <div className="w-[13px] h-[10px] border-[1.5px] border-current rounded-[2px] flex overflow-hidden">
-                <div className="w-[4.5px] h-full border-r-[1.5px] border-current" />
-                <div className={`flex-1 h-full ${layoutMode === "right" ? "bg-current opacity-20" : ""}`} />
-              </div>
-            </button>
-          </div>
-          <span className="text-[10px] font-semibold text-center capitalize text-[#1a1a1a]">Split</span>
-        </div>
-        <div
-          className="flex flex-col items-center gap-1.5 cursor-pointer text-[#1a1a1a] transition-all duration-200 ease-in-out py-2 w-full relative hover:bg-[#f8f7ff] hover:text-secondary"
-          onClick={onWishlistClick}
-          title="Collections"
-        >
-          <FolderOutlined className="text-[20px]" />
-          <span className="text-[10px] font-semibold text-center capitalize">Collections</span>
-        </div>
-        <div
-          className="flex flex-col items-center gap-1.5 cursor-pointer text-[#1a1a1a] transition-all duration-200 ease-in-out py-2 w-full relative hover:bg-[#f8f7ff] hover:text-secondary"
-          onClick={() => setIsHistoryOpen(true)}
-          title="History"
-        >
-          <HistoryOutlined className="text-[20px]" />
-          <span className="text-[10px] font-semibold text-center capitalize">History</span>
-        </div>
-      </div>
-      <div className="h-[60px] flex items-center justify-center w-full shrink-0 text-[#4c5672]" />
-    </div>
-  );
 
-  // Mobile sidebar drawer - shown on mobile/tablet when hamburger is tapped
   const MobileSideDrawer = () => (
     <>
-      {/* Backdrop */}
       {isMobileSidebarOpen && (
         <div
           className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[1000]"
           onClick={() => setIsMobileSidebarOpen(false)}
         />
       )}
-      {/* Drawer */}
       <div
         className={`fixed top-0 left-0 h-full z-[1001] bg-white flex flex-col transition-transform duration-300 ease-in-out ${isMobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         style={{ width: "260px", boxShadow: "4px 0 24px rgba(114,104,236,0.12)" }}
       >
-        {/* Drawer Header */}
         <div className="flex items-center justify-between px-5 py-5 border-b border-[#f0eeff]">
           <span className="text-secondary font-bold text-lg tracking-wide">Menu</span>
           <CloseOutlined
@@ -641,7 +456,6 @@ const ChatProducts = ({
             onClick={() => setIsMobileSidebarOpen(false)}
           />
         </div>
-        {/* Drawer Items */}
         <div className="flex flex-col gap-2 py-4 flex-1">
           <div
             className="flex items-center gap-4 px-5 py-4 cursor-pointer text-[#1a1a1a] hover:bg-[#f8f7ff] hover:text-secondary transition-all"
@@ -669,208 +483,17 @@ const ChatProducts = ({
     </>
   );
 
-  const productsResultsContent = (
-    <>
-      {showChatLoader && chatProductsDataToShow.length === 0 && isEmpty(suggestionsWithProducts.suggestions) && !NEW_AURA_PRODUCTS_UI_ENABLED && (
-        <div className="flex flex-col items-center justify-center w-full py-20 gap-4 animate-pulse">
-          <Spin
-            indicator={
-              <Loading3QuartersOutlined
-                style={{ fontSize: 36, color: "var(--color-secondary)" }}
-                spin
-              />
-            }
-          />
-          <span className="text-secondary font-semibold text-sm tracking-wide">
-            Searching products...
-          </span>
-        </div>
-      )}
-
-      {!isEmpty(shopALookData) &&
-        isTagAvailable &&
-        !isBTNormalUserLoggedIn &&
-        !shouldShowShopLookSplitLayout ? (
-        <div className={styles["chat-products-nav-container"]}>
-          <div
-            className={`${styles["chat-products-nav-item"]} ${styles["chat-products-nav-item-active"]}`}
-            onClick={scrollToProductsContainer}
-          >
-            Products
-          </div>
-          <div
-            className={styles["chat-products-nav-item"]}
-            onClick={onWishlistClick}
-          >
-            Collections
-          </div>
-        </div>
-      ) : null}
-
-      {NEW_AURA_PRODUCTS_UI_ENABLED ? (
-        <>
-          <AuraResponseProductsWithTags
-            handleLoadMore={handleLoadMore}
-            enableClickFetchRec={enableClickFetchRec}
-            enableClickTracking={enableClickTracking}
-            trackCollectionCampCode={trackCollectionCampCode}
-            trackCollectionId={trackCollectionId}
-            trackCollectionName={trackCollectionName}
-            trackCollectionICode={trackCollectionICode}
-            chatTypeKey={chatTypeKey}
-            widgetHeader={widgetHeader}
-            widgetImage={widgetImage}
-            isAuraChatPage={isAuraChatPage}
-            localChatMessage={localChatMessage}
-            showTitle={!shouldShowShopLookSplitLayout}
-            layoutMode={shouldShowShopLookSplitLayout ? layoutMode : "full"}
-            showChatLoader={showChatLoader}
-            isMobile={isMobile}
-            registerSelectActions={registerSelectActions}
-            handleGoBack={handleGoBack}
-            isProductSearchOptionActive={isProductSearchOptionActive}
-          />
-        </>
-      ) : null}
-
-      {!isBTNormalUserLoggedIn && !shouldShowShopLookSplitLayout ? (
-        <>
-          <AuraResponseShopALook
-            enableClickFetchRec={enableClickFetchRec}
-            enableClickTracking={enableClickTracking}
-            trackCollectionCampCode={trackCollectionCampCode}
-            trackCollectionId={trackCollectionId}
-            trackCollectionName={trackCollectionName}
-            trackCollectionICode={trackCollectionICode}
-          />
-        </>
-      ) : null}
-
-      {chatProductsDataToShow.length ? (
-        <div>
-          {isUserLogin && !isMobile ? (
-            <div className={styles["chat-products-selection-controls"]}>
-              {enableSelectProduct ? (
-                <div className={styles["chat-products-selected-items"]}>
-                  <button
-                    type="button"
-                    className={styles["chat-products-select-all-button"]}
-                    onClick={onSelectAllChange}
-                    title="Select all products"
-                  >
-                    <Checkbox
-                      indeterminate={
-                        selectedProducts.length > 0 &&
-                        selectedProducts.length < chatProductsDataToShow.length
-                      }
-                      onChange={onSelectAllChange}
-                      checked={
-                        selectedProducts.length ===
-                        chatProductsDataToShow.length
-                      }
-                      onClick={(event) => event.stopPropagation()}
-                    />
-                    <span>{selectedProducts.length} Selected</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={
-                      selectedProducts.length
-                        ? onAddSelectedProductsToCollection
-                        : undefined
-                    }
-                    className={`${styles["chat-products-action-text"]} ${selectedProducts.length
-                      ? styles["chat-products-action-button"]
-                      : styles["chat-products-action-button-disabled"]
-                      }`}
-                    title="Click to add selected products in collection"
-                    disabled={!selectedProducts.length}
-                  >
-                    Add to {WISHLIST_TITLE}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => handleResetSelectProduct()}
-                    className={`${styles["chat-products-action-text"]} ${styles["chat-products-action-button"]}`}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              ) : (
-                <button
-                  type="button"
-                  className={styles["chat-products-select-prompt"]}
-                  onClick={() => setEnableSelectProduct(true)}
-                  title="Click and select multiple products to add to collection"
-                >
-                  <CheckSquareOutlined />
-                  <span>Select Products</span>
-                </button>
-              )}
-            </div>
-          ) : null}
-
-          <div
-            id="chat_products_inner_content"
-            className={`${styles["chat-products-grid"]} ${shouldShowShopLookSplitLayout ? styles["chat-products-grid-split"] : ""}`}
-          >
-            {chatProductsDataToShow.map((product) => (
-              <React.Fragment key={product.mfr_code}>
-                <ProductCard
-                  product={product}
-                  onProductClick={onProductClick}
-                  enableClickTracking={enableClickTracking}
-                  productClickParam={{
-                    iCode: authUser.influencer_code,
-                    campCode: trackCollectionCampCode,
-                    collectionId: trackCollectionId,
-                    collectionName: trackCollectionName,
-                    collectionICode: trackCollectionICode,
-                  }}
-                  hideAddToWishlist={is_store_instance && !isUserLogin}
-                  enableSelect={enableSelectProduct}
-                  isSelected={selectedProducts.includes(product.mfr_code)}
-                  setSelectValue={() => onSelectProductClick(product.mfr_code)}
-                  localChatMessage={localChatMessage}
-                  auramodel={true}
-                />
-              </React.Fragment>
-            ))}
-          </div>
-        </div>
-      ) : null}
-    </>
-  );
-  // useEffect(()=>{
-
-  // },[auraServerImage])
-  // console.log(storeData?.plan_settings?.image_generate?.is_enable && (auraServerImage === '' || auraServerImage === null)  && isImageLoading && !regenarateImage   );
-  // debugger  
-
   return (
     <div
       ref={containerRef}
       id="chat_products_inner_container"
       className={`${styles["chat-products-container"]} ${!shouldShowShopLookSplitLayout ? styles["chat-products-container-single"] : ""}`}
     >
-      {/* Mobile slide-in sidebar drawer */}
       {isMobile && <MobileSideDrawer />}
       <div
         id="chat_products_content"
         className={styles["chat-products-content"]}
       >
-        {/* <div
-					id='chat_product_back_icon'
-					className='mb-6 max-w-max flex items-center cursor-pointer z-10'
-					onClick={() => dispatch(setShowChatModal(false))}>
-					<ArrowLeftOutlined className='text-base text-purple-101 pr-3 flex' />
-					<span className='text-base text-purple-101'>
-						Back
-						// {` ${backToText}`}
-					</span>
-				</div> */}
-
         {!shouldShowShopLookSplitLayout &&
           (products.widgetHeader ? (
             <div className={styles["chat-products-header"]}>
@@ -886,6 +509,7 @@ const ChatProducts = ({
                 {products.image_url ? (
                   <img
                     src={products.image_url}
+                    alt={products.text || "Product"}
                     className={styles["chat-products-image"]}
                   />
                 ) : null}
@@ -911,26 +535,9 @@ const ChatProducts = ({
             </div>
           ) : (
             <>
-              {/* {widgetHeader ? (
-							<h1
-								id='current_data_widgetHeader'
-								className='text-black-102 text-base lg:text-lg'
-								dangerouslySetInnerHTML={{ __html: widgetHeader }}
-							/>
-						) : null} */}
-
               <div className={styles["chat-products-content-wrapper"]}>
-                {/* {widgetImage ? (
-								<img
-									id='current_data_widgetHeader_image_url'
-									src={widgetImage}
-									width={208}
-									className='rounded-2xl h-content m-auto'
-								/>
-							) : null} */}
                 {widgetHeader ? (
                   <div id="current_data_widgetHeader">
-                    {/* Description Loading - SINGLE LAYOUT VIEW */}
                     {showChatLoader ? (
                       <div className="flex flex-col items-center justify-center py-4 gap-2 animate-pulse w-full">
                         <Spin
@@ -961,296 +568,154 @@ const ChatProducts = ({
 
         {shouldShowShopLookSplitLayout ? (
           <div className={`${styles["chat-products-shop-look-wrapper"]} flex flex-col lg:flex-row`}>
-            <AuraSideNav />
-            <div className={`${styles["chat-products-shop-look-layout"]} ${styles[`layout-${layoutMode}`]} ${isMobile ? styles["chat-products-mobile-layout"] : ""}`}>
-              <div
-                id="aura-description-section"
-                className={styles["chat-products-shop-look-sidebar"]}
-              >
-                {!isMobile && (
-                  <div className={styles["chat-products-sidebar-header"]}>
-                    <h2 className={styles["chatmodal-category-title"]}>
-                      {activeSearchOption?.title?.toUpperCase()}
-                    </h2>
-                  </div>
-                )}
-                <div className={`${styles["chat-products-sidebar-body"]} flex flex-col gap-2`}>
-
-                  <div>
-                    <div className={styles["chat-products-shop-look-sidebar-content"]}>
-                      {chatHistory.length >= 2 &&
-                        <div className="flex items-center gap-1 mb-3 ml-2  ">
-                          <HistoryOutlined />
-                          <p>{chatHistory[chatHistory.length - 2]}</p>
-                        </div>
-                      }
-                      {storeData?.plan_settings?.image_generate?.is_enable && (auraServerImage === '' || auraServerImage === null) && isImageLoading && !regenarateImage ? (
-                        <div className={styles["chat-products-shop-look-image-wrapper"]}>
-                          <div className={styles["chat-products-image-loading-box"]}>
-                            <span>Loading image...</span>
-                          </div>
-                        </div>
-                      ) : auraServerImage ? (
-                        <div
-                          className={`${styles["chat-products-shop-look-image-wrapper"]} `}
-                        >
-                          <div
-                            className={`${styles["chat-products-shop-look-image-inner"]} block`}
-                          >
-                            <img
-                              src={auraServerImage}
-                              alt="PreviewImage"
-                              className={`${styles["chat-products-shop-look-image"]}`}
-                            />
-                            {Array.isArray(auraOverlayCoordinates) &&
-                              auraOverlayCoordinates.map((item, index) => {
-                                const leftPercent =
-                                  (item.point[0] / originalWidth) * 100;
-                                const topPercent =
-                                  (item.point[1] / originalHeight) * 100;
-                                return (
-                                  <Tooltip
-                                    key={index}
-                                    title={item.attributes.label}
-                                    color="blue"
-                                  >
-                                    <div
-                                      onClick={() =>
-                                        handleSuggestionClick(item.attributes.label)
-                                      }
-                                      className={styles["chat-products-overlay-point"]}
-                                      style={{
-                                        left: `${leftPercent}%`,
-                                        top: `${topPercent}%`,
-                                      }}
-                                    />
-                                  </Tooltip>
-                                );
-                              })}
-                          </div>
-                        </div>
-                      ) : null}
-                      {isFollowUpQuery &&
-                        isShowFollowUpSearch && chatHistory.length >= 2 && (shopLookPreviewImage || auraServerImage) &&
-                        regenarateImage ? (
-                        <button
-                          className="chatmodal-figma-change-btn"
-                          onClick={handleRegenrateImage}
-                        >
-                          <ReloadOutlined />
-                          Regenerate Image
-                        </button>
-                      ) : null}
-                      {(widgetHeader || shopLookKeywords.length > 0) ? (
-                        <div>
-                          {widgetHeader ? (
-                            <div
-                              className={
-                                styles["chat-products-shop-look-description-block"]
-                              }
-                            >
-                              {/* Description Loading - SPLIT VIEW LAYOUT (Desktop/Tablet Side-by-Side) */}
-                              {showChatLoader ? (
-                                <div className="flex flex-col items-center justify-center py-6 gap-3 animate-pulse w-full">
-                                  <Spin
-                                    indicator={
-                                      <Loading3QuartersOutlined
-                                        style={{ fontSize: 24, color: "var(--color-secondary)" }}
-                                        spin
-                                      />
-                                    }
-                                  />
-                                  <span className="text-secondary font-medium text-sm tracking-wide">
-                                    Loading new description...
-                                  </span>
-                                </div>
-                              ) : (
-                                <div
-                                  className={`${styles["chat-products-shop-look-description-text"]} ${!isDescriptionExpanded
-                                    ? (!shopLookPreviewImage && !auraServerImage
-                                      ? styles["chat-products-description-collapsed-no-image"]
-                                      : styles["chat-products-description-collapsed"])
-                                    : ""}`}
-                                  dangerouslySetInnerHTML={{ __html: widgetHeader }}
-                                />
-                              )}
-                              <div className="flex flex-col items-start gap-0">
-                                {!showChatLoader && widgetHeader?.length > 80 && (
-                                  <button
-                                    className={styles["chat-products-read-more-btn"]}
-                                    onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
-                                  >
-                                    {isDescriptionExpanded ? "Read Less" : "Read More"}
-                                  </button>
-                                )}
-
-                                {shopLookKeywords.length && layoutMode === 'left' ? (
-                                  <div
-                                    className={`${styles["chat-products-shop-look-keywords"]} mt-1 mb-2`}
-                                  >
-                                    {shopLookKeywords.map((keyword) => (
-                                      <span
-                                        key={keyword}
-                                        className={
-                                          styles["chat-products-shop-look-keyword-chip"]
-                                        }
-                                      >
-                                        {keyword}
-                                      </span>
-                                    ))}
-                                  </div>
-                                ) : null}
-                                <div className=" w-full hidden">
-
-                                  {isShowTryAgain && (
-                                    <div className="w-full md:w-72 m-auto">
-                                      <div className="bg-purple-50 rounded-2xl border border-purple-200 p-6 flex flex-col items-center text-center">
-                                        <p className="text-slate-700 font-medium text-base">
-                                          Need different suggestions?
-                                        </p>
-
-                                        {/* <Tooltip title="Regenerate the products with AI."> */}
-                                        <button
-                                          type="button"
-                                          onClick={handleTryAgainClick}
-                                          disabled={showChatLoader}
-                                          className="mt-4 bg-secondary hover:bg-brand text-white rounded-full px-6 py-3 flex items-center justify-center gap-2 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                                        >
-                                          <FiRefreshCw className="w-5 h-5" />
-                                          <span>Regenerate with AI</span>
-                                        </button>
-                                        {/* </Tooltip> */}
-                                      </div>
-                                    </div>
-                                  )}
-                                </div>
-
-                              </div>
-                            </div>
-                          ) : null}
-
-                          {shouldMoveInputBelowResults ? (
-                            <div className="mt-4 mb-2">
-                              <AuraInputBox
-                                isShowTryAgain={isShowTryAgain}
-                                showChatLoader={showChatLoader}
-                                handleTryAgainClick={handleTryAgainClick}
-                                handleGoBack={handleGoBack}
-                                isShopByThemeOptionActive={isShopByThemeOptionActive}
-                                isCompleteTheLookOptionActive={isCompleteTheLookOptionActive}
-                                uploadImageProps={uploadImageProps}
-                                chatImageUrl={chatImageUrl}
-                                chatImagePreviewUrl={chatImagePreviewUrl}
-                                isUploadingImage={isUploadingImage}
-                                handleClearChatImage={handleClearChatImage}
-                                activeSearchOption={activeSearchOption}
-                                chatTypeKey={chatTypeKey}
-                                inputRef={inputRef}
-                                localChatMessage={localChatMessage}
-                                handleInputChange={handleInputChange}
-                                handlePromptKeyDown={handlePromptKeyDown}
-                                handlePromptUtilityClick={handlePromptUtilityClick}
-                                page_info={page_info}
-                                isShopALookOptionActive={isShopALookOptionActive}
-                                handleSubmitChatInput={handleSubmitChatInput}
-                                setIsHistoryOpen={setIsHistoryOpen}
-                                followUpQuery={followUpQuery}
-                                hideActions={!isMobile && shouldShowShopLookSplitLayout}
-                                chatHistory={chatHistory}
-                                isFollowUpQuery={isFollowUpQuery}
-                                isMobile={isMobile}
-                              />
-                            </div>
-                          ) : null}
-                        </div>
-                      ) : null}
-                    </div>
-                  </div>
-                </div>
-
+            <AuraSideNav
+              chatHistory={chatHistory}
+              handleChangeImageConfirm={handleChangeImageConfirm}
+              handleSelectPastChat={handleSelectPastChat}
+              isHistoryOpen={isHistoryOpen}
+              layoutMode={layoutMode}
+              onWishlistClick={onWishlistClick}
+              setIsHistoryOpen={setIsHistoryOpen}
+              setLayoutMode={setLayoutMode}
+            />
+            <div
+              className={`flex w-full flex-col gap-4 lg:grid lg:items-stretch lg:gap-6 lg:flex-1 lg:min-h-0 lg:overflow-hidden lg:pb-0 ${layoutMode === "both" ? "lg:grid-cols-[minmax(340px,35%)_minmax(0,1fr)] xl:grid-cols-[minmax(400px,39%)_minmax(0,1fr)]" : "lg:grid-cols-1"} ${layoutMode === "left" ? "lg:px-48" : ""}`}
+            >
+              <div className={layoutMode === "right" ? "hidden" : ""}>
+                <AuraMainContent
+                  activeSearchOption={activeSearchOption}
+                  auraOverlayCoordinates={auraOverlayCoordinates}
+                  auraServerImage={auraServerImage}
+                  chatHistory={chatHistory}
+                  chatImagePreviewUrl={chatImagePreviewUrl}
+                  chatImageUrl={chatImageUrl}
+                  chatTypeKey={chatTypeKey}
+                  handleClearChatImage={handleClearChatImage}
+                  handleInputChange={handleInputChange}
+                  handlePromptKeyDown={handlePromptKeyDown}
+                  handleRegenrateImage={handleRegenrateImage}
+                  handleSubmitChatInput={handleSubmitChatInput}
+                  handleSuggestionClick={handleSuggestionClick}
+                  handleTryAgainClick={handleTryAgainClick}
+                  inputRef={inputRef}
+                  isDescriptionExpanded={isDescriptionExpanded}
+                  isFollowUpQuery={isFollowUpQuery}
+                  isImageLoading={isImageLoading}
+                  isShowFollowUpSearch={isShowFollowUpSearch}
+                  isShowTryAgain={isShowTryAgain}
+                  isUploadingImage={isUploadingImage}
+                  layoutMode={layoutMode}
+                  localChatMessage={localChatMessage}
+                  originalHeight={originalHeight}
+                  originalWidth={originalWidth}
+                  regenarateImage={regenarateImage}
+                  setIsDescriptionExpanded={setIsDescriptionExpanded}
+                  shopLookKeywords={shopLookKeywords}
+                  shopLookPreviewImage={shopLookPreviewImage}
+                  shouldMoveInputBelowResults={shouldMoveInputBelowResults}
+                  showChatLoader={showChatLoader}
+                  storeData={storeData}
+                  uploadImageProps={uploadImageProps}
+                  widgetHeader={widgetHeader}
+                />
               </div>
 
-              <div className={styles["chat-products-shop-look-main"]}>
-                <div className={`${styles["chat-products-main-navbar"]} ${isMobile ? styles["chatmodal-hidden-mobile"] : ""}`}>
-                  <h2 className={styles["chat-products-navbar-title"]}>
-                    Products
-                  </h2>
-                  <div className={styles["chat-products-navbar-controls"]}>
-                    {isProductSearchOptionActive && onOpenSearchPopup && (
-                      <SearchOutlined
-                        className={styles["chat-products-search-icon"]}
-                        onClick={onOpenSearchPopup}
-                        title="Open Search"
-                      />
-                    )}
-                    {closeChatModal && (
-                      <CloseOutlined
-                        onClick={closeChatModal}
-                        className={styles["chat-products-close-icon"]}
-                        title="Close"
-                      />
-                    )}
-                  </div>
-                </div>
-                {productsResultsContent}
-              </div>
+              <AuraProductsPanel
+                authUser={authUser}
+                chatProductsDataToShow={chatProductsDataToShow}
+                chatTypeKey={chatTypeKey}
+                closeChatModal={closeChatModal}
+                enableClickFetchRec={enableClickFetchRec}
+                enableClickTracking={enableClickTracking}
+                enableSelectProduct={enableSelectProduct}
+                handleGoBack={handleGoBack}
+                handleLoadMore={handleLoadMore}
+                handleResetSelectProduct={handleResetSelectProduct}
+                isMobile={isMobile}
+                isBTNormalUserLoggedIn={isBTNormalUserLoggedIn}
+                isAuraChatPage={isAuraChatPage}
+                isTagAvailable={isTagAvailable}
+                isProductSearchOptionActive={isProductSearchOptionActive}
+                isUserLogin={isUserLogin}
+                layoutMode={layoutMode}
+                localChatMessage={localChatMessage}
+                newAuraProductsUiEnabled={NEW_AURA_PRODUCTS_UI_ENABLED}
+                onAddSelectedProductsToCollection={onAddSelectedProductsToCollection}
+                onOpenSearchPopup={onOpenSearchPopup}
+                onProductClick={onProductClick}
+                onSelectAllChange={onSelectAllChange}
+                onSelectProductClick={onSelectProductClick}
+                onWishlistClick={onWishlistClick}
+                registerSelectActions={registerSelectActions}
+                scrollToProductsContainer={scrollToProductsContainer}
+                selectedProducts={selectedProducts}
+                setEnableSelectProduct={setEnableSelectProduct}
+                shouldShowPanelChrome={shouldShowShopLookSplitLayout}
+                shouldShowShopLookSplitLayout={shouldShowShopLookSplitLayout}
+                shopALookData={shopALookData}
+                showChatLoader={showChatLoader}
+                suggestionsWithProducts={suggestionsWithProducts}
+                trackCollectionCampCode={trackCollectionCampCode}
+                trackCollectionICode={trackCollectionICode}
+                trackCollectionId={trackCollectionId}
+                trackCollectionName={trackCollectionName}
+                widgetHeader={widgetHeader}
+                widgetImage={widgetImage}
+              />
             </div>
           </div>
         ) : (
-          productsResultsContent
+          <AuraProductsPanel
+            authUser={authUser}
+            chatProductsDataToShow={chatProductsDataToShow}
+            chatTypeKey={chatTypeKey}
+            closeChatModal={closeChatModal}
+            enableClickFetchRec={enableClickFetchRec}
+            enableClickTracking={enableClickTracking}
+            enableSelectProduct={enableSelectProduct}
+            handleGoBack={handleGoBack}
+            handleLoadMore={handleLoadMore}
+            handleResetSelectProduct={handleResetSelectProduct}
+            isMobile={isMobile}
+            isBTNormalUserLoggedIn={isBTNormalUserLoggedIn}
+            isAuraChatPage={isAuraChatPage}
+            isTagAvailable={isTagAvailable}
+            isProductSearchOptionActive={isProductSearchOptionActive}
+            isUserLogin={isUserLogin}
+            layoutMode={layoutMode}
+            localChatMessage={localChatMessage}
+            newAuraProductsUiEnabled={NEW_AURA_PRODUCTS_UI_ENABLED}
+            onAddSelectedProductsToCollection={onAddSelectedProductsToCollection}
+            onOpenSearchPopup={onOpenSearchPopup}
+            onProductClick={onProductClick}
+            onSelectAllChange={onSelectAllChange}
+            onSelectProductClick={onSelectProductClick}
+            onWishlistClick={onWishlistClick}
+            registerSelectActions={registerSelectActions}
+            scrollToProductsContainer={scrollToProductsContainer}
+            selectedProducts={selectedProducts}
+            setEnableSelectProduct={setEnableSelectProduct}
+            shouldShowPanelChrome={false}
+            shouldShowShopLookSplitLayout={shouldShowShopLookSplitLayout}
+            shopALookData={shopALookData}
+            showChatLoader={showChatLoader}
+            suggestionsWithProducts={suggestionsWithProducts}
+            trackCollectionCampCode={trackCollectionCampCode}
+            trackCollectionICode={trackCollectionICode}
+            trackCollectionId={trackCollectionId}
+            trackCollectionName={trackCollectionName}
+            widgetHeader={widgetHeader}
+            widgetImage={widgetImage}
+          />
         )}
       </div>
-
-      {isHistoryOpen && (
-        <div
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[200] flex items-center justify-center p-4 transition-all"
-          onClick={() => setIsHistoryOpen(false)}
-        >
-          <div
-            className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-solid border-[#e8e4fb] overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="px-5 py-4 bg-[#fbfafe] border-b border-solid border-[#e8e4fb] flex items-center justify-between">
-              <h3 className="text-secondary font-bold text-base m-0 flex items-center gap-2">
-                <HistoryOutlined /> Past Chats
-              </h3>
-              <CloseOutlined
-                className="text-gray-400 hover:text-gray-600 cursor-pointer text-sm p-1 transition-all"
-                onClick={() => setIsHistoryOpen(false)}
-                title="Close"
-              />
-            </div>
-            <div className="p-4 flex flex-col gap-2.5 max-h-[60vh] overflow-y-auto">
-              {chatHistory.length > 0 ? (
-                [...chatHistory].reverse().map((item) => (
-                  <div
-                    key={item}
-                    onClick={() => handleSelectPastChat(item)}
-                    className="flex items-start justify-between p-3 rounded-xl bg-[#fbfafe]/60 border border-solid border-[#e8e4fb] hover:bg-secondary/5 hover:border-secondary/30 cursor-pointer transition-all text-left text-sm font-medium text-gray-700 group"
-                  >
-                    <span className="line-clamp-2 pr-2 group-hover:text-secondary transition-colors">
-                      {item}
-                    </span>
-
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-8 text-gray-400 text-sm font-medium">
-                  No past chats found
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
 
       {isMobile && (
         isAuraSwipeSectionActive ? (
           <>
-            {/* Floating glowing button below the close cross */}
             {showScrollBtn && !isSwipeDrawerOpen && (
               <div
-                className="fixed top-[75px] right-4 z-[1050] cursor-pointer rounded-full bg-[var(--color-brand)] border border-white/35 py-2 px-4 text-white font-bold flex items-center justify-center shadow-[0_4px_15px_rgba(114,104,236,0.35),inset_0_1px_0_rgba(255,255,255,0.2)] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:scale-[1.03] hover:shadow-[0_8px_25px_rgba(114,104,236,0.5),inset_0_1px_0_rgba(255,255,255,0.4)] hover:border-white/60 active:scale-[0.97] animate-[auraGlowPulse_2.5s_infinite_ease-in-out,auraGradientShift_4s_infinite_linear]"
+                className="fixed top-[75px] right-4 z-[1050] cursor-pointer rounded-full bg-brand border border-white/35 py-2 px-4 text-white font-bold flex items-center justify-center shadow-[0_4px_15px_rgba(114,104,236,0.35),inset_0_1px_0_rgba(255,255,255,0.2)] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:scale-[1.03] hover:shadow-[0_8px_25px_rgba(114,104,236,0.5),inset_0_1px_0_rgba(255,255,255,0.4)] hover:border-white/60 active:scale-[0.97] animate-[auraGlowPulse_2.5s_infinite_ease-in-out,auraGradientShift_4s_infinite_linear]"
                 onClick={() => setIsSwipeDrawerOpen(true)}
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
@@ -1267,7 +732,6 @@ const ChatProducts = ({
               </div>
             )}
 
-            {/* Swipeable Drawer */}
             {isSwipeDrawerOpen && (
               <>
                 <div
@@ -1284,9 +748,9 @@ const ChatProducts = ({
                 >
                   <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-[60px] bg-secondary/20 rounded-r" />
                   <div className="flex items-center justify-between mb-4 border-b border-secondary/10 pb-3">
-                    <h3 className="text-base font-bold text-[#1a2035] m-0 uppercase tracking-wider">
+                    {/* <h3 className="text-base font-bold text-[#1a2035] m-0 uppercase tracking-wider">
                       {activeSearchOption?.title || "Aura Info"}
-                    </h3>
+                    </h3> */}
                     <button
                       type="button"
                       className="bg-transparent border-none cursor-pointer text-[#384467] text-lg flex items-center justify-center p-1 rounded-full transition-colors duration-200 hover:bg-secondary/10 hover:text-secondary"
@@ -1296,7 +760,6 @@ const ChatProducts = ({
                     </button>
                   </div>
                   <div className="flex-1 overflow-y-auto p-1 flex flex-col gap-3 min-h-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-                    {/* Preview Image with overlays */}
                     {(shopLookPreviewImage || auraServerImage) && (
                       <div className={styles["chat-products-shop-look-image-wrapper"]} style={{ margin: "0 auto" }}>
                         <img
@@ -1331,10 +794,8 @@ const ChatProducts = ({
                       </div>
                     )}
 
-                    {/* Description text */}
                     {widgetHeader && (
                       <div className={styles["chat-products-shop-look-description-block"]} style={{ margin: "0.25rem 0" }}>
-                        {/* Description Loading - MOBILE SWIPE DRAWER VIEW */}
                         {showChatLoader ? (
                           <div className="flex flex-col items-center justify-center py-4 gap-2 animate-pulse w-full">
                             <Spin
@@ -1358,15 +819,9 @@ const ChatProducts = ({
                       </div>
                     )}
 
-                    {/* Aura Input Box (Search Bar) */}
                     <div className="mt-2">
                       <AuraInputBox
-                        isShowTryAgain={isShowTryAgain}
                         showChatLoader={showChatLoader}
-                        handleTryAgainClick={handleTryAgainClick}
-                        handleGoBack={handleGoBack}
-                        isShopByThemeOptionActive={isShopByThemeOptionActive}
-                        isCompleteTheLookOptionActive={isCompleteTheLookOptionActive}
                         uploadImageProps={uploadImageProps}
                         chatImageUrl={chatImageUrl}
                         chatImagePreviewUrl={chatImagePreviewUrl}
@@ -1378,19 +833,11 @@ const ChatProducts = ({
                         localChatMessage={localChatMessage}
                         handleInputChange={handleInputChange}
                         handlePromptKeyDown={handlePromptKeyDown}
-                        handlePromptUtilityClick={handlePromptUtilityClick}
-                        page_info={page_info}
-                        isShopALookOptionActive={isShopALookOptionActive}
                         handleSubmitChatInput={() => {
                           handleSubmitChatInput();
                           setIsSwipeDrawerOpen(false);
                         }}
-                        setIsHistoryOpen={setIsHistoryOpen}
-                        followUpQuery={followUpQuery}
-                        hideActions={false}
-                        chatHistory={chatHistory}
                         isFollowUpQuery={isFollowUpQuery}
-                        isMobile={isMobile}
                         isDrawer={true}
                       />
                     </div>
@@ -1400,20 +847,21 @@ const ChatProducts = ({
             )}
           </>
         ) : (
-          <button
-            className={`${styles["chat-products-scroll-top-btn"]} ${showScrollBtn ? styles["chat-products-scroll-top-btn-visible"] : ""}`}
-            onClick={handleScrollToDescription}
-            title="Go to Description"
-            type="button"
-          >
-            <ArrowUpOutlined style={{ marginRight: '6px' }} />
-            <span>Go to Description</span>
-          </button>
+          ''
+          // <button
+          //   className={`${styles["chat-products-scroll-top-btn"]} ${showScrollBtn ? styles["chat-products-scroll-top-btn-visible"] : ""}`}
+          //   onClick={handleScrollToDescription}
+          //   title="Go to Description"
+          //   type="button"
+          // >
+          //   <ArrowUpOutlined style={{ marginRight: '6px' }} />
+          //   <span>Go to Description</span>
+          // </button>
         )
       )}
 
       <button
-        className={`fixed bottom-[145px] right-5 w-[42px] h-[42px] rounded-full bg-[var(--color-brand)] text-white border border-white/15 shadow-[0_8px_24px_rgba(114,104,236,0.4)] flex items-center justify-center text-[18px] cursor-pointer z-[1000] transition-all duration-300 hover:bg-[var(--color-brand)] hover:scale-110 active:scale-95 ${
+        className={`fixed bottom-[145px] right-5 w-[42px] h-[42px] rounded-full bg-brand text-white border border-white/15 shadow-[0_8px_24px_rgba(114,104,236,0.4)] flex items-center justify-center text-[18px] cursor-pointer z-[1000] transition-all duration-300 hover:bg-brand hover:scale-110 active:scale-95 ${
           showScrollBtn ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-4 pointer-events-none"
         }`}
         onClick={handleScrollToTop}

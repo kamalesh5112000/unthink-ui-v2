@@ -247,7 +247,7 @@
 
     .ant-select-arrow {
         padding: 12px 8px !important;
-        background: #D4CCFC !important;
+        background: var(--color-accent) !important;
         border-radius: 10px !important;
         position: absolute !important;
         right: 8px !important;
@@ -446,7 +446,7 @@
 }
 
 .hovercard_div:hover {
-    background: #7c74ec !important;
+    background: var(--color-brand) !important;
     transition: background 0.3s ease !important;
     color: white !important;
 }
@@ -482,11 +482,11 @@
 
     :global(.steps_bar_div .ant-steps-item-process .ant-steps-item-title),
     :global(.steps_bar_div .ant-steps-item-active .ant-steps-item-title) {
-        color: #7C74EC !important; /* active / current step */
+        color: var(--color-brand) !important; /* active / current step */
     }
 
     :global(.steps_bar_div .ant-steps-item-finish .ant-steps-item-title) {
-        color: #B4ACF4 !important;
+        color: var(--color-brand) !important;
     }
 
     :global(.ant-steps.ant-steps-dot .ant-steps-item-tail::after),
@@ -502,7 +502,7 @@
     }
 
     :global(.ant-steps .ant-steps-item-finish>.ant-steps-item-container>.ant-steps-item-tail::after) {
-        background-color: #7C74EC !important;
+        background-color: var(--color-brand) !important;
         border-radius: 30px !important;
         position: relative;
         z-index: 1 !important;
@@ -545,13 +545,13 @@
     }
 
     :global(.steps-icon.active) {
-        background-color: #7c74ec !important;
+        background-color: var(--color-brand) !important;
         transform: translateX(-50%);
         border: none;
     }
 
     :global(.steps-icon.finished) {
-        background-color: #D4CCFC80;
+        background-color: var(--color-accent);
         transform: translateX(-50%);
         border: none;
     }
@@ -618,7 +618,7 @@
 }
 
 .Product_Cards_Div::-webkit-scrollbar-thumb {
-    background-color: #7c74ec; /* Scrollbar thumb color */
+    background-color: var(--color-brand); /* Scrollbar thumb color */
     border-radius: 10px; /* Rounded corners for the scrollbar thumb */
     border: 2px solid #f0f0f0; /* Add a border for better look */
 }
@@ -656,7 +656,7 @@
 
 .mobileStepsWrapper {
     display: flex;
-    color: #7C74EC; /* text-indigo-103 */
+    color: var(--color-brand); /* text-indigo-103 */
     margin-left: auto; /* mx-auto */
     margin-right: auto;
     max-width: 287px; /* max-w-287 */
@@ -831,7 +831,7 @@
     font-size: 12px; /* text-xs */
     border-radius: 16px; /* rounded-2xl */
     cursor: pointer;
-    background-color: #7C74EC; /* bg-violet-100 */
+    background-color: var(--color-brand); /* bg-violet-100 */
     color: white; /* text-white */
     padding: 8px 12px; /* px-3 py-2 */
     border: none;
@@ -854,7 +854,7 @@
 }
 
 .differentTagsLink {
-    color: #7C74EC; /* text-indigo-103 */
+    color: var(--color-brand); /* text-indigo-103 */
     cursor: pointer;
 }
 
@@ -904,8 +904,8 @@
     border-radius: 16px; /* rounded-2xl */
     line-height: 1; /* leading-none */
     cursor: pointer;
-    border: 1px solid #7C74EC; /* border-violet-100 */
-    background-color: #7C74EC; /* bg-violet-100 */
+    border: 1px solid var(--color-brand); /* border-violet-100 */
+    background-color: var(--color-brand); /* bg-violet-100 */
     color: white; /* text-white */
     padding: 4px 8px; /* px-2 py-1 */
     transition: all 0.3s; /* transition duration-300 */
@@ -1339,7 +1339,7 @@
 }
 
 .getProductsButton {
-    background-color: #7C74EC; /* bg-indigo-103 */
+    background-color: var(--color-brand); /* bg-indigo-103 */
     border-radius: 6px;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
     padding: 3px 8px;
@@ -1370,7 +1370,7 @@
     padding-right: 8px;
     height: 32px;
     border-radius: 8px;
-    background-color: #7C74EC; /* bg-violet-100 */
+    background-color: var(--color-brand); /* bg-violet-100 */
     width: 200px;
     transition: background-color 0.3s;
 
@@ -1438,7 +1438,7 @@
     width: auto;
     height: 32px;
     padding-left: 12px;
-    border: 1px solid #D4CCFC; /* border-newcolor-300 */
+    border: 1px solid var(--color-accent); /* border-newcolor-300 */
     border-radius: 16px;
     @media (max-width: 768px) {
         margin-top: 10px;
@@ -1631,9 +1631,9 @@
     padding: 10px 14px;
     height: 100%;
     font-weight: 700;
-    background-color: #7C74EC;
+    background-color: var(--color-brand);
     color: white;
-    border: 2px solid #7C74EC;
+    border: 2px solid var(--color-brand);
     margin-top: 24px;
     cursor: pointer;
 }
@@ -1886,7 +1886,7 @@
     border-radius: 1rem; /* rounded-2xl */
     line-height: 1.25rem;
     cursor: pointer;
-    background-color: #7C74EC; /* violet-100 */
+    background-color: var(--color-brand); /* violet-100 */
     color: white;
     padding-left: 0.75rem;
     padding-right: 0.75rem;
@@ -2000,7 +2000,7 @@
     border-radius: 1rem; /* rounded-2xl */
     line-height: 1.25rem; /* lead */
     cursor: pointer;
-    background-color: #7C74EC; /* bg-violet-100 */
+    background-color: var(--color-brand); /* bg-violet-100 */
     color: white;
     padding-left: 0.75rem; /* px-3 */
     padding-right: 0.75rem;
@@ -2023,7 +2023,7 @@
 
 .indigoBadge {
     margin-right: 0.5rem; /* mr-2 */
-    background-color: #7C74EC; /* bg-indigo-103 */
+    background-color: var(--color-brand); /* bg-indigo-103 */
     border-radius: 0.25rem; /* rounded */
     color: white;
     padding-left: 0.5rem; /* px-2 */
@@ -2033,7 +2033,7 @@
 /* Chunk 3 Refactor */
 
 .indigoBadgeSm {
-    background-color: #7C74EC; /* bg-indigo-103 */
+    background-color: var(--color-brand); /* bg-indigo-103 */
     border-radius: 0.375rem; /* rounded-md */
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
     padding-left: 0.5rem; /* px-2 */
@@ -2110,7 +2110,7 @@
     border-radius: 1rem; /* rounded-2xl */
     line-height: 1.25rem; /* lead */
     cursor: pointer;
-    background-color: #7C74EC; /* bg-violet-100 */
+    background-color: var(--color-brand); /* bg-violet-100 */
     color: white;
     padding-left: 0.75rem; /* px-3 */
     padding-right: 0.75rem;
@@ -2204,8 +2204,8 @@
     padding-right: 0.875rem;
     height: 100%;
     font-weight: 700; /* font-bold */
-    color: #7C74EC; /* text-indigo-103 */
-    border: 2px solid #7C74EC; /* border-indigo-103 */
+    color: var(--color-brand); /* text-indigo-103 */
+    border: 2px solid var(--color-brand); /* border-indigo-103 */
     margin-left: auto; /* ml-auto */
     background-color: transparent;
     cursor: pointer;
@@ -2225,8 +2225,8 @@
     padding-right: 0.875rem;
     height: 100%;
     font-weight: 700; /* font-bold */
-    background-color: #7C74EC; /* bg-indigo-103 */
-    border: 2px solid #7C74EC; /* border-indigo-103 */
+    background-color: var(--color-brand); /* bg-indigo-103 */
+    border: 2px solid var(--color-brand); /* border-indigo-103 */
     color: white;
     cursor: pointer;
 
@@ -2244,8 +2244,8 @@
     padding: 0.75rem; /* p-3 */
     height: 100%;
     font-weight: 700; /* font-bold */
-    background-color: #7C74EC; /* bg-indigo-103 */
-    border: 2px solid #7C74EC; /* border-indigo-103 */
+    background-color: var(--color-brand); /* bg-indigo-103 */
+    border: 2px solid var(--color-brand); /* border-indigo-103 */
     color: white;
     cursor: pointer;
 
@@ -2300,15 +2300,15 @@
 }
 
 .bgNewColor200 {
-    background-color: #D4CCFC80; /* bg-newcolor-200 (approx from config/memory? Wait, newcolor 200 not in viewed config snippet, but used in code. Assuming hex or variable. Let's use generic or check config again?) */
+    background-color: var(--color-accent)80; /* bg-newcolor-200 (approx from config/memory? Wait, newcolor 200 not in viewed config snippet, but used in code. Assuming hex or variable. Let's use generic or check config again?) */
     /* Wait, I didn't see newcolor-200 in config snippet. I saw newcolor-100. */
     /* Let's double check config or blindly copy logic? */
     /* The active code uses bg-newcolor-200. I'll define it as a utility assuming it existed. If not found, I'll use a placeholder or check previous files. Reference showed 100: #000000. 200 might be violet-like? */
     /* Actually, previous replacement context had bg-violet-100 text-white. */
     /* Re-reading tailwind config... I only saw 100. */
     /* I will use a reasonable active color, likely violet-105 or similar, or just define it if I missed it. */
-    /* Let's use #D4CCFC (violet-105) which often serves as light/active background. */
-    background-color: #D4CCFC; 
+    /* Let's use var(--color-accent) (violet-105) which often serves as light/active background. */
+    background-color: var(--color-accent); 
 }
 
 .bgWhite {
@@ -2442,7 +2442,7 @@
     line-height: 1.25rem; /* lead */
     cursor: pointer;
     margin-left: 6px;
-    background-color: #7C74EC; /* bg-violet-100 */
+    background-color: var(--color-brand); /* bg-violet-100 */
     color: white;
     padding-left: 0.75rem; /* px-3 */
     padding-right: 0.75rem;
@@ -2864,7 +2864,7 @@
 }
 
 .borderIndigo103 {
-    border-color: #7C74EC;
+    border-color: var(--color-brand);
 }
 
 /* Typography */
@@ -2962,7 +2962,7 @@
 }
 
 .textIndigo103 {
-    color: #7C74EC;
+    color: var(--color-brand);
 }
 
 .textSlatA104 {
@@ -2979,7 +2979,7 @@
 
 /* Background Color */
 .bgIndigo103 {
-    background-color: #7C74EC;
+    background-color: var(--color-brand);
 }
 
 .bgLightGray110 {
@@ -3347,8 +3347,8 @@
     padding-right: 0.875rem;
     height: 100%;
     font-weight: 700;
-    color: #7C74EC;
-    border: 2px solid #7C74EC;
+    color: var(--color-brand);
+    border: 2px solid var(--color-brand);
     margin-left: auto;
 
     @media (min-width: 768px) {
@@ -3366,8 +3366,8 @@
     padding-right: 0.875rem;
     height: 100%;
     font-weight: 700;
-    background-color: #7C74EC;
-    border: 2px solid #7C74EC;
+    background-color: var(--color-brand);
+    border: 2px solid var(--color-brand);
     color: white;
 
     @media (min-width: 768px) {
@@ -3385,10 +3385,10 @@
     padding-right: 0.875rem;
     height: 100%;
     font-weight: 700;
-    background-color: #7C74EC;
+    background-color: var(--color-brand);
     color: white;
     padding: 0.75rem;
-    border: 2px solid #7C74EC;
+    border: 2px solid var(--color-brand);
 
     @media (min-width: 768px) {
         font-size: 0.875rem;
@@ -3541,12 +3541,12 @@
 }
 
 .bgIndigo103Rounded {
-    background-color: #7C74EC;
+    background-color: var(--color-brand);
     border-radius: 0.25rem;
 }
 
 .bgIndigo103RoundedXl {
-    background-color: #7C74EC;
+    background-color: var(--color-brand);
     border-radius: 0.75rem;
     color: white;
     font-weight: 700;
@@ -3892,7 +3892,7 @@
 }
 
 .bgIndigo103 {
-    background-color: #7C74EC;
+    background-color: var(--color-brand);
 }
 
 .border2 {
@@ -3901,7 +3901,7 @@
 }
 
 .borderIndigo103 {
-    border-color: #7C74EC;
+    border-color: var(--color-brand);
 }
 
 .minW40 {
@@ -4129,8 +4129,8 @@
     padding-right: 0.875rem;
     height: 100%;
     font-weight: 700;
-    color: #7C74EC;
-    border: 2px solid #7C74EC;
+    color: var(--color-brand);
+    border: 2px solid var(--color-brand);
     margin-left: auto;
     background: transparent;
     cursor: pointer;
@@ -4143,7 +4143,7 @@
     }
     
     &:hover {
-        background-color: #7C74EC;
+        background-color: var(--color-brand);
         color: white;
     }
 }
@@ -4271,7 +4271,7 @@
     transition: all 0.3s;
     
     &.active {
-        background-color: #7C74EC;
+        background-color: var(--color-brand);
         color: white;
     }
     
@@ -4519,8 +4519,8 @@
     padding-right: 0.875rem;
     height: 100%;
     font-weight: 700;
-    color: #7C74EC;
-    border: 2px solid #7C74EC;
+    color: var(--color-brand);
+    border: 2px solid var(--color-brand);
     background: transparent;
     cursor: pointer;
     transition: all 0.3s;
@@ -4532,7 +4532,7 @@
     }
     
     &:hover {
-        background-color: #7C74EC;
+        background-color: var(--color-brand);
         color: white;
     }
 }
@@ -4560,11 +4560,11 @@
     }
     
     &.enabled {
-        background-color: #7C74EC;
+        background-color: var(--color-brand);
     }
     
     &.disabled {
-        background-color: #7C74EC;
+        background-color: var(--color-brand);
         opacity: 0.6;
         cursor: not-allowed;
     }
@@ -4580,8 +4580,8 @@
     padding-left: 1.75rem;
     padding-right: 1.75rem;
     font-weight: 700;
-    color: #7C74EC;
-    border: 2px solid #7C74EC;
+    color: var(--color-brand);
+    border: 2px solid var(--color-brand);
     background: transparent;
     cursor: pointer;
     

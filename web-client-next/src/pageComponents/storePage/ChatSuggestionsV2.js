@@ -80,7 +80,7 @@ const ChatSuggestionsV2 = ({ onSuggestionClick, wrapperClassName = "" }) => {
 						className={`cursor-pointer rounded-full shadow mx-2 my-1 w-max ${
 							suggestion === selectedChip
 								? " bg-slate-400"
-								: " bg-lightgray-102"
+								: " bg-gray-100"
 						}`}
 						onClick={() => handleSuggestionClick(suggestion)}>
 						<Title

@@ -68,7 +68,7 @@ const ProductOverview = ({
             </div>
             <WishlistHeartButton
               isActive={!!(heartRedProduct && showHeartWishlist)}
-              buttonClassName="h-8 lg:h-10 w-8 lg:w-10 flex justify-center items-center rounded-full border border-support text-[#1f2c3b] bg-white hover:bg-[#f2eeff]"
+              buttonClassName="h-8 lg:h-10 w-8 lg:w-10 flex justify-center items-center rounded-full border border-common text-[#1f2c3b] bg-white hover:bg-common"
               onAdd={onAddToWishlist}
               productMfrCode={productDetails?.mfr_code}
               userId={kioskLogin?.user_id || authUserId || getTTid()}
@@ -99,7 +99,7 @@ const ProductOverview = ({
                 />
               )}
               <button
-                className="flex h-8 lg:h-10 w-8 lg:w-10  items-center justify-center rounded-full border border-support bg-white hover:bg-[#f2eeff]"
+                className="flex h-8 lg:h-10 w-8 lg:w-10  items-center justify-center rounded-full border border-common bg-white hover:bg-common"
                 onClick={onShareClick}
               >
                 <img
@@ -136,7 +136,7 @@ const ProductOverview = ({
             <span
               className={`mt-2 inline-flex rounded-full px-3 py-1 text-xs sm:text-sm font-semibold uppercase tracking-wide ${
                 productDetails.avlbl === 0
-                  ? "bg-red text-white"
+                  ? "bg-danger text-white"
                   : "bg-green-100 text-green-700"
               }`}
             >

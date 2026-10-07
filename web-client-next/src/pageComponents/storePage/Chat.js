@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Input, Form, Tooltip, Upload } from "antd";
 import Image from "next/image";
-import { CameraOutlined, ArrowRightOutlined, AudioOutlined } from "@ant-design/icons";
+import { CameraOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -19,11 +19,7 @@ import star_ai_icon_logo from "../../images/unthink_star_ai_icon.svg";
 import iconVolumeMute from "../../images/chat/icon_volume_mute.svg";
 import iconVolume from "../../images/chat/icon_volume.svg";
 import headerSearchIcon from "../../images/chat/header_search_icon.svg";
-import header_mic from "../../images/chat/header_mic.svg";
-import header_mic_dark from "../../images/chat/header_mic_dark.svg";
 import close_bg_icon from "../../images/close_bg_icon.svg";
-import SpeakingLoaderV2 from "../../components/Loader/SpeakingLoaderV2";
-import SearchLoaderV2 from "../../components/Loader/SearchLoaderV2";
 import AuraCameraSpinLoader from "../../components/Loader/AuraCameraSpinLoader";
 import {
   CHAT_SEARCH_OPTION_ID,
@@ -31,15 +27,13 @@ import {
   CHAT_TYPES_KEYS,
   CHAT_TYPE_CHAT,
 } from "../../constants/codes";
-import { availableChatSearchTypes as _availableChatSearchTypes, isStagingEnv } from "../../constants/config";
+import { availableChatSearchTypes as _availableChatSearchTypes } from "../../constants/config";
 import { profileAPIs } from "../../helper/serverAPIs";
 import { isEmpty } from "../../helper/utils";
 import { useRouter } from "next/router";
 
 const Chat = ({
   localChatMessage,
-  handleMicrophoneClick,
-  streaming,
   submitChatInput,
   onChatClick,
   chatInputMetadata,
@@ -111,25 +105,6 @@ const Chat = ({
     dispatch(setChatMute(!isMute));
   };
 
-  const getSuffix = () => {
-    if (streaming) {
-      return <SpeakingLoaderV2 className="mr-2" />;
-    } else if (showChatLoader) {
-      return <SearchLoaderV2 className="mr-2" />;
-    } else {
-      return handleMicrophoneClick ? (
-        <img
-          id={`chat_microphone_icon_${chatTypeKey}`}
-          onClick={() => {
-            handleMicrophoneClick();
-          }}
-          className="cursor-pointer h-8 lg:h-11 w-8 lg:w-11"
-          src={mic_icon}
-        />
-      ) : null;
-    }
-  };
-
   useEffect(() => {
     if (!activeChatSearchType || !availableChatSearchTypes.includes(activeChatSearchType)) {
       dispatch(setChatSearchType(defaultActiveChatSearchType || availableChatSearchTypes[0]));
@@ -137,7 +112,7 @@ const Chat = ({
   }, []);
 
   const activeSearchOption = useMemo(
-    () => (!isEmpty(selectedSearchOption) ? selectedSearchOption : searchOptions.find((option) => option.default) || {}),
+    () => (!isEmpty(selectedSearchOption) ? selectedSearchOption : ''),
     [searchOptions, selectedSearchOption]
   );
 
@@ -205,22 +180,6 @@ const Chat = ({
     },
   };
 
-  const micIcon = isStagingEnv ? (
-    <div className="flex w-5 h-5">
-      {streaming ? (
-        <SpeakingLoaderV2 />
-      ) : handleMicrophoneClick ? (
-        <AudioOutlined
-          id={`chat_microphone_icon_${chatTypeKey}`}
-          onClick={() => {
-            handleMicrophoneClick();
-          }}
-          className="text-white text-xl cursor-pointer"
-        />
-      ) : null}
-    </div>
-  ) : null;
-
   const cameraIcon =
     activeSearchOption.allow_image_search && showChatModal && !isFollowUpQuery ? (
       <div
@@ -268,17 +227,17 @@ const Chat = ({
     ) : null;
 
   const inputControls = useMemo(() => {
-    return [micIcon, cameraIcon, searchIcon].filter((icon) => icon !== null).map((icon, index) => (
+    return [cameraIcon, searchIcon].filter((icon) => icon !== null).map((icon, index) => (
       <div key={`input-control-${index}`}>{icon}</div>
     ));
-  }, [micIcon, cameraIcon, searchIcon]);
+  }, [cameraIcon, searchIcon]);
 
   return (
     <>
       <div id={`header_chat_container_${chatTypeKey}`} className="flex items-center gap-2 lg:gap-3 w-full">
         <div
           id={`chat_search_input_container_${chatTypeKey}`}
-          className={`flex items-center justify-center rounded-full bg-white px-2 w-full shadow-sm relative h-12 md:h-14 ${
+          className={`flex items-center justify-center rounded-full bg-white px-2 w-full shadow-sm relative h-10 md:h-12 ${
             !isBTInstance ? "border border-gray-300" : ""
           }`}
           onClick={() => {

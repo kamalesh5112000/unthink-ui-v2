@@ -306,7 +306,7 @@ const VirtualTryOnModal = ({
               ? "absolute bottom-2.5 left-2.5"
               : "absolute bottom-3 right-3 md:bottom-5 md:right-4"
             : ""
-        } flex w-fit cursor-pointer flex-row-reverse items-center gap-1 rounded-3xl bg-white px-2 py-1 shadow-md transition-all duration-300 ease-in-out lg:hover:bg-hover-light lg:hover:shadow-lg ${className}`.trim()}
+        } flex w-fit cursor-pointer flex-row-reverse items-center gap-1 rounded-3xl bg-white px-2 py-1 shadow-md transition-all duration-300 ease-in-out lg:hover:bg-gray-100 lg:hover:shadow-lg ${className}`.trim()}
         onClick={handleClick}
         title="Try on with virtual camera"
       >

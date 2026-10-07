@@ -120,8 +120,8 @@ const ProductGallery = ({
                     width={50}
                     className={`w-[110px] h-[120px] rounded-xl border transition ${
                       additionalimg === img
-                        ? "border-[#7c74ec] border-2  "
-                        : "border-[#e8e2ff] hover:border-[#b8a9ff]"
+                        ? "border-brand border-2  "
+                        : "border-[#e8e2ff] hover:border-secondary  "
                     }`}
                     onClick={() => setAdditionalImg(img)}
                     alt="product"

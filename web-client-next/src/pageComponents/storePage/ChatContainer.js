@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   AURA_CLICK,
   CHAT_SEARCH_OPTION_ID,
-  CHAT_SEARCH_TYPES,
   CHAT_TYPE_CHAT,
   CHAT_TYPES_KEYS,
   PARAM_SEARCH_TEXT,
@@ -19,11 +18,9 @@ import {
   setServerChatMessage,
   setChatProductsData,
   setShowChatModal,
-  setChatSearchType,
   resetAuraSearchResponse,
 } from "../../hooks/chat/redux/actions";
 import { useChat } from "../../hooks/chat/useChat";
-import { useChatMicrophone } from "../../hooks/chat/useChatMicrophone";
 import Chat from "./Chat";
 import ChatModal from "./ChatModal";
 import AuraChatSettingModal from "../auraChatSettingModal";
@@ -95,7 +92,7 @@ const ChatContainer = ({ disabledOutSideClick, config, trackCollectionData, isBT
   const isBTNormalUserLoggedIn = useMemo(() => isBTInstance === STORE_USER_NAME_BUDGETTRAVEL, [isBTInstance]);
 
   const activeSearchOption = useMemo(
-    () => (!isEmpty(selectedSearchOption) ? selectedSearchOption : (searchOptions || []).find((option) => option.default) || {}),
+    () => (!isEmpty(selectedSearchOption) ? selectedSearchOption : ''),
     [searchOptions, selectedSearchOption]
   );
 
@@ -122,8 +119,6 @@ const ChatContainer = ({ disabledOutSideClick, config, trackCollectionData, isBT
     if (widgetHeaderRequest?.metadata?.searchOptionId !== activeSearchOption?.id) setIsFollowUpQuery(false);
   }, [widgetHeaderRequest?.metadata?.searchOptionId, activeSearchOption?.id]);
 
-  const { handleMicrophoneClick, streaming, onStopRecording } = useChatMicrophone({ setResultText: setMessage });
-
   const submitChatInput = (message = chatMessage, chatImageUrl, metadata, userMetadata, imageGenerate, nextPage, ipp, currentPage, moreSearch_next_page, recommendationSearch_next_page) => {
     const normalizedMessage = typeof message === "string" ? message.trim() : message;
     const shouldSendMessageText = normalizedMessage && normalizedMessage !== selectedSearchOption?.image_search_input;
@@ -149,11 +144,8 @@ const ChatContainer = ({ disabledOutSideClick, config, trackCollectionData, isBT
   };
 
   const sendFinalMessage = (message = chatMessage, metadata) => {
-    if (streaming) onStopRecording();
-    else {
-      setMessage(message);
-      sendMessage(message, metadata);
-    }
+    setMessage(message);
+    sendMessage(message, metadata);
     dispatch(setChatProductsData([]));
   };
 
@@ -189,18 +181,9 @@ const ChatContainer = ({ disabledOutSideClick, config, trackCollectionData, isBT
   const shouldShowChatModal = isAuraChatPage || (showChatModal && !isHomePage);
 
   useEffect(() => {
-    if (!streaming) {
-      const metadata = { ...chatInputMetadata };
-      submitChatInput(undefined, undefined, metadata);
-    } else dispatch(setChatMessage(""));
-  }, [streaming]);
-
-  useEffect(() => {
     if (userAction) {
       if (userAction === AURA_CLICK) {
         dispatch(setShowChatModal(true));
-        if (streaming) onStopRecording();
-        else handleMicrophoneClick();
       }
       dispatch(setChatUserAction(""));
     }
@@ -227,12 +210,9 @@ const ChatContainer = ({ disabledOutSideClick, config, trackCollectionData, isBT
 
   const chatModalLayer = (
     <>
-      <div className=" inset-0 z-40 h-full overflow-auto transition-all duration-300 ease-in-out">
+      <div className="inset-0 z-30 ">
         <ChatModal
-          handleMicrophoneClick={handleMicrophoneClick}
-          streaming={streaming}
           submitChatInput={submitChatInput}
-          onStopRecording={onStopRecording}
           disabledOutSideClick={disabledOutSideClick}
           showSettings={showSettings}
           openSettingModal={openSettingModal}
@@ -254,18 +234,12 @@ const ChatContainer = ({ disabledOutSideClick, config, trackCollectionData, isBT
       <AuraChatSettingModal isOpen={settingModalOpen} onClose={closeSettingModal} mode={auraChatSettingMode} />
     </>
   );
-// console.log('isNotHomePage',isNotHomePage);
-  // console.log(portalTarget );
-  // console.log( shouldShowChatModal);
-  
-
+ 
   return (
     <>
       {!renderInline && storeData?.is_searchOptions_enabled ? (
-        <div className={`${!isNotHomePage ? 'hidden lg:flex justify-center items-center gap-2 mx-1 lg:gap-3 lg:w-[542px] xl:w-1/2' : 'hidden'} `}>
+        <div className={`${!isNotHomePage ? 'hidden lg:flex justify-center items-center gap-2 mx-1 lg:gap-3 lg:w-[512px] xl:w-1/2' : 'hidden'} `}>
           <Chat
-            handleMicrophoneClick={handleMicrophoneClick}
-            streaming={streaming}
             submitChatInput={submitChatInput}
             onChatClick={onChatClick}
             chatInputMetadata={chatInputMetadata}
@@ -279,7 +253,7 @@ const ChatContainer = ({ disabledOutSideClick, config, trackCollectionData, isBT
           />
         </div>
       ) : !renderInline ? (
-        <div className="hidden lg:flex justify-center items-center gap-2 mx-1 lg:gap-3 lg:w-[542px] xl:w-1/2" />
+        <div className="hidden lg:flex justify-center items-center gap-2 mx-1 lg:gap-3 lg:w-[442px] xl:w-1/2" />
       ) : null}
       {renderInline && shouldShowChatModal ? chatModalLayer : null}
       {!renderInline && portalTarget && shouldShowChatModal && isNotHomePage ? createPortal(chatModalLayer, portalTarget) : null}

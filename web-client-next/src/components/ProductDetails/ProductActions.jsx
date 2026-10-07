@@ -56,7 +56,7 @@ const ProductActions = ({
                 isUserLogin={isUserLogin}
                 disabled={false}
                 showQuantityControls
-                className={` h-full px-6 ${hasKioskAccess ? "bg-kiosk-primary  font-medium" : "bg-brand text-white font-semibold"} w-full rounded-xl  text-sm sm:text-base shadow-md hover:shadow-lg transition`}
+                className=" h-full px-6 bg-brand text-white font-semibold w-full rounded-xl  text-sm sm:text-base shadow-md hover:shadow-lg transition"
               />
             )}
 

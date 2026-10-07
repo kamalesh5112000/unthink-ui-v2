@@ -48,7 +48,7 @@ const qrImage = shareQrCodeImage(fetchedData?.event_app_list?.[0]) || qr1;
                   className="max-h-full max-w-full object-contain"
                   alt={fetchedData?.title_icon || "Cart Icon"}
                 />
-                {/* <p className=" h-[70px] w-[74px] bg-kiosk-primary absolute top-0 left-0 "></p> */}
+                {/* <p className=" h-[70px] w-[74px] bg-brand absolute top-0 left-0 "></p> */}
               </div>
               <div className="min-w-0">
                 <h3 className="text-[16px] font-extrabold leading-[1.15] text-[#202020]">
@@ -62,7 +62,7 @@ const qrImage = shareQrCodeImage(fetchedData?.event_app_list?.[0]) || qr1;
 
          
 
-            <div className="mx-auto mt-[16px] flex h-[200px] w-[205px] items-center justify-center border-[3px] border-kiosk-primary bg-white">
+            <div className="mx-auto mt-[16px] flex h-[200px] w-[205px] items-center justify-center border-[3px] border-brand bg-white">
               <img
                 src={qrImage}
                 alt="GIVA AI Assistant QR"

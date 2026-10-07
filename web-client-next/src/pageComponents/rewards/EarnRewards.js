@@ -258,7 +258,7 @@ const EarnRewards = () => {
 								<React.Fragment key={w.walletId}>
 									{w.nonFungibles.map((nf) => (
 										<div
-											className='p-5 bg-lightgray-102 rounded-2xl'
+											className='p-5 bg-gray-100 rounded-2xl'
 											key={nf.id}>
 											<p className='text-base'>
 												<b>
