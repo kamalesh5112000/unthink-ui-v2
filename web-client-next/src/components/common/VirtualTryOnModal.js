@@ -13,6 +13,25 @@ import { vtoIconState } from "../singleCollection/redux/actions";
 import { GuestPopUpShow } from "../../pageComponents/Auth/redux/actions";
 import camera from "../singleCollection/images/Card/camera.svg";
 
+const getImageDimensions = (imageUrl) =>
+  new Promise((resolve) => {
+    if (typeof window === "undefined" || !imageUrl) {
+      resolve(null);
+      return;
+    }
+
+    const image = new Image();
+
+    image.onload = () => {
+      resolve({
+        width: image.naturalWidth,
+        height: image.naturalHeight,
+      });
+    };
+    image.onerror = () => resolve(null);
+    image.src = imageUrl;
+  });
+
 const VirtualTryOnModal = ({
   size,
   className = "",
@@ -125,11 +144,15 @@ const VirtualTryOnModal = ({
   const handleVTOClick = async (event) => {
     event.stopPropagation();
     event.preventDefault();
+    const productImageDimensions = await getImageDimensions(productImage);
+    const imageTryonPromptWithDimensions = productImageDimensions
+      ? `${imageTryonPrompt || ""} width ${productImageDimensions.width}px, height ${productImageDimensions.height}px.`
+      : imageTryonPrompt || "";
 
     const payload = {
       image_urls: [uploadedImage, productImage],
       store: storeName,
-      image_tryon_prompt: imageTryonPrompt || "",
+      image_tryon_prompt: imageTryonPromptWithDimensions,
       additional_prompt: description || "",
       type: tryonType || "tryon",
     };
