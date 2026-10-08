@@ -2,7 +2,7 @@ import React from "react";
 
 import { isEmpty } from "../../../../helper/utils";
 import searchIcon from "../../../../images/swiftly-styled/Aura - Search.svg";
-import starAiIcon from "../../Images/Illustration.png";
+import starAiIcon from "../Images/Illustration.png";
 const AuraWelcomePanel = ({
   isMobile = false,
   isProductSearchOptionActive = false,

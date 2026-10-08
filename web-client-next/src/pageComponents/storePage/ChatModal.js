@@ -18,12 +18,12 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "../../helper/useNavigate";
 
-import star_ai_icon from "./Images/Illustration.png";
-import iconShopByTheme from "./Images/icon_shop_by_theme.png";
-import iconShopTheLook from "./Images/icon_shop_the_look.png";
-import iconCompleteTheLook from "./Images/icon_complete_the_look.png";
-import iconSearch from "./Images/icon_search.png";
-import iconTrendingCollections from "./Images/icon_trending_collections.png";
+import star_ai_icon from "./aura/Images/Illustration.png";
+import iconShopByTheme from "./aura/Images/icon_shop_by_theme.png";
+import iconShopTheLook from "./aura/Images/icon_shop_the_look.png";
+import iconCompleteTheLook from "./aura/Images/icon_complete_the_look.png";
+import iconSearch from "./aura/Images/icon_search.png";
+import iconTrendingCollections from "./aura/Images/icon_trending_collections.png";
 import {
   setActiveSearchOption,
   setShowChatModal,

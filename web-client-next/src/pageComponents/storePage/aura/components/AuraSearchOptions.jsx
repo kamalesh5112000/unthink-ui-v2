@@ -1,14 +1,10 @@
 import React from "react";
 import { CaretDownFilled, CaretUpFilled } from "@ant-design/icons";
 
-import { CHAT_SEARCH_OPTION_ID } from "../../../../constants/codes";
-const getImageSrc = (image) => image?.src || image;
-
 const AuraSearchOptions = ({
   activeSearchOption,
   cardCollageVariants,
   displaySearchOptions = [],
- 
   handleSetSearchOption,
   isBTNormalUserLoggedIn = false,
   isSearchOptionManuallySelected = false,
@@ -95,7 +91,7 @@ const AuraSearchOptions = ({
                     className={`${"relative mb-0 mr-0 transition-transform duration-300 max-lg:h-8 max-lg:w-8"} ${collageVariantClass} flex-shrink-0`}
                   >
                     <img
-                      src={getImageSrc(previewImage)}
+                      src={previewImage.src}
                       className={
                         "block h-14 w-14 bg-secondary rounded-xl object-cover transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 max-lg:h-8 max-lg:w-8"
                       }
