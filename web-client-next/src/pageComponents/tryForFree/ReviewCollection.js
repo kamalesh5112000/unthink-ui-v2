@@ -3512,17 +3512,17 @@ const isNewCollection = router.query.isNewCollection === "true";
 										className='mx-3'
 										trackStyle={[
 											{
-												backgroundColor: "#4F46E5",
+												backgroundColor: "var(--color-secondary) ",
 											},
 										]}
 										handleStyle={[
 											{
-												backgroundColor: "#4F46E5",
-												borderColor: "#4F46E5",
+												backgroundColor: "var(--color-secondary) ",
+												borderColor: "var(--color-secondary) ",
 											},
 											{
-												backgroundColor: "#4F46E5",
-												borderColor: "#4F46E5",
+												backgroundColor: "var(--color-secondary) ",
+												borderColor: "var(--color-secondary) ",
 											},
 										]}
 									/>
@@ -4070,17 +4070,17 @@ const isNewCollection = router.query.isNewCollection === "true";
 																className='mx-3'
 																trackStyle={[
 																	{
-																		backgroundColor: "#4F46E5",
+																		backgroundColor: "var(--color-secondary) ",
 																	},
 																]}
 																handleStyle={[
 																	{
-																		backgroundColor: "#4F46E5",
-																		borderColor: "#4F46E5",
+																		backgroundColor: "var(--color-secondary) ",
+																		borderColor: "var(--color-secondary) ",
 																	},
 																	{
-																		backgroundColor: "#4F46E5",
-																		borderColor: "#4F46E5",
+																		backgroundColor: "var(--color-secondary) ",
+																		borderColor: "var(--color-secondary) ",
 																	},
 																]}
 															/>

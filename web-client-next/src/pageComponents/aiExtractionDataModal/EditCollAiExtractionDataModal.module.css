@@ -51,7 +51,7 @@
 }
 
 .viewButton {
-    background-color: #4f46e5;
+    background-color: var(--color-secondary) ;
     /* bg-indigo-600 */
     padding-top: 0.5rem;
     /* py-2 */

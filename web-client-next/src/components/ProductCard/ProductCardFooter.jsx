@@ -147,7 +147,7 @@ const ProductCardFooter = ({
                     {product?.listprice}
                   </span>
                 </span>
-                <span className="absolute left-4 top-5 rounded-3xl bg-danger px-2 py-1 text-xs font-bold text-white">
+                <span className="absolute left-4 top-5 rounded-3xl bg-danger px-2 py-1 text-[10px] font-bold text-white">
                   {(discountPer && `${discountPer}% OFF`) || null}
                 </span>
               </>

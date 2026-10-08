@@ -56,7 +56,7 @@
 
 .userIconBadge {
 	margin-left: 0.25rem;
-	color: #4F46E5;
+	color: var(--color-secondary) ;
 	display: inline-flex;
 	font-size: 1.25rem;
 }
