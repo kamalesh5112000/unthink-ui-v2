@@ -19,10 +19,6 @@ import {
 import { useNavigate } from "../../helper/useNavigate";
 
 import star_ai_icon from "./Images/Illustration.png";
-
-import auraCardOne from "./Images/aura.png";
-import auraCardTwo from "./Images/aura2.png";
-import auraCardThree from "./Images/aura3.png";
 import iconShopByTheme from "./Images/icon_shop_by_theme.png";
 import iconShopTheLook from "./Images/icon_shop_the_look.png";
 import iconCompleteTheLook from "./Images/icon_complete_the_look.png";
@@ -56,7 +52,6 @@ import AuraWelcomePanel from "./aura/components/AuraWelcomePanel";
 import Recommendations from "../recommendations/Recommendations";
 import { KioskSearchOptions } from "../kioskSearchOptions/KioskSearchOptions";
 import { SocketContext } from "../../context/socketV2";
-import upload_icon from "./Images/upload_icon.png";
 import { useAuraChatState } from "./aura/hooks/useAuraChatState";
 import { useAuraImageUpload } from "./aura/hooks/useAuraImageUpload";
 import { useAuraPrompt } from "./aura/hooks/useAuraPrompt";
@@ -631,14 +626,13 @@ const ChatModal = ({
                           "flex w-full items-center gap-6 max-lg:gap-4"
                         }
                       >
-                        <img
-                          src={getImageSrc(star_ai_icon)}
-                          width={200}
-                          height={200}
-                          className={
-                            "h-auto w-[226px] shrink-0 max-lg:w-[120px] max-[480px]:w-20"
-                          }
-                          alt="AURA"
+                        <div
+                          className={"aura-image shrink-0"}
+                          role="img"
+                          aria-label="AURA"
+                          style={{
+                            "--aura-mask-image": `url(${getImageSrc(star_ai_icon)})`,
+                          }}
                         />
                         <div className={"flex flex-col gap-1"}>
                           <h1
@@ -676,7 +670,7 @@ const ChatModal = ({
                       activeSearchOption={activeSearchOption}
                       cardCollageVariants={cardCollageVariants}
                       displaySearchOptions={displaySearchOptions}
-                      fallbackImages={[auraCardOne, auraCardTwo, auraCardThree]}
+                      
                       handleSetSearchOption={handleSetSearchOption}
                       
                       isBTNormalUserLoggedIn={isBTNormalUserLoggedIn}
@@ -895,7 +889,6 @@ const ChatModal = ({
               showChatLoader={showChatLoader}
               handleTryAgainClick={handleTryAgainClick}
               activeSearchOption={activeSearchOption}
-              upload_icon={upload_icon}
               uploadImageProps={uploadImageProps}
               chatImagePreviewUrl={chatImagePreviewUrl}
               isUploadingImage={isUploadingImage}

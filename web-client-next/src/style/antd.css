@@ -249,8 +249,17 @@
 
 .ant-checkbox-checked .ant-checkbox-inner,
 .customCheckbox .ant-checkbox-checked .ant-checkbox-inner {
+  background: var(--color-secondary) !important;
   background-color: var(--color-secondary) !important  ;
   border-color: var(--color-secondary) !important ;
+}
+
+.ant-checkbox-checked::after,
+.ant-checkbox.ant-checkbox-checked::after,
+.ant-checkbox-wrapper:hover .ant-checkbox-checked .ant-checkbox-inner,
+.ant-checkbox-checked:hover .ant-checkbox-inner,
+.customCheckbox .ant-checkbox-checked::after {
+  border-color: var(--color-secondary) !important;
 }
 
 .ant-checkbox-indeterminate .ant-checkbox-inner::after,
