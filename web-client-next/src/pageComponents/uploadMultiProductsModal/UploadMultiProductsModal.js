@@ -727,7 +727,7 @@ const UploadMultiProductsModal = ({
 									<button
 										type='button'
 										onClick={handleSaveCall}
-										className={`rounded-xl text-indigo-100 font-bold text-xs md:text-sm py-2 px-4.5 bg-indigo-600 mb-2`}>
+										className={`rounded-xl text-indigo-100 font-bold text-xs md:text-sm py-2 px-4.5 bg-secondary mb-2`}>
 										{showUploadImages ? "Save" : "Continue"}
 									</button>
 								</div>

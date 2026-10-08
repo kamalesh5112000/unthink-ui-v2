@@ -32,7 +32,7 @@
     /* border-2 */
     border-style: dashed;
     /* border-dashed */
-    border-color: #4f46e5;
+    border-color: var(--color-secondary) ;
     /* border-indigo-600 */
 }
 

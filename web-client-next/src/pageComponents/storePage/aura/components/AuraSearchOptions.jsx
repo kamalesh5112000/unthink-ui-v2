@@ -8,7 +8,7 @@ const AuraSearchOptions = ({
   activeSearchOption,
   cardCollageVariants,
   displaySearchOptions = [],
-  fallbackImages = [],
+ 
   handleSetSearchOption,
   isBTNormalUserLoggedIn = false,
   isSearchOptionManuallySelected = false,
@@ -64,15 +64,14 @@ const AuraSearchOptions = ({
                     : displaySearchOptions?.length === 4
                       ? "lg:grid-cols-4 grid-cols-2"
                       : "lg:grid-cols-5 grid-cols-1"
-            }  w-full gap-4 lg:gap-5 py-2 `}
+            }  w-full gap-4 lg:gap-5 py-2 px-1`}
           >
             {displaySearchOptions?.map((option, index) => {
               const isOptionActive =
                 shouldHighlightActiveSearchOption &&
                 option?.id === activeSearchOption?.id;
               const previewImage =
-                searchOptionPreviewImages[option.id] ||
-                fallbackImages[index % fallbackImages.length];
+                searchOptionPreviewImages[option.id] 
               const collageVariantClass =
                 cardCollageVariants[option.id] || "translate-y-0";
 
@@ -98,7 +97,7 @@ const AuraSearchOptions = ({
                     <img
                       src={getImageSrc(previewImage)}
                       className={
-                        "block h-14 w-14 rounded-xl object-cover transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 max-lg:h-8 max-lg:w-8"
+                        "block h-14 w-14 bg-secondary rounded-xl object-cover transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 max-lg:h-8 max-lg:w-8"
                       }
                       alt={option.title}
                     />

@@ -385,3 +385,33 @@ button.product-out-of-stock-button * {
   cursor: not-allowed ;
 }
 
+
+
+.aura-image {
+  display: block;
+  width: 226px;
+  height: 226px;
+
+  background: linear-gradient(
+    135deg,
+    var(--color-secondary),
+    var(--color-brand)
+  );
+
+  mask: var(--aura-mask-image, url("/images/aura.png")) center / contain no-repeat;
+  -webkit-mask: var(--aura-mask-image, url("/images/aura.png")) center / contain no-repeat;
+}
+
+@media (max-width: 1023px) {
+  .aura-image {
+    width: 120px;
+    height: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .aura-image {
+    width: 80px;
+    height: 80px;
+  }
+}

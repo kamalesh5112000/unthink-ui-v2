@@ -32,9 +32,9 @@ const AuraSearchOptionIntro = ({
         </span>
         <span className="gradient-bar"></span>
       </h1>
-      {activeSearchOption?.subTitle ? (
+      {activeSearchOption?.description ? (
         <p className="mt-2 mb-3.5 lg:mb-5 text-center text-sm lg:text-base font-medium text-slate-500">
-          {activeSearchOption.subTitle}
+          {activeSearchOption.description}
         </p>
       ) : null}
       { !allowImageSearch &&  activeSearchOption?.text_example ? (

@@ -171,8 +171,8 @@
 }
 
 .chat-products-nav-item-active {
-  color: #4F46E5;
-  border-bottom: 2px solid #4F46E5;
+  color: var(--color-secondary) ;
+  border-bottom: 2px solid var(--color-secondary) ;
   padding: 0 0.625rem;
 }
 
