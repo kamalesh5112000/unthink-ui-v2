@@ -19,11 +19,6 @@ import {
 import { useNavigate } from "../../helper/useNavigate";
 
 import star_ai_icon from "./aura/Images/Illustration.png";
-import iconShopByTheme from "./aura/Images/icon_shop_by_theme.png";
-import iconShopTheLook from "./aura/Images/icon_shop_the_look.png";
-import iconCompleteTheLook from "./aura/Images/icon_complete_the_look.png";
-import iconSearch from "./aura/Images/icon_search.png";
-import iconTrendingCollections from "./aura/Images/icon_trending_collections.png";
 import {
   setActiveSearchOption,
   setShowChatModal,
@@ -50,13 +45,11 @@ import AuraSearchOptionIntro from "./aura/components/AuraSearchOptionIntro";
 import AuraSearchPopup from "./aura/components/AuraSearchPopup";
 import AuraWelcomePanel from "./aura/components/AuraWelcomePanel";
 import Recommendations from "../recommendations/Recommendations";
-import { KioskSearchOptions } from "../kioskSearchOptions/KioskSearchOptions";
 import { SocketContext } from "../../context/socketV2";
 import { useAuraChatState } from "./aura/hooks/useAuraChatState";
 import { useAuraImageUpload } from "./aura/hooks/useAuraImageUpload";
 import { useAuraPrompt } from "./aura/hooks/useAuraPrompt";
 import { useAuraResponsiveLayout } from "./aura/hooks/useAuraResponsiveLayout";
-import { useAuraSearchOptions } from "./aura/hooks/useAuraSearchOptions";
 import AuraSearchOptions from "./aura/components/AuraSearchOptions";
 
 const ChatModal = ({
@@ -122,7 +115,6 @@ const ChatModal = ({
     widgetImage,
     suggestionsWithProducts,
     tags,
-    searchOptions,
     authUser,
     auraServerImage,
     auraOverlayCoordinates,
@@ -131,8 +123,6 @@ const ChatModal = ({
     isSidExpired,
     isActiveSearchOptionAvailable,
     isShowAuraResponse,
-    shouldHighlightActiveSearchOption,
-    isShowKioskSearchOptions,
     shouldCenterModalContent,
     isShopALookOptionActive,
     isProductSearchOptionActive,
@@ -257,27 +247,6 @@ const ChatModal = ({
     widgetImage,
     chatHistory,
     sendSocketClientMessage,
-  });
-
-  const {
-    handleSetSearchOption,
-    displaySearchOptions,
-    searchOptionPreviewImages,
-    cardCollageVariants,
-  } = useAuraSearchOptions({
-    activeSearchOption,
-    searchOptions,
-    navigate,
-    iconShopByTheme,
-    iconShopTheLook,
-    iconCompleteTheLook,
-    iconSearch,
-    iconTrendingCollections,
-    setLocalChatMessage,
-    setSubmittedPromptPreview,
-    resetChatImageState,
-    setIsSearchOptionManuallySelected,
-    setIsSearchOptionsVisible,
   });
 
   const getImageSrc = (image) => image?.src || image;
@@ -668,21 +637,18 @@ const ChatModal = ({
                   >
                     <AuraSearchOptions
                       activeSearchOption={activeSearchOption}
-                      cardCollageVariants={cardCollageVariants}
-                      displaySearchOptions={displaySearchOptions}
-                      
-                      handleSetSearchOption={handleSetSearchOption}
-                      
                       isBTNormalUserLoggedIn={isBTNormalUserLoggedIn}
                       isSearchOptionManuallySelected={
                         isSearchOptionManuallySelected
                       }
                       isSearchOptionsVisible={isSearchOptionsVisible}
-                      searchOptionPreviewImages={searchOptionPreviewImages}
-                      setIsSearchOptionsVisible={setIsSearchOptionsVisible}
-                      shouldHighlightActiveSearchOption={
-                        shouldHighlightActiveSearchOption
+                      resetChatImageState={resetChatImageState}
+                      setIsSearchOptionManuallySelected={
+                        setIsSearchOptionManuallySelected
                       }
+                      setIsSearchOptionsVisible={setIsSearchOptionsVisible}
+                      setLocalChatMessage={setLocalChatMessage}
+                      setSubmittedPromptPreview={setSubmittedPromptPreview}
                     />
                       {/* //move this ocde  */}
                     {isShowFollowUpQuery ? (
@@ -910,11 +876,6 @@ const ChatModal = ({
               registerSelectActions={handleRegisterSelectActions}
             />
           </>
-        ) : isShowKioskSearchOptions ? (
-          <KioskSearchOptions
-            displaySearchOptions={displaySearchOptions}
-            handleSetSearchOption={handleSetSearchOption}
-          />
         ) : isBTNormalUserLoggedIn ? (
           <>
             <AuraWelcomePanel
