@@ -23,6 +23,20 @@
   color: var(--color-secondary);
 }
 
+.ant-upload-wrapper .ant-upload-drag p.ant-upload-drag-icon .anticon,
+.ant-upload-wrapper .ant-upload-drag p.ant-upload-drag-icon .anticon svg {
+  color: var(--color-secondary);
+}
+
+.ant-upload-wrapper .ant-upload.ant-upload-drag:hover,
+.ant-upload-wrapper .ant-upload.ant-upload-drag-hover,
+.ant-upload-wrapper .ant-upload.ant-upload-drag .ant-upload-btn:hover ,
+.ant-btn-variant-outlined:not(:disabled):not(.ant-btn-disabled):hover   {
+  border-color: var(--color-accent) !important;
+}
+.ant-btn-variant-outlined:not(:disabled):not(.ant-btn-disabled):hover span {
+  color: black;
+}
 .ant-steps-item-title {
   color: #ffffff !important;
 }
@@ -57,7 +71,7 @@
 .site-navigation-steps.ant-steps-navigation
   .ant-steps-item.ant-steps-item-active
   .ant-steps-item-container {
-  border-bottom: 2px solid #1677ff;
+  border-bottom: 2px solid var(--color-secondary);
 }
 
 :where(.css-dev-only-do-not-override-mncuj7).ant-image .ant-image-mask {
@@ -68,9 +82,21 @@
   box-shadow: none !important;
 }
 
+.ant-select-outlined:not(.ant-select-disabled):hover   {
+  border-color: var(--color-accent) !important;
+}
+
+.ant-input-outlined:hover,
+.ant-input-outlined:focus,
+.ant-select-selector ,
+.ant-input-outlined:focus-within,
+.ant-input-outlined.ant-input-focused {
+  border-color: var(--color-accent) !important;
+}
+
 .collection_page_sort_product_list .ant-select-arrow {
   align-items: center !important;
-  background: var(--color-accent)80 !important;
+  background: var(--color-accent) !important;
   border-radius: 12px !important;
   display: flex !important;
   justify-content: center !important;
@@ -192,7 +218,7 @@
   display: none;
 }
 
-:where(.css-dev-only-do-not-override-49qm).ant-image-preview-root
+.ant-image-preview-root
   .ant-image-preview-mask {
   position: fixed;
   inset: 0;
@@ -202,7 +228,7 @@
   pointer-events: none;
 }
 
-.ant-image-preview-root .ant-image-preview-mask {
+.ant-image-preview-root .ant-image-preview-mask   {
   background-color: transparent !important;
 }
 
@@ -299,4 +325,8 @@
 .loadingIndicator.ant-spin .ant-spin-dot-holder .ant-spin-dot-item,
 .loadingIndicator :where(.ant-spin-dot-item) {
   background-color: var(--color-brand) !important;
+}
+
+.ant-btn-variant-solid{
+  background-color: var(--color-accent) !important;
 }

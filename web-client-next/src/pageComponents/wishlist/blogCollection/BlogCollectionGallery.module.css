@@ -73,7 +73,7 @@
 .actionLink {
   font-size: 0.75rem;
   font-weight: 700;
-  color: #0EA5E9;
+  color: var(--color-secondary);
   cursor: pointer;
 }
 
@@ -92,7 +92,7 @@
 .buttonText {
   font-size: 0.75rem;
   font-weight: 700;
-  color: #0EA5E9;
+  color: var(--color-secondary);
 }
 
 .spinContainer {
@@ -173,7 +173,7 @@
   font-size: 0.75rem;
   font-weight: 700;
    padding: 4px 0px ;
-  color: #0EA5E9;
+  color: var(--color-secondary);
   cursor: pointer;
 }
 
@@ -217,11 +217,11 @@
 }
 
 .deleteButton {
-  color: #0EA5E9;
+  color: var(--color-secondary);
 }
 
 .showcaseButton {
-  color: #0EA5E9;
+  color: var(--color-secondary);
 }
 
 .infoIcon {
@@ -238,7 +238,7 @@
 }
 
 .selectLinkText {
-  color: #0EA5E9;
+  color: var(--color-secondary);
 }
 
 /* Loading Overlay */

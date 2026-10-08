@@ -1633,7 +1633,7 @@ svg{
   white-space: nowrap;
   font-size: 12px;
   font-weight: 600;
-  color: #000000;
+  color: var(--color-secondary);
 
   @media (min-width: 768px) {
     font-size: 14px;
@@ -1785,12 +1785,12 @@ svg{
 .collectionTitle {
   font-size: 22px;
   font-weight: 600;
-  text-decoration: underline;
-  color: var(--color-brand);
+  
   cursor: pointer;
   text-transform: capitalize;
   &:hover {
-    color: var(--color-secondary);
+    // color: var(--color-secondary);
+    text-decoration: underline;
   }
 @media (max-width:768px) {
   font-size: 18px;

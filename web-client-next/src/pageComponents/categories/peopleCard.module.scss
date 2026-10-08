@@ -69,8 +69,8 @@
 
 .signInButton {
     margin-top: 0.5rem; /* mt-2 */
-    background-color: #f7c951; /* bg-secondary */
-    color: #083dc1; /* text-primary */
+    background-color: var(--color-secondary); /* bg-secondary */
+    color:white; /* text-primary */
     text-align: center;
     width: 100%;
 }
