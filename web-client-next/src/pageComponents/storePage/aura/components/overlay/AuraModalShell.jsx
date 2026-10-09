@@ -1,6 +1,6 @@
 import React from "react";
 
-import { getCurrentTheme } from "../../../../helper/utils";
+import { getCurrentTheme } from "../../../../../helper/utils";
 const AuraModalShell = ({
   isFixed = false,
   shouldCenter = false,

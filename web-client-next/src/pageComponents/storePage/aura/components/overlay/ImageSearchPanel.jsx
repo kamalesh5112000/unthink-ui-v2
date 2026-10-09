@@ -7,7 +7,7 @@ import {
 } from "@ant-design/icons";
 import { Spin, Tooltip, Upload } from "antd";
 import { Badge } from "antd";
-import CameraCapture from "../../../../components/shared/CameraCapture";
+import CameraCapture from "../../../../../components/shared/CameraCapture";
 
 const { Dragger } = Upload;
 
@@ -16,7 +16,7 @@ const ORIGINAL_IMAGE_HEIGHT = 1027;
 const PREVIEW_IMAGE_WIDTH = 404;
 const PREVIEW_IMAGE_HEIGHT = 400;
 
-const AuraImageSearchPanel = ({
+const ImageSearchPanel = ({
   allowImageSearch = false,
   auraOverlayCoordinates,
   chatImageUrl,
@@ -184,4 +184,4 @@ const AuraImageSearchPanel = ({
   );
 };
 
-export default AuraImageSearchPanel;
+export default ImageSearchPanel;

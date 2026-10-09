@@ -5,7 +5,6 @@ import {
   CHAT_SEARCH_OPTION_ID,
   CHAT_TYPES_KEYS,
 } from "../../../../constants/codes";
-import { is_kiosk } from "../../../../constants/config";
 import {
   getRandomArrayElements,
   isEmpty,
@@ -109,16 +108,6 @@ export const useAuraChatState = ({
   const isShowAuraResponse = useMemo(
     () => showChatResponse && isActiveSearchOptionAvailable,
     [showChatResponse, isActiveSearchOptionAvailable],
-  );
-
-  const shouldHighlightActiveSearchOption = useMemo(
-    () => isSearchOptionManuallySelected || isShowAuraResponse,
-    [isSearchOptionManuallySelected, isShowAuraResponse],
-  );
-
-  const isShowKioskSearchOptions = useMemo(
-    () => is_kiosk && !isActiveSearchOptionAvailable,
-    [isActiveSearchOptionAvailable],
   );
 
   const shouldCenterModalContent = useMemo(
@@ -240,7 +229,7 @@ export const useAuraChatState = ({
     suggestionsWithProducts,
     tags,
     title,
-    isFreshSearch,
+    isFreshSearch, 
     searchOptions,
     authUser,
     isGuestPopUpShow,
@@ -256,8 +245,6 @@ export const useAuraChatState = ({
     isSidExpired,
     isActiveSearchOptionAvailable,
     isShowAuraResponse,
-    shouldHighlightActiveSearchOption,
-    isShowKioskSearchOptions,
     shouldCenterModalContent,
     isShopALookOptionActive,
     isShopByThemeOptionActive,

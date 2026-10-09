@@ -1,6 +1,6 @@
 import React from "react";
 
-const AuraSearchPopup = ({ isOpen = false, onClose, children }) => {
+const SearchPopup = ({ isOpen = false, onClose, children }) => {
   return (
     <div
       className={isOpen ? "fixed inset-0 z-20 flex items-start justify-center overflow-y-auto bg-black/40 p-4 backdrop-blur-md animate-[fadeIn_0.3s_ease] md:items-center" : ""}
@@ -16,7 +16,7 @@ const AuraSearchPopup = ({ isOpen = false, onClose, children }) => {
   );
 };
 
-export default AuraSearchPopup;
+export default SearchPopup;
 
 
 
