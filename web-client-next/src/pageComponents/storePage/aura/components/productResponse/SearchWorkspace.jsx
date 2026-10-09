@@ -3,9 +3,9 @@ import { Tooltip } from "antd";
 import React from "react";
 import { FiRefreshCw } from "react-icons/fi";
 
-import AuraInputBox from "./AuraInputBox";
+import ChatInput from "./ChatInput";
 
-const AuraMainContent = ({
+const SearchWorkspace = ({
   activeSearchOption,
   auraOverlayCoordinates,
   auraServerImage,
@@ -201,7 +201,7 @@ const AuraMainContent = ({
 
               {shouldMoveInputBelowResults ? (
                 <div className="relative h-20">
-                  <AuraInputBox
+                  <ChatInput
                     showChatLoader={showChatLoader}
                     uploadImageProps={uploadImageProps}
                     chatImageUrl={chatImageUrl}
@@ -226,4 +226,4 @@ const AuraMainContent = ({
   );
 };
 
-export default AuraMainContent;
+export default SearchWorkspace;

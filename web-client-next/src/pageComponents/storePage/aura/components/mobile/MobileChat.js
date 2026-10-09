@@ -1,8 +1,8 @@
 import React from "react";
 import { Image } from "antd";
 
-import header_aura from "../../images/chat/header_aura_image.png";
-import star_ai_icon_logo from "../../images/unthink_star_ai_icon.svg";
+import header_aura from "../../../../../images/chat/header_aura_image.png";
+import star_ai_icon_logo from "../../../../../images/unthink_star_ai_icon.svg";
 import styles from "./MobileChat.module.css";
 
 

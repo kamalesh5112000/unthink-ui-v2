@@ -7,14 +7,14 @@ import {
 import { Checkbox, Spin } from "antd";
 import React from "react";
 
-import ProductCard from "../../../../components/ProductCard";
-import { is_store_instance } from "../../../../constants/config";
-import { WISHLIST_TITLE } from "../../../../constants/codes";
-import { isEmpty } from "../../../../helper/utils";
-import AuraResponseProductsWithTags from "../../../auraResponseProductsWithTags/AuraResponseProductsWithTags";
-import AuraResponseShopALook from "../../../auraResponseShopALook/AuraResponseShopALook";
+import ProductCard from "../../../../../components/ProductCard";
+import { is_store_instance } from "../../../../../constants/config";
+import { WISHLIST_TITLE } from "../../../../../constants/codes";
+import { isEmpty } from "../../../../../helper/utils";
+import AuraResponseProductsWithTags from "../../../../auraResponseProductsWithTags/AuraResponseProductsWithTags";
+import AuraResponseShopALook from "../../../../auraResponseShopALook/AuraResponseShopALook";
 
-const AuraProductsPanel = ({
+const ProductDisplay = ({
   authUser,
   chatProductsDataToShow,
   chatTypeKey,
@@ -276,4 +276,4 @@ const AuraProductsPanel = ({
   );
 };
 
-export default AuraProductsPanel;
+export default ProductDisplay;

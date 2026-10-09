@@ -33,7 +33,7 @@ import {
   STORE_USER_NAME_SAMSKARA,
   MAIN_SITE_URL,
 } from "../../../../../constants/codes";
-import ChatProducts from "../../../ChatProducts";
+import ChatProducts from "../productResponse/ChatProducts";
 import Recommendations from "../../../../recommendations/Recommendations";
 import { SocketContext } from "../../../../../context/socketV2";
 import { useAuraChatState } from "../../hooks/useAuraChatState";

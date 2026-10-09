@@ -11,7 +11,7 @@ import { useNavigate } from "../../helper/useNavigate";
 import useTheme from "../../hooks/chat/useTheme";
 import { PATH_ROOT } from "../../constants/codes";
 import { THEME_ALL } from "../../constants/themeCodes";
-import ChatContainer from "../storePage/ChatContainer";
+import ChatContainer from "../storePage/aura/ChatContainer";
 import { UserProfileMenu } from "../storePage/UserProfileMenu";
 import { getThemeCollectionsPagePath } from "../../helper/utils";
 import { openWishlistModal } from "../wishlist/redux/actions";

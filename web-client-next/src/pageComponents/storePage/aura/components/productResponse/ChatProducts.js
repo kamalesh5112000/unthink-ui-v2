@@ -6,21 +6,21 @@ import { ArrowUpOutlined, HistoryOutlined, FormOutlined, CloseOutlined, Loading3
 import {
   openWishlistModal,
   setProductsToAddInWishlist,
-} from "../wishlist/redux/actions";
-import { handleRecProductClick } from "../recommendations/redux/actions";
-import { filterAvailableProductList, isEmpty } from "../../helper/utils";
-import { is_store_instance } from "../../constants/config";
+} from "../../../../wishlist/redux/actions";
+import { handleRecProductClick } from "../../../../recommendations/redux/actions";
+import { filterAvailableProductList, isEmpty } from "../../../../../helper/utils";
+import { is_store_instance } from "../../../../../constants/config";
 import {
   CHAT_TYPES_KEYS,
   CHAT_TYPE_CHAT,
   CHAT_SEARCH_OPTION_ID,
-} from "../../constants/codes";
-import { setSuggestionsSelectedTag } from "../../hooks/chat/redux/actions";
+} from "../../../../../constants/codes";
+import { setSuggestionsSelectedTag } from "../../../../../hooks/chat/redux/actions";
 import styles from "./ChatProducts.module.css";
-import AuraInputBox from "./aura/components/AuraInputBox";
-import AuraProductsPanel from "./aura/components/AuraProductsPanel";
-import AuraSideNav from "./aura/components/AuraSideNav";
-import AuraMainContent from "./aura/components/AuraMainContent";
+import ChatInput from "./ChatInput";
+import ProductDisplay from "./ProductDisplay";
+import Sidebar from "./Sidebar";
+import SearchWorkspace from "./SearchWorkspace";
 
 const ChatProducts = ({
   enableClickFetchRec,
@@ -568,7 +568,7 @@ const ChatProducts = ({
 
         {shouldShowShopLookSplitLayout ? (
           <div className={`${styles["chat-products-shop-look-wrapper"]} flex flex-col lg:flex-row`}>
-            <AuraSideNav
+            <Sidebar
               chatHistory={chatHistory}
               handleChangeImageConfirm={handleChangeImageConfirm}
               handleSelectPastChat={handleSelectPastChat}
@@ -582,7 +582,7 @@ const ChatProducts = ({
               className={`flex w-full flex-col gap-4 lg:grid lg:items-stretch lg:gap-6 lg:flex-1 lg:min-h-0 lg:overflow-hidden lg:pb-0 ${layoutMode === "both" ? "lg:grid-cols-[minmax(340px,35%)_minmax(0,1fr)] xl:grid-cols-[minmax(400px,39%)_minmax(0,1fr)]" : "lg:grid-cols-1"} ${layoutMode === "left" ? "lg:px-48" : ""}`}
             >
               <div className={layoutMode === "right" ? "hidden" : ""}>
-                <AuraMainContent
+                <SearchWorkspace
                   activeSearchOption={activeSearchOption}
                   auraOverlayCoordinates={auraOverlayCoordinates}
                   auraServerImage={auraServerImage}
@@ -620,7 +620,7 @@ const ChatProducts = ({
                 />
               </div>
 
-              <AuraProductsPanel
+              <ProductDisplay
                 authUser={authUser}
                 chatProductsDataToShow={chatProductsDataToShow}
                 chatTypeKey={chatTypeKey}
@@ -665,7 +665,7 @@ const ChatProducts = ({
             </div>
           </div>
         ) : (
-          <AuraProductsPanel
+          <ProductDisplay
             authUser={authUser}
             chatProductsDataToShow={chatProductsDataToShow}
             chatTypeKey={chatTypeKey}
@@ -820,7 +820,7 @@ const ChatProducts = ({
                     )}
 
                     <div className="mt-2">
-                      <AuraInputBox
+                      <ChatInput
                         showChatLoader={showChatLoader}
                         uploadImageProps={uploadImageProps}
                         chatImageUrl={chatImageUrl}

@@ -4,7 +4,7 @@ import { Typography, Skeleton } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
-import { setSuggestionsSelectedTag } from "../../hooks/chat/redux/actions";
+import { setSuggestionsSelectedTag } from "../../../../../hooks/chat/redux/actions";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";

@@ -13,7 +13,6 @@ import { ArrowLeftOutlined, Loading3QuartersOutlined } from "@ant-design/icons";
 import dynamic from "next/dynamic";
 
 // import ProfileCollection from "../Influencer/ProfileCollection";
-// import ChatProducts from "./ChatProducts";
 import useWindowSize from "../../helper/useWindowSize.js";
 import useTheme from "../../hooks/chat/useTheme.js";
 import {
@@ -111,9 +110,15 @@ const DeliveryDetails = dynamic(() => import("../DeliveryDetails/DeliveryDetails
 const MyPoints = dynamic(() => import("../DeliveryDetails/MyPoints.jsx"), {
 	ssr: false,
 });
-const ChatContainer = dynamic(() => import("./ChatContainer.js"), {
+const ChatContainer = dynamic(() => import("./aura/ChatContainer.js"), {
 	ssr: false,
 });
+const ChatProducts = dynamic(
+	() => import("./aura/components/productResponse/ChatProducts.js"),
+	{
+		ssr: false,
+	}
+);
 const ProductDetails = dynamic(() => import("../../components/ProductDetails/ProductDetails.js"), {
 	ssr: false,
 	loading: () => (
