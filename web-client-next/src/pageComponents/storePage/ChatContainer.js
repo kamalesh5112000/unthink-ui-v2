@@ -22,7 +22,7 @@ import {
 } from "../../hooks/chat/redux/actions";
 import { useChat } from "../../hooks/chat/useChat";
 import Chat from "./Chat";
-import ChatModal from "./ChatModal";
+import ChatModal from "./aura/components/overlay/ChatModal";
 import AuraChatSettingModal from "../auraChatSettingModal";
 import { AuraChatSettingModalModes } from "../auraChatSettingModal/AuraChatSettingModal";
 import { adminUserId, current_store_name, is_store_instance, super_admin } from "../../constants/config";
