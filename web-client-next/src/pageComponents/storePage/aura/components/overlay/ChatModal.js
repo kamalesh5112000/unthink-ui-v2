@@ -34,7 +34,6 @@ import {
   MAIN_SITE_URL,
 } from "../../../../../constants/codes";
 import ChatProducts from "../../../ChatProducts";
-import AuraInputBox from "../../../AuraInputBox";
 import Recommendations from "../../../../recommendations/Recommendations";
 import { SocketContext } from "../../../../../context/socketV2";
 import { useAuraChatState } from "../../hooks/useAuraChatState";

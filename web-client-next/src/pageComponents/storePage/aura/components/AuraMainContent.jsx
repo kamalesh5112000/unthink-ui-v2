@@ -3,7 +3,7 @@ import { Tooltip } from "antd";
 import React from "react";
 import { FiRefreshCw } from "react-icons/fi";
 
-import AuraInputBox from "../../AuraInputBox";
+import AuraInputBox from "./AuraInputBox";
 
 const AuraMainContent = ({
   activeSearchOption,

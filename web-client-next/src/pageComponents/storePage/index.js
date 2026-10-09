@@ -96,9 +96,6 @@ const DroppWallet = dynamic(() => import("../../components/DroppWallet.js"), {
 const Header = dynamic(() => import("./Header.js"), {
 	ssr: false,
 });
-const QAndAComponent = dynamic(() => import("../../components/QAndAComponent/QAndAComponent.js"), {
-	ssr: false,
-});
 const CollectionCarouselContainer = dynamic(() => import("../Influencer/CollectionCarouselContainer.js"), {
 	ssr: false,
 });
@@ -1500,11 +1497,6 @@ const isAdminLog = authUser?.user_name ===  super_admin;
 			{/* to create new tailwind classes in build */}
 			<span className={styles.hiddenUtilityClasses} />
 			<span className={styles.hiddenTabletGrid} />
-
-			{/* {authUser.user_name === "takewalks" &&
-			!(isCreateFreeCollectionPage || isCollectionReviewPage) ? (
-				<QAndAComponent id='q_and_a_widget' config={config} />
-			) : null} */}
 
 			{/* show backdrop loader */}
 				{showBackdropLoader && (

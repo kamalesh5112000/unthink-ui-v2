@@ -17,7 +17,7 @@ import {
 } from "../../constants/codes";
 import { setSuggestionsSelectedTag } from "../../hooks/chat/redux/actions";
 import styles from "./ChatProducts.module.css";
-import AuraInputBox from "./AuraInputBox";
+import AuraInputBox from "./aura/components/AuraInputBox";
 import AuraProductsPanel from "./aura/components/AuraProductsPanel";
 import AuraSideNav from "./aura/components/AuraSideNav";
 import AuraMainContent from "./aura/components/AuraMainContent";
