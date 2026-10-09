@@ -2,23 +2,23 @@ name: CI unthink_ai
 on:
   push:
     branches: 
-      - master
+      - stage
   workflow_dispatch:
 
 jobs:
   build:
-    name: Cloud Run Deployment Prod
+    name: Cloud Run Deployment Stage
     runs-on: ubuntu-latest
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
       NEXT_PUBLIC_BACKEND_URL: "https://webbot-image-sync-314035436999.us-central1.run.app"
       NEXT_PUBLIC_ACCESS_KEY: "e191921352124a06a09bb811a86a5c3a"
-      GA_TRACKING_ID: "G-FWT5BRF22H"
+      NEXT_PUBLIC_GA_TRACKING_ID: "G-FWT5BRF22H"
       NEXT_PUBLIC_SUPER_ADMIN_USER_NAME: "unthink-admin"
       NEXT_PUBLIC_CURRENT_STORE_NAME: "unthink_ai"
       # NEXT_PUBLIC_ENABLE_RECOMMENDATIONS: "false"
       NEXT_PUBLIC_IS_STORE_INSTANCE: "false"
-      NEXT_PUBLIC_STAGING_ENV: "false"
+      NEXT_PUBLIC_STAGING_ENV: "true"
       NEXT_PUBLIC_ENABLE_VENLY: "false"
       NEXT_PUBLIC_VENLY_ENVIRONMENT: "production"
       NEXT_PUBLIC_VENLY_CLIENT_ID: "unthink"
@@ -26,12 +26,12 @@ jobs:
       NEXT_PUBLIC_CURRENT_STORE_ID: "78799553"
       NEXT_PUBLIC_ADMIN_HEDERA_WALLET_ID: ""
       NEXT_PUBLIC_ADMIN_HEDERA_UNTHINK_TOKEN_ADDRESS: ""
-      NEXT_PUBLIC_AURA_YFRET_USER_COLL_BASE_URL: "https://auraprod.unthink.ai"
+      NEXT_PUBLIC_AURA_YFRET_USER_COLL_BASE_URL: "https://aurastage.unthink.ai"
       NEXT_PUBLIC_ENABLE_TRANSFER_NFT: "true"
       # NEXT_PUBLIC_WEBBOT_NFT_SERVICE__BASE_URL: "https://webbot-nft-prod-314035436999.us-central1.run.app"
       NEXT_PUBLIC_FERNET_SECRET_KEY: "3CJeym0L9mZrk3SU7ydWYpZZTK7hIGcDnbG9kunFgc4="
-      NEXT_PUBLIC_PAYMENT_URL: "https://unthink-dropp-payment-prod-314035436999.us-central1.run.app"
-      NEXT_PUBLIC_EVENT_APP_API_BASE_URL: "https://unthinkadminconsole-314035436999.us-central1.run.app/api"
+      NEXT_PUBLIC_PAYMENT_URL: "https://unthink-dropp-payment-stage-314035436999.us-central1.run.app"
+      NEXT_PUBLIC_EVENT_APP_API_BASE_URL: "https://unthinkadminstage-314035436999.us-central1.run.app/api"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
