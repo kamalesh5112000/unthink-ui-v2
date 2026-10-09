@@ -76,7 +76,7 @@ jobs:
           --build-arg NEXT_PUBLIC_ADMIN_USER_ID=${{ env.NEXT_PUBLIC_ADMIN_USER_ID }} \
           --build-arg NEXT_PUBLIC_AURA_YFRET_USER_COLL_BASE_URL=${{ env.NEXT_PUBLIC_AURA_YFRET_USER_COLL_BASE_URL }} \
           --build-arg NEXT_PUBLIC_ENABLE_VENLY=${{ env.NEXT_PUBLIC_ENABLE_VENLY }} \
-          --build-arg NEXT_PUBLIC_FERNET_SECRET_KEY=${{ env.NEXT_PUBLIC_FERNET_SECRET_KEY }} \
+
           --build-arg NEXT_PUBLIC_PAYMENT_URL=${{ env.NEXT_PUBLIC_PAYMENT_URL }} \
           --build-arg NEXT_PUBLIC_EVENT_APP_API_BASE_URL=${{ env.NEXT_PUBLIC_EVENT_APP_API_BASE_URL }} \
           -f web-client-next/Dockerfile .
