@@ -10,7 +10,7 @@ const getTitleParts = (title = "") => {
   };
 };
 
-const AuraSearchOptionIntro = ({
+const ExampleButton = ({
   activeSearchOption,
   allowImageSearch,
   onTryExampleClick,
@@ -50,4 +50,4 @@ const AuraSearchOptionIntro = ({
   );
 };
 
-export default AuraSearchOptionIntro;
+export default ExampleButton;

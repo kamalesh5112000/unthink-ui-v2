@@ -9,7 +9,6 @@ import { Checkbox } from "antd";
 import {
   CloseCircleFilled,
   CloseOutlined,
-  HistoryOutlined,
   ArrowLeftOutlined,
   ArrowUpOutlined,
   MenuOutlined,
@@ -18,7 +17,6 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "../../../../../helper/useNavigate";
 
-import star_ai_icon from "../../Images/Illustration.png";
 import {
   setActiveSearchOption,
   setShowChatModal,
@@ -37,20 +35,20 @@ import {
 } from "../../../../../constants/codes";
 import ChatProducts from "../../../ChatProducts";
 import AuraInputBox from "../../../AuraInputBox";
-import AuraLoadingState from "../AuraLoadingState";
-import AuraImageSearchPanel from "../AuraImageSearchPanel";
-import AuraModalShell from "../AuraModalShell";
-import AuraPromptInput from "../AuraPromptInput";
-import AuraSearchOptionIntro from "../AuraSearchOptionIntro";
-import AuraSearchPopup from "../AuraSearchPopup";
-import AuraWelcomePanel from "../AuraWelcomePanel";
 import Recommendations from "../../../../recommendations/Recommendations";
 import { SocketContext } from "../../../../../context/socketV2";
 import { useAuraChatState } from "../../hooks/useAuraChatState";
 import { useAuraImageUpload } from "../../hooks/useAuraImageUpload";
 import { useAuraPrompt } from "../../hooks/useAuraPrompt";
 import { useAuraResponsiveLayout } from "../../hooks/useAuraResponsiveLayout";
-import AuraSearchOptions from "../AuraSearchOptions";
+import ImageSearchPanel from "./ImageSearchPanel";
+import LoadingState from "./LoadingState";
+import ExampleButton from "./ExampleButton";
+import AuraModalShell from "./AuraModalShell";
+import SearchOptionsTab from "./SearchOptionsTab";
+import SearchPopup from "./SearchPopup";
+import ThemeSearch from "./ThemeSearch";
+import WelcomePanel from "./WelcomePanel";
 
 const ChatModal = ({
   submitChatInput,
@@ -179,11 +177,6 @@ const ChatModal = ({
     );
   };
 
-  const isShowFollowUpQuery = useMemo(
-    () => isFollowUpQuery && followUpQuery,
-    [isFollowUpQuery, followUpQuery],
-  );
-
   const isShowFollowUpSearch = useMemo(
     () =>
       activeSearchOption?.follow_up_search_enable &&
@@ -248,8 +241,6 @@ const ChatModal = ({
     chatHistory,
     sendSocketClientMessage,
   });
-
-  const getImageSrc = (image) => image?.src || image;
 
   const handleSuggestionClick = (tag) => {
     if (tags.includes(tag)) {
@@ -332,50 +323,17 @@ const ChatModal = ({
      
 
       {shouldRenderSearchPopup ? (
-        <AuraSearchPopup
+        <SearchPopup
           isOpen={isSearchPopupOpen}
           onClose={() => setIsSearchPopupOpen(false)}
         >
           <div className="flex min-h-0 w-full flex-col items-center overflow-y-visible pb-10">
-            {isShowFollowUpQuery ? (
-              <div className="flex w-full items-center justify-center rounded-2xl py-2 pr-[1.375rem] md:rounded-full lg:pr-[1.625rem]">
-                <HistoryOutlined className="flex items-center justify-center text-sm text-black lg:text-base" />
-                <div className="flex w-full items-center pl-2 text-sm leading-none text-black lg:text-base">
-                  {followUpQuery}
-                </div>
-              </div>
-            ) : null}
-
             {!isSearchOptionManuallySelected ? (
-              <div className={auraContentContainerClass}>
-                <div className="flex w-full items-center gap-6 max-lg:gap-4">
-                  <div
-                    className="aura-image shrink-0"
-                    role="img"
-                    aria-label="AURA"
-                    style={{
-                      "--aura-mask-image": `url(${getImageSrc(star_ai_icon)})`,
-                    }}
-                  />
-                  <div className="flex flex-col gap-1">
-                    <h1 className="m-0 text-[38px] font-bold leading-[1.1] tracking-normal max-lg:text-2xl max-[480px]:text-[32px]">
-                      <span className="text-gradient">I&apos;m AURA,</span>
-                      <br />
-                      <span className="text-highlight font-medium">
-                        How can I help you?
-                      </span>
-                    </h1>
-                  </div>
-                </div>
-
-                <p className="text-highlight text-left text-xl font-normal leading-tight md:text-2xl">
-                  Choose one to get started
-                </p>
-              </div>
+              <WelcomePanel />
             ) : null}
 
             <div className={auraContentContainerClass}>
-              <AuraSearchOptions
+              <SearchOptionsTab
                 activeSearchOption={activeSearchOption}
                 isBTNormalUserLoggedIn={isBTNormalUserLoggedIn}
                 isSearchOptionManuallySelected={isSearchOptionManuallySelected}
@@ -399,7 +357,7 @@ const ChatModal = ({
                           : undefined
                       }
                     >
-                      <AuraSearchOptionIntro
+                      <ExampleButton
                         activeSearchOption={activeSearchOption}
                         showTryExample={Boolean(
                           activeSearchOption?.text_example,
@@ -408,7 +366,7 @@ const ChatModal = ({
                         allowImageSearch={activeSearchOption.allow_image_search}
                       />
                     </div>
-                    <AuraImageSearchPanel
+                    <ImageSearchPanel
                       activeSearchOption={activeSearchOption}
                       allowImageSearch={activeSearchOption.allow_image_search}
                       auraOverlayCoordinates={auraOverlayCoordinates}
@@ -420,7 +378,7 @@ const ChatModal = ({
                       isUploadingImage={isUploadingImage}
                       uploadImageProps={uploadImageProps}
                     />
-                    <AuraLoadingState
+                    <LoadingState
                       show={
                         showChatLoader &&
                         (localChatMessage ||
@@ -429,7 +387,7 @@ const ChatModal = ({
                           submittedPromptPreview.imageUrl)
                       }
                     />
-                    <AuraPromptInput
+                    <ThemeSearch
                       activeSearchOption={activeSearchOption}
                       chatImageUrl={chatImageUrl}
                       chatTypeKey={chatTypeKey}
@@ -447,7 +405,7 @@ const ChatModal = ({
               ) : null}
             </div>
           </div>
-        </AuraSearchPopup>
+        </SearchPopup>
       ) : null}
 
    
@@ -513,7 +471,7 @@ const ChatModal = ({
         )
          : isBTNormalUserLoggedIn ? (
           <>
-            {/* <AuraWelcomePanel
+            {/* <WelcomePanel
               isMobile={isMobile}
               isProductSearchOptionActive={isProductSearchOptionActive}
               selectedSearchOptionExamples={selectedSearchOptionExamples}

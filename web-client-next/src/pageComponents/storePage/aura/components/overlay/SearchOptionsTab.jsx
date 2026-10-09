@@ -5,19 +5,19 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   CHAT_SEARCH_OPTION_ID,
   COLLECTIONS_ID,
-} from "../../../../constants/codes";
+} from "../../../../../constants/codes";
 import {
   resetAuraSearchResponse,
   setActiveSearchOption,
   setShowChatModal,
-} from "../../../../hooks/chat/redux/actions";
-import iconShopByTheme from "../Images/icon_shop_by_theme.png";
-import iconShopTheLook from "../Images/icon_shop_the_look.png";
-import iconCompleteTheLook from "../Images/icon_complete_the_look.png";
-import iconSearch from "../Images/icon_search.png";
-import iconTrendingCollections from "../Images/icon_trending_collections.png";
+} from "../../../../../hooks/chat/redux/actions";
+import iconShopByTheme from "../../Images/icon_shop_by_theme.png";
+import iconShopTheLook from "../../Images/icon_shop_the_look.png";
+import iconCompleteTheLook from "../../Images/icon_complete_the_look.png";
+import iconSearch from "../../Images/icon_search.png";
+import iconTrendingCollections from "../../Images/icon_trending_collections.png";
 
-const AuraSearchOptions = ({
+const SearchOptionsTab = ({
   activeSearchOption,
   isBTNormalUserLoggedIn = false,
   isSearchOptionManuallySelected = false,
@@ -195,4 +195,4 @@ const AuraSearchOptions = ({
   );
 };
 
-export default AuraSearchOptions;
+export default SearchOptionsTab;

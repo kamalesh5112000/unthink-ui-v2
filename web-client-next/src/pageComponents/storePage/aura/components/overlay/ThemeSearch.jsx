@@ -1,7 +1,7 @@
 import React from "react";
 import { ArrowUpOutlined } from "@ant-design/icons";
 
-const AuraPromptInput = ({
+const ThemeSearch = ({
   activeSearchOption = {},
   chatImageUrl = "",
   chatTypeKey = "",
@@ -62,4 +62,4 @@ const AuraPromptInput = ({
   );
 };
 
-export default AuraPromptInput;
+export default ThemeSearch;

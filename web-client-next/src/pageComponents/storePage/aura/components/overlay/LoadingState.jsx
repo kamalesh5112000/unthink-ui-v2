@@ -1,6 +1,6 @@
 import React from "react";
 
-const AuraLoadingState = ({ show = false }) => {
+const LoadingState = ({ show = false }) => {
   if (!show) return null;
 
   return (
@@ -20,4 +20,4 @@ const AuraLoadingState = ({ show = false }) => {
   );
 };
 
-export default AuraLoadingState;
+export default LoadingState;
