@@ -126,6 +126,17 @@ const ProductCard = ({
   const { isMyWishlistCollection, isMyTryonsCollection } = getCollectionFlags(
     currentCollectionForCard,
   );
+  const cartSourceCollection =useMemo(()=>
+    source === "COLLECTION"
+      ? {
+          id: collection_id,
+          name: collection_name,
+          path: collection_path,
+        }
+      : undefined,
+      [source, collection_id, collection_name, collection_path]
+  )
+
   const getKioskLogin = useCallback(() => kioskLogin, [kioskLogin]);
 
   const handleProductClick = async ({ open }) => {
@@ -180,10 +191,14 @@ const ProductCard = ({
     if (cleaned) {
       localStorage.setItem(`pdp_image`, cleaned);
     }
+    sessionStorage.setItem(
+  'cart_source',
+  JSON.stringify({ source, cartSourceCollection })
+);
     if (open && !hasKioskAccess) {
       window.open(`/product/${product.mfr_code}`, "_blank");
     } else {
-      router.push(`/product/${product.mfr_code}`);
+      router.push(`/product/${product.mfr_code}`);  
     }
     if (showChatModal) {
       dispatch(setShowChatModal(false));
@@ -220,16 +235,7 @@ const ProductCard = ({
     showStar &&
     (widgetType === PRODUCT_CARD_WIDGET_TYPES.DEFAULT ||
       widgetType === PRODUCT_CARD_WIDGET_TYPES.ACTION_COVER);
-  const cartSourceCollection =useMemo(()=>
-    source === "COLLECTION"
-      ? {
-          id: collection_id,
-          name: collection_name,
-          path: collection_path,
-        }
-      : undefined,
-      [source, collection_id, collection_name, collection_path]
-  )
+  
     
 
   const handleVtoClick = useCallback((mfrCode) => {
