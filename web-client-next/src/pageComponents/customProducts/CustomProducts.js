@@ -91,10 +91,12 @@ const CustomProducts = ({ isCustomProductsPage }) => {
 	
 const router = useRouter();
  useEffect(() => {
-if (!isUserLogin) {
+if (isUserLogin ) return 
+else if( !isUserLogin && !storeData.user_id){
+	return
+}
 router.replace("/");
- }
- }, [isUserLogin, router]);
+ }, [isUserLogin, storeData.user_id ,router]);
 
  
 
@@ -158,9 +160,10 @@ router.replace("/");
 	const isSellerLoggedIn = useMemo(
 		() =>
 			(isAdminLoggedIn ||
-				getIsSellerLoggedIn(storeSellerList, authUser.emailId)) &&
+				getIsSellerLoggedIn(storeSellerList, authUser.emailId) ||
+				getIsSellerLoggedIn(storeSellerList, authUser.phone)) &&
 			isMyProductsEnable,
-		[isAdminLoggedIn, isMyProductsEnable, storeSellerList, authUser.emailId]
+		[isAdminLoggedIn, isMyProductsEnable, storeSellerList, authUser.emailId, authUser.phone]
 	);
 
 	const [selectedSortOptionProduct, setSelectedSortOptionProduct] = useState(
