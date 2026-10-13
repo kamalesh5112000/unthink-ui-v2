@@ -109,7 +109,7 @@ const AddToCartButton = ({
   const handleGoToCart = (event) => {
     event.stopPropagation();
     event.preventDefault();
-    router.push("/cart");
+    router.push(router.pathname.startsWith("/kiosk") ? "/kiosk/cart" : "/cart");
   };
 
   const handleCartAction = (nextQty = 1, userIdOverride = null) => {

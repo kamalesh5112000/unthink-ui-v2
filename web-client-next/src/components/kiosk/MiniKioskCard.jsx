@@ -21,7 +21,7 @@ const MiniKioskCard = ({
 
   const handleProductOpen = (mfrCode) => {
     if (!mfrCode) return;
-    router.push(`/product/${mfrCode}`);
+    router.push(`/kiosk/product/${mfrCode}`);
   };
 
   return (

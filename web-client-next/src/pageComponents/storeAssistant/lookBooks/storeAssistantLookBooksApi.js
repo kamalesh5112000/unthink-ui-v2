@@ -4,7 +4,6 @@ import { adminUserId } from "../../../constants/config";
 
 const LOOKBOOK_GENERATED_BY = "lookbook_based";
 const TRENDING_COLLECTION_TYPE = "trending";
-const PRODUCT_LIMIT = 12;
 
 const getResponseList = (response) => {
   const data = response?.data?.data;
@@ -31,7 +30,6 @@ export const normalizeLookBookCollections = (collections = []) => {
 export const fetchStoreAssistantLookBooks = async () => {
   const response = await collectionAPIs.fetchCollectionsAPICall({
     user_id: adminUserId,
-    product_limits: PRODUCT_LIMIT,
     view: "admin",
     generated_by: LOOKBOOK_GENERATED_BY,
   });
@@ -42,7 +40,6 @@ export const fetchStoreAssistantLookBooks = async () => {
 export const fetchStoreAssistantTrendingCollections = async () => {
   const response = await collectionAPIs.fetchCollectionsAPICall({
     user_id: adminUserId,
-    product_limits: PRODUCT_LIMIT,
     view: "admin",
     collection_type: TRENDING_COLLECTION_TYPE,
   });
@@ -121,13 +118,14 @@ export const updateLookBookProductStar = async ({ collectionId, product, starred
   return response;
 };
 
-export const updateLookBookCollectionDetails = async ({ collectionId, collectionName, description }) => {
+export const updateLookBookCollectionDetails = async ({ collectionId, collectionName, description, coverImage }) => {
   if (!collectionId) throw new Error("Missing collection id");
 
   const response = await collectionAPIs.updateCollectionAPICall({
     collection_id: collectionId,
     collection_name: collectionName,
     description,
+    cover_image: coverImage,
   });
 
   if (response?.data?.status_code && response.data.status_code !== 200) {

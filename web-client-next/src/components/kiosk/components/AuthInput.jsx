@@ -195,7 +195,7 @@ const AuthInput = ({ onLoginChange, styles }) => {
 
   const activeMenuKey = useMemo(() => {
     const currentPath = router.asPath?.split("?")[0] || router.pathname || "";
-    if (currentPath === "/cart" || currentPath.startsWith("/cart/")) {
+    if (currentPath === "/cart" || currentPath.startsWith("/cart/") || currentPath === "/kiosk/cart") {
       return "cart";
     }
 
@@ -225,7 +225,7 @@ const AuthInput = ({ onLoginChange, styles }) => {
       dispatch(getWishlistUserCollectionReset());
       dispatch(fetchCartReset());
       dispatch(clearInfluencerCollections());
-      router.replace("/");
+      router.replace('/kiosk')
       // notifyKioskLoginChange();
     },
     [dispatch, router, syncKioskLogin],
@@ -367,12 +367,10 @@ const AuthInput = ({ onLoginChange, styles }) => {
       }
       if (action.key === "cart") {
         setIsDropdownOpen(false);
-        router.push("/cart");
+        router.push("/kiosk/cart");
         return;
       }
-      const collectionPath = action.pathPrefix
-        ? `${action.pathPrefix}_${userId}`
-        : "";
+      const collectionPath = action.pathPrefix ? `${action.pathPrefix}_${userId}` : "";
       const fetchParams = action.getFetchParams
         ? action.getFetchParams(userId)
         : {

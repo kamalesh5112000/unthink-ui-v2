@@ -4,6 +4,10 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import { current_store_name } from "../../constants/config";
 import { collectionQRCodeGenerator } from "../../helper/utils";
+import {
+  gTagKioskCollectionClick,
+  gTagKioskProductClick,
+} from "../../helper/webTracker/gtag";
 
 const ReactPlayer = dynamic(() => import("react-player/lazy"), { ssr: false });
 const HeroProductSwiper = dynamic(() => import("./HeroProductSwiper"), {
@@ -20,7 +24,7 @@ const HeroSection = ({ storeData, collectiondata }) => {
   const [isClient, setIsClient] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
   const collectionPagePath = collectiondata?.path
-    ? `/kioskcollections/${collectiondata.path}`
+    ? `/kiosk/collections/${collectiondata.path}`
     : "";
   const collectionQRCodeUrl =
     isClient && collectionPagePath
@@ -162,8 +166,13 @@ const HeroSection = ({ storeData, collectiondata }) => {
                     <button
                       onClick={(event) => {
                         event.stopPropagation();
+                        gTagKioskCollectionClick({
+                          collection: collectiondata,
+                          tab_name: "Social Media",
+                          source: "kiosk_shop_all",
+                        });
                         router.push(
-                          `/kioskcollections/${collectiondata?.path}`,
+                          `/kiosk/collections/${collectiondata?.path}`,
                         );
                       }}
                       className="mt-4 bg-black text-white px-4 py-2 rounded-md font-semibold"
@@ -178,7 +187,13 @@ const HeroSection = ({ storeData, collectiondata }) => {
                 <HeroProductSwiper
                   products={collectiondata?.product_lists}
                   onProductClick={(product) => {
-                    router.push(`/product/${product.mfr_code}`);
+                    gTagKioskProductClick({
+                      product,
+                      collection: collectiondata,
+                      tab_name: "Social Media",
+                      source: "kiosk_social_media_carousel",
+                    });
+                    router.push(`/kiosk/product/${product.mfr_code}`);
                   }}
                 />
               
