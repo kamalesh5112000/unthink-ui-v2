@@ -7,7 +7,7 @@ import {
 } from "@ant-design/icons";
 import { Spin, Tooltip, Upload } from "antd";
 import { Badge } from "antd";
-import CameraCapture from "../../../../../components/shared/CameraCapture";
+import CameraCapture from "../../../../components/shared/CameraCapture";
 
 const { Dragger } = Upload;
 

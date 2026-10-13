@@ -15,10 +15,10 @@ import {
   setOverlayCoordinates,
   setWidgetHeader,
   setWidgetImage,
-} from "../../../../hooks/chat/redux/actions";
-import { setIsSendSocketMessageWithPrefix } from "../../../../helper/getTrackerInfo";
-import { current_store_name } from "../../../../constants/config";
-import { CHAT_SEARCH_OPTION_ID } from "../../../../constants/codes";
+} from "../../../hooks/chat/redux/actions";
+import { setIsSendSocketMessageWithPrefix } from "../../../helper/getTrackerInfo";
+import { current_store_name } from "../../../constants/config";
+import { CHAT_SEARCH_OPTION_ID } from "../../../constants/codes";
 
 const createDebouncedFunction = (callback, wait) => {
   let timeoutId;

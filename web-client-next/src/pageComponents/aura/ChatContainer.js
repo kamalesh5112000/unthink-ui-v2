@@ -10,8 +10,8 @@ import {
   STORE_USER_NAME_BUDGETTRAVEL,
   STORE_USER_NAME_DOTHELOOK,
   STORE_USER_NAME_SWIFTLYSTYLED,
-} from "../../../constants/codes";
-import { AdminCheck, getParams, isEmpty } from "../../../helper/utils";
+} from "../../constants/codes";
+import { AdminCheck, getParams, isEmpty } from "../../helper/utils";
 import {
   setChatMessage,
   setChatUserAction,
@@ -19,13 +19,13 @@ import {
   setChatProductsData,
   setShowChatModal,
   resetAuraSearchResponse,
-} from "../../../hooks/chat/redux/actions";
-import { useChat } from "../../../hooks/chat/useChat";
+} from "../../hooks/chat/redux/actions";
+import { useChat } from "../../hooks/chat/useChat";
 import Chat from "./Chat";
 import ChatModal from "./components/overlay/ChatModal";
-import AuraChatSettingModal from "../../auraChatSettingModal";
-import { AuraChatSettingModalModes } from "../../auraChatSettingModal/AuraChatSettingModal";
-import { adminUserId, current_store_name, is_store_instance, super_admin } from "../../../constants/config";
+import AuraChatSettingModal from "../auraChatSettingModal";
+import { AuraChatSettingModalModes } from "../auraChatSettingModal/AuraChatSettingModal";
+import { adminUserId, current_store_name, is_store_instance, super_admin } from "../../constants/config";
 import { useRouter } from "next/router";
 
 const defaultHiMessage = "Hi";

@@ -1,6 +1,6 @@
 // Created for loading chat modal in an iframe as the AURA chat page.
 import React from "react";
-import ChatContainer from "../storePage/aura/ChatContainer";
+import ChatContainer from "../aura/ChatContainer";
 
 const AuraChatPage = ({ isAuraChatPage, serverData }) => {
   return (

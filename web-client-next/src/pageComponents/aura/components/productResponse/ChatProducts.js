@@ -6,16 +6,16 @@ import { ArrowUpOutlined, HistoryOutlined, FormOutlined, CloseOutlined, Loading3
 import {
   openWishlistModal,
   setProductsToAddInWishlist,
-} from "../../../../wishlist/redux/actions";
-import { handleRecProductClick } from "../../../../recommendations/redux/actions";
-import { filterAvailableProductList, isEmpty } from "../../../../../helper/utils";
-import { is_store_instance } from "../../../../../constants/config";
+} from "../../../wishlist/redux/actions";
+import { handleRecProductClick } from "../../../recommendations/redux/actions";
+import { filterAvailableProductList, isEmpty } from "../../../../helper/utils";
+import { is_store_instance } from "../../../../constants/config";
 import {
   CHAT_TYPES_KEYS,
   CHAT_TYPE_CHAT,
   CHAT_SEARCH_OPTION_ID,
-} from "../../../../../constants/codes";
-import { setSuggestionsSelectedTag } from "../../../../../hooks/chat/redux/actions";
+} from "../../../../constants/codes";
+import { setSuggestionsSelectedTag } from "../../../../hooks/chat/redux/actions";
 import styles from "./ChatProducts.module.css";
 import ChatInput from "./ChatInput";
 import ProductDisplay from "./ProductDisplay";

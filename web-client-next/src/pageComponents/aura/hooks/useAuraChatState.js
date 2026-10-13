@@ -4,12 +4,12 @@ import { useSelector } from "react-redux";
 import {
   CHAT_SEARCH_OPTION_ID,
   CHAT_TYPES_KEYS,
-} from "../../../../constants/codes";
+} from "../../../constants/codes";
 import {
   getRandomArrayElements,
   isEmpty,
-} from "../../../../helper/utils";
-import { socket } from "../../../../context/socketV2";
+} from "../../../helper/utils";
+import { socket } from "../../../context/socketV2";
 
 export const useAuraChatState = ({
   chatTypeKey,

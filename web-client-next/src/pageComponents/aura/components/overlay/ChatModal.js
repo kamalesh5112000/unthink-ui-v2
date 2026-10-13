@@ -15,27 +15,27 @@ import {
   ShareAltOutlined,
   FolderAddOutlined,
 } from "@ant-design/icons";
-import { useNavigate } from "../../../../../helper/useNavigate";
+import { useNavigate } from "../../../../helper/useNavigate";
 
 import {
   setActiveSearchOption,
   setShowChatModal,
   resetAuraSearchResponse,
   setSuggestionsSelectedTag,
-} from "../../../../../hooks/chat/redux/actions";
+} from "../../../../hooks/chat/redux/actions";
 import {
   enable_recommendations,
   is_kiosk,
   current_store_name,
-} from "../../../../../constants/config";
+} from "../../../../constants/config";
 import {
   CHAT_TYPE_CHAT,
   STORE_USER_NAME_SAMSKARA,
   MAIN_SITE_URL,
-} from "../../../../../constants/codes";
+} from "../../../../constants/codes";
 import ChatProducts from "../productResponse/ChatProducts";
-import Recommendations from "../../../../recommendations/Recommendations";
-import { SocketContext } from "../../../../../context/socketV2";
+import Recommendations from "../../../recommendations/Recommendations";
+import { SocketContext } from "../../../../context/socketV2";
 import { useAuraChatState } from "../../hooks/useAuraChatState";
 import { useAuraImageUpload } from "../../hooks/useAuraImageUpload";
 import { useAuraPrompt } from "../../hooks/useAuraPrompt";

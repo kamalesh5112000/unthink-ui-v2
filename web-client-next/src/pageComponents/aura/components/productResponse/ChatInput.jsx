@@ -6,7 +6,7 @@ import {
   ArrowUpOutlined,
   LoadingOutlined,
 } from "@ant-design/icons";
-import { CHAT_SEARCH_OPTION_ID } from "../../../../../constants/codes";
+import { CHAT_SEARCH_OPTION_ID } from "../../../../constants/codes";
 
 const ChatInput = ({
   showChatLoader = false,

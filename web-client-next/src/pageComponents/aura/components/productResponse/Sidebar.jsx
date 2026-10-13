@@ -6,7 +6,7 @@ import {
   HistoryOutlined,
 } from "@ant-design/icons";
 import React from "react";
-import { resetAuraSearchResponse } from "../../../../../hooks/chat/redux/actions";
+import { resetAuraSearchResponse } from "../../../../hooks/chat/redux/actions";
 import { useDispatch } from "react-redux";
 
 const Sidebar = ({
