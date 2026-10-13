@@ -30,19 +30,9 @@ const Sidebar = ({
     <>
       <div className=" hidden  lg:flex  lg:flex-col lg:w-[70px]  lg:items-center h-full ">
         <div className="flex-1 flex flex-col gap-8 items-center w-full justify-center">
-        {/* <div
-          className="flex w-full cursor-pointer flex-col items-center gap-1 rounded-lg text-slate-900 hover:bg-slate-100 hover:text-slate-950"
-          onClick={handleGoBack}
-        >
-          <ArrowLeftOutlined
-            className="text-2xl"
-          />
-          <span className="text-xs font-medium text-center">
-            Back
-          </span>
-        </div> */}
+       
         <div
-          className="flex w-full cursor-pointer flex-col items-center rounded-lg   text-slate-900 hover:bg-slate-100 hover:text-slate-950"
+          className="flex w-full p-1 cursor-pointer flex-col items-center rounded-lg   text-slate-900 hover:bg-slate-100 hover:text-slate-950"
           onClick={handleChangeImageConfirm}
         >
           <FormOutlined className="text-[20px]" />
@@ -50,7 +40,7 @@ const Sidebar = ({
             New Chat
           </span>
         </div>
-        <div className="flex flex-col items-center gap-2   w-full relative select-none">
+        <div className="flex flex-col p-1 items-center gap-2   w-full relative select-none">
           <div className="flex h-8 w-16 items-center justify-between gap-0.5 rounded-xl border border-slate-200 bg-slate-100 p-1">
             <button
               onClick={() => setLayoutMode("left")}
@@ -107,7 +97,7 @@ const Sidebar = ({
           </span>
         </div>
         <div
-          className="flex w-full cursor-pointer flex-col items-center gap-1.5 rounded-lg   text-slate-900 hover:bg-slate-100 hover:text-slate-950"
+          className="flex p-1 w-full cursor-pointer flex-col items-center gap-1.5 rounded-lg   text-slate-900 hover:bg-slate-100 hover:text-slate-950"
           onClick={onWishlistClick}
         >
           <FolderOutlined className="text-[20px]" />
@@ -116,7 +106,7 @@ const Sidebar = ({
           </span>
         </div>
         <div
-          className="flex w-full cursor-pointer flex-col items-center gap-1.5 rounded-lg   text-slate-900 hover:bg-slate-100 hover:text-slate-950"
+          className="flex p-1 w-full cursor-pointer flex-col items-center gap-1.5 rounded-lg   text-slate-900 hover:bg-slate-100 hover:text-slate-950"
           onClick={() => setIsHistoryOpen(true)}
         >
           <HistoryOutlined className="text-[20px]" />

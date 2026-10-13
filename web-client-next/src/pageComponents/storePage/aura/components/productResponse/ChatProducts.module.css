@@ -13,11 +13,7 @@
 }
 
 
-@media (min-width: 640px) {
-  .chat-products-container {
-    padding: 0 1.5rem 0rem 1.5rem !important;
-  }
-}
+ 
 
 /* Inner Content */
 .chat-products-content {

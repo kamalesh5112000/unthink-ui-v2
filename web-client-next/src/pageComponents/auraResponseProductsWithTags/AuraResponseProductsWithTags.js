@@ -229,7 +229,7 @@ const AuraResponseProductsWithTags = ({
 				{tags?.map((suggestion, index) => (
 					<div
 						id={`tag-${suggestion}`}
-						key={suggestion}
+						key={index}
 						className={`relative flex h-[34px] w-max min-w-12 items-center justify-center rounded-full px-1 transition-all duration-200 ease-in-out max-[768px]:min-w-0 max-[768px]:py-0.5 ${suggestion === selectedTag
 							? 'bg-secondary text-white font-medium'
 							: checkIsTagEnabled(suggestion)

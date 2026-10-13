@@ -566,7 +566,7 @@ const ChatProducts = ({
             </>
           ))}
 
-        {shouldShowShopLookSplitLayout ? (
+        {shouldShowShopLookSplitLayout && (
           <div className={`${styles["chat-products-shop-look-wrapper"]} flex flex-col lg:flex-row`}>
             <Sidebar
               chatHistory={chatHistory}
@@ -664,50 +664,7 @@ const ChatProducts = ({
               />
             </div>
           </div>
-        ) : (
-          <ProductDisplay
-            authUser={authUser}
-            chatProductsDataToShow={chatProductsDataToShow}
-            chatTypeKey={chatTypeKey}
-            closeChatModal={closeChatModal}
-            enableClickFetchRec={enableClickFetchRec}
-            enableClickTracking={enableClickTracking}
-            enableSelectProduct={enableSelectProduct}
-            handleGoBack={handleGoBack}
-            handleLoadMore={handleLoadMore}
-            handleResetSelectProduct={handleResetSelectProduct}
-            isMobile={isMobile}
-            isBTNormalUserLoggedIn={isBTNormalUserLoggedIn}
-            isAuraChatPage={isAuraChatPage}
-            isTagAvailable={isTagAvailable}
-            isProductSearchOptionActive={isProductSearchOptionActive}
-            isUserLogin={isUserLogin}
-            layoutMode={layoutMode}
-            localChatMessage={localChatMessage}
-            newAuraProductsUiEnabled={NEW_AURA_PRODUCTS_UI_ENABLED}
-            onAddSelectedProductsToCollection={onAddSelectedProductsToCollection}
-            onOpenSearchPopup={onOpenSearchPopup}
-            onProductClick={onProductClick}
-            onSelectAllChange={onSelectAllChange}
-            onSelectProductClick={onSelectProductClick}
-            onWishlistClick={onWishlistClick}
-            registerSelectActions={registerSelectActions}
-            scrollToProductsContainer={scrollToProductsContainer}
-            selectedProducts={selectedProducts}
-            setEnableSelectProduct={setEnableSelectProduct}
-            shouldShowPanelChrome={false}
-            shouldShowShopLookSplitLayout={shouldShowShopLookSplitLayout}
-            shopALookData={shopALookData}
-            showChatLoader={showChatLoader}
-            suggestionsWithProducts={suggestionsWithProducts}
-            trackCollectionCampCode={trackCollectionCampCode}
-            trackCollectionICode={trackCollectionICode}
-            trackCollectionId={trackCollectionId}
-            trackCollectionName={trackCollectionName}
-            widgetHeader={widgetHeader}
-            widgetImage={widgetImage}
-          />
-        )}
+        ) }
       </div>
 
       {isMobile && (
