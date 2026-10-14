@@ -13,19 +13,21 @@ import { getUserInfo, GuestPopUpShow } from "../Auth/redux/actions";
 import GuestPopUp from "../Auth/GuestPopUp";
 import { COOKIE_TT_ID, SIGN_IN_EXPIRE_DAYS } from "../../constants/codes";
 import { authAPIs, collectionAPIs } from "../../helper/serverAPIs";
-import { current_store_name } from "../../constants/config";
+import { current_store_name, isGivaStore } from "../../constants/config";
 import { collectionQRCodeGenerator, setCookie } from "../../helper/utils";
 import Modal from "../../components/modal/Modal";
+import { buildKioskAutoLoginUrls } from "../../helper/autoLogin";
 
 const DeliveryDetails = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [authUserId, cart_attributes, storeData, hasKioskAccess, kioskUser_id] = useSelector((state) => [
+  const [authUserId, cart_attributes, storeData, hasKioskAccess, kioskUser_id, kioskLogin] = useSelector((state) => [
     state.auth.user.data.user_id,
     state.store.data.cart_attributes,
     state.store.data,
     state.kiosk.hasAccess,
     state.kiosk.userId,
+    state.kiosk.login,
   ]);
   const { collection, loading } = useSelector((state) => state.cart);
   // console.log("collection", storeData?.store_name   );
@@ -42,9 +44,15 @@ const DeliveryDetails = () => {
   const [isPopupShow, setIsPopupShow] = useState(false);
   const [isCheckoutClaimQrModalOpen, setIsCheckoutClaimQrModalOpen] =
     useState(false);
+  const [checkoutClaimQr, setCheckoutClaimQr] = useState({
+    isLoading: false,
+    qrUrl: "",
+    shareUrl: "",
+  });
+  
   const mycartcollectionpath = `${ kioskUser_id || authUserId || getTTid()}`;
-  const shouldShowCheckoutClaimQr =
-    authUserId && storeData?.store_name === "giva_indiranagar2_hs";
+ 
+  const shouldShowCheckoutClaimQr = authUserId && isGivaStore;
   const checkoutClaimMessage =
     storeData?.cart_settings?.checkout_claim_message;
 
@@ -56,6 +64,48 @@ const DeliveryDetails = () => {
       tagged_by: item.tagged_by,
     }));
   }, [collection]);
+
+  useEffect(() => {
+    if (!(kioskUser_id || authUserId)) return undefined;
+
+    let isActive = true;
+    const checkoutClaimRoute ={
+      targetPath: `/cart`,
+      pageParam: `?page=cart`,
+    };
+    const buildCheckoutClaimQr = async () => {
+      setCheckoutClaimQr((prev) => ({
+        ...prev,
+        isLoading: true,
+      }));
+
+      const autoLoginUrls = await buildKioskAutoLoginUrls({
+        ...checkoutClaimRoute,
+        kioskLogin,
+        userId: kioskUser_id || authUserId,
+        requireUserId: true,
+        errorLabel: "checkout claim auto-login",
+      });
+
+      if (!isActive) return;
+
+      setCheckoutClaimQr({
+        isLoading: false,
+        qrUrl: autoLoginUrls?.qrUrl || "",
+        shareUrl: autoLoginUrls?.shareUrl || "",
+      });
+    };
+
+    buildCheckoutClaimQr();
+
+    return () => {
+      isActive = false;
+    };
+  }, [
+    authUserId,
+    kioskLogin,
+    kioskUser_id,
+  ]);
 
 
   const handleRemove = (products) => {
@@ -342,7 +392,9 @@ const DeliveryDetails = () => {
       <div className=" ">
         <div className="text-4xl lg:text-4xl font-semibold flex flex-col items-center mb-14 text-center">
           <span>CART</span>
+            
         </div>
+        
         <div className="lg:flex w-full px-10 ">
           <div className="flex-1">
             {products.length === 0 ? (
@@ -463,7 +515,7 @@ const DeliveryDetails = () => {
                     </div>
                   ) : null,
                 )}
-              {storeData?.store_name !== 'giva_indiranagar2_hs' && (
+              {!isGivaStore &&  (
 
                 <div>
                   <p
@@ -487,15 +539,42 @@ const DeliveryDetails = () => {
           </div>
 
           {/* Right Side - Order Summary */}
+          <div>
+            {hasKioskAccess && products?.length > 0  &&  (
+                <div className="mt-6 flex flex-col items-center gap-3 text-center">
+                  {checkoutClaimQr?.isLoading ? (
+                    <div className="flex h-40 w-40 items-center justify-center rounded bg-gray-100 text-sm text-gray-500">
+                      Loading QR...
+                    </div>
+                  ) : checkoutClaimQr?.qrUrl ? (
+                    <img
+                      src={checkoutClaimQr.qrUrl}
+                      alt="Digital cart QR"
+                      className="h-40 w-40 object-contain"
+                    />
+                  ) : (
+                    <div className="flex h-40 w-40 items-center justify-center rounded bg-gray-100 px-4 text-sm text-gray-500">
+                      QR unavailable
+                    </div>
+                  )}
+                  {checkoutClaimQr?.shareUrl && (
+                    <p className="break-all text-sm text-gray-500 mb-4">
+                      Scan the QR code to view your cart on your phone.
+                    </p>
+                  )}
+                </div>
+              )}
           {products.length !== 0 && (
+        
+           
             <div
-              className="border lg:p-10 md:p-7 p-5 lg:w-[400px] lg:ml-10 rounded-sm shadow-lg h-full sticky top-36 lg:mt-0 mt-6"
+              className="border  lg:p-10 md:p-7 p-5 lg:w-[400px] lg:ml-10 rounded-sm shadow-lg h-fit sticky top-36 lg:mt-0 mt-6"
               style={{ borderColor: "#D1D1D8", minWidth: "250px" }}
             >
               <h2 className="text-center font-bold md:text-3xl text-2xl mb-6 md:mb-10">
                 ORDER SUMMARY
               </h2>
-              {storeData?.store_name !== 'giva_indiranagar2_hs' && ( 
+              {!isGivaStore &&( 
                 <>
               <div className="flex justify-between mb-5">
                 <p className="md:text-lg text-base">Subtotal</p>
@@ -533,7 +612,7 @@ const DeliveryDetails = () => {
                   ₹ {collection?.total_amount?.toLocaleString()}
                 </p>
               </div>
-              {storeData?.store_name !== 'giva_indiranagar2_hs' && (
+              {!isGivaStore && (
 
               <div className="flex justify-between text-gray-600 text-sm">
                 <p>Estimated Delivery by</p>
@@ -551,6 +630,7 @@ const DeliveryDetails = () => {
                 />
                 <img src="" alt="input" className="absolute right-5 top-5" />
               </div> */}
+
               <div className="p-0">
                 <button
                   onClick={handleContinueClick}
@@ -561,8 +641,13 @@ const DeliveryDetails = () => {
                   Continue
                 </button>
               </div>
+           
             </div>
+        
+
           )}
+          </div>
+
         </div>
       </div>
 

@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { authAPIs, collectionAPIs } from "../../../helper/serverAPIs";
 import { current_store_name } from "../../../constants/config";
 import { KIOSK_LOGIN_STORAGE_KEY } from "../../../helper/utils";
@@ -51,7 +57,7 @@ const KIOSK_COLLECTION_ACTIONS = [
 ];
 
 const getGuestLoginName = (user) =>
-  user?.user_name   || user?.email || user?.emailId || user?.phone;
+  user?.user_name || user?.email || user?.emailId || user?.phone;
 
 const getPhoneValue = (value) => value.replace(/[^\d+]/g, "");
 
@@ -70,8 +76,7 @@ const getCollectionListFromResponse = (response) => {
 };
 
 const getCollectionProductCount = (collection) => {
-  const productLists =
-    collection?.product_lists 
+  const productLists = collection?.product_lists;
 
   return Array.isArray(productLists) ? productLists.filter(Boolean).length : 0;
 };
@@ -84,10 +89,7 @@ const getCollectionAutoLoginRoute = (collection, kioskLogin) => {
     kioskLogin?.phone ||
     "";
   const collectionId =
-    collection?._id ||
-    collection?.collection_id ||
-    collection?.id ||
-    "";
+    collection?._id || collection?.collection_id || collection?.id || "";
 
   if (!userName || !collectionId) return null;
 
@@ -106,7 +108,9 @@ const getFetchedCollection = (response, collectionPath) => {
 
   return (
     collections.find((collection) => collection?.path === collectionPath) ||
-    collections.find((collection) => getCollectionProductCount(collection) > 0) ||
+    collections.find(
+      (collection) => getCollectionProductCount(collection) > 0,
+    ) ||
     collections[1] ||
     collections[0] ||
     null
@@ -137,7 +141,7 @@ const renderCollectionActionIcon = (actionKey) => {
       <svg
         className="w-5 h-5 "
         fill="none"
-        style={{color:'#3B82F6'}}
+        style={{ color: "#3B82F6" }}
         stroke="currentColor"
         strokeWidth="2"
         viewBox="0 0 24 24"
@@ -155,7 +159,7 @@ const renderCollectionActionIcon = (actionKey) => {
     <svg
       className="w-5 h-5"
       fill="none"
-      style={{color:'#22C55E'}}
+      style={{ color: "#22C55E" }}
       stroke="currentColor"
       strokeWidth="2"
       viewBox="0 0 24 24"
@@ -181,19 +185,17 @@ const AuthInput = ({ onLoginChange, styles }) => {
   const [emailPhone, setEmailPhone] = useState("");
   const [kioskLogin, setKioskLogin] = useState(null);
   // console.log('kioskLogin',kioskLogin);
-  const router = useRouter()
-  
+  const router = useRouter();
+
   const [status, setStatus] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [qrState, setQrState] = useState(
-    INITIAL_COLLECTION_QR_STATE,
-  );
+  const [qrState, setQrState] = useState(INITIAL_COLLECTION_QR_STATE);
   const [activeCollectionAction, setActiveCollectionAction] = useState("");
   const containerRef = useRef(null);
 
   const activeMenuKey = useMemo(() => {
     const currentPath = router.asPath?.split("?")[0] || router.pathname || "";
-    if (currentPath === "/cart" || currentPath.startsWith("/cart/")) {
+    if (currentPath === "/cart" || currentPath.startsWith("/cart/") || currentPath === "/kiosk/cart") {
       return "cart";
     }
 
@@ -201,7 +203,7 @@ const AuthInput = ({ onLoginChange, styles }) => {
   }, [router.asPath, router.pathname]);
 
   const syncKioskLogin = useCallback(
-    (login) => {     
+    (login) => {
       setKioskLogin(login);
       dispatch(setKioskLoginRedux(login));
       onLoginChange?.(login);
@@ -211,33 +213,33 @@ const AuthInput = ({ onLoginChange, styles }) => {
 
   const clearKioskLogin = useCallback(
     ({ resetInput = true } = {}) => {
-      if (typeof window !== "undefined"   ) {
+      if (typeof window !== "undefined") {
         sessionStorage.removeItem(KIOSK_LOGIN_STORAGE_KEY);
         window.dispatchEvent(new Event(KIOSK_LOGIN_CHANGE_EVENT));
       }
       if (resetInput) setEmailPhone("");
       setStatus("");
-      sessionStorage.removeItem('selectedTag')
+      sessionStorage.removeItem("selectedTag");
       setIsDropdownOpen(false);
       syncKioskLogin(null);
       dispatch(getWishlistUserCollectionReset());
       dispatch(fetchCartReset());
       dispatch(clearInfluencerCollections());
-      router.replace('/')
+      router.replace('/kiosk')
       // notifyKioskLoginChange();
     },
     [dispatch, router, syncKioskLogin],
   );
 
   useEffect(() => {
-    if (!kioskLoginFromStore){
+    if (!kioskLoginFromStore) {
       setEmailPhone("");
       setStatus("");
       setIsDropdownOpen(false);
       setKioskLogin(null);
-      onLoginChange?.(null);
+      // onLoginChange?.(null);
       return;
-    } 
+    }
 
     setEmailPhone(getGuestLoginName(kioskLoginFromStore) || "");
     setKioskLogin(kioskLoginFromStore);
@@ -287,7 +289,7 @@ const AuthInput = ({ onLoginChange, styles }) => {
       const email = isEmail ? value : "";
       const res = await authAPIs.GuestRegisterAPICall({
         emailId: email,
-        store: current_store_name,  
+        store: current_store_name,
         phone,
       });
       const responseData = res?.data?.data || {};
@@ -304,7 +306,10 @@ const AuthInput = ({ onLoginChange, styles }) => {
           phone,
         };
 
-        sessionStorage.setItem(KIOSK_LOGIN_STORAGE_KEY, JSON.stringify(loginData));
+        sessionStorage.setItem(
+          KIOSK_LOGIN_STORAGE_KEY,
+          JSON.stringify(loginData),
+        );
         window.dispatchEvent(new Event(KIOSK_LOGIN_CHANGE_EVENT));
         setEmailPhone(loginName);
         syncKioskLogin(loginData);
@@ -360,11 +365,11 @@ const AuthInput = ({ onLoginChange, styles }) => {
         setStatus("Login is required");
         return;
       }
-      if(action.key === 'cart'){
+      if (action.key === "cart") {
         setIsDropdownOpen(false);
-			  router.push('/cart')
-			  return
-	  	}
+        router.push("/kiosk/cart");
+        return;
+      }
       const collectionPath = action.pathPrefix ? `${action.pathPrefix}_${userId}` : "";
       const fetchParams = action.getFetchParams
         ? action.getFetchParams(userId)
@@ -376,14 +381,13 @@ const AuthInput = ({ onLoginChange, styles }) => {
       setIsDropdownOpen(false);
       setStatus("");
       setActiveCollectionAction(action.key);
-      
-		
 
       try {
-        const response = await collectionAPIs.fetchCollectionsAPICall(fetchParams);
+        const response =
+          await collectionAPIs.fetchCollectionsAPICall(fetchParams);
         const collection = getFetchedCollection(response, collectionPath);
         // console.log('collection',collection.product_lists);
-        
+
         const hasCollectionData = getCollectionProductCount(collection) > 0;
         const autoLoginRoute = hasCollectionData
           ? getCollectionAutoLoginRoute(collection, kioskLogin)
@@ -397,14 +401,13 @@ const AuthInput = ({ onLoginChange, styles }) => {
             })
           : null;
 
-        
-      setQrState({
-        ...INITIAL_COLLECTION_QR_STATE,
-        isOpen: true,
-        isLoading: true,
-        title: action.modalTitle,
-      });
-      if (!collection?.product_lists || !hasCollectionData) {
+        setQrState({
+          ...INITIAL_COLLECTION_QR_STATE,
+          isOpen: true,
+          isLoading: true,
+          title: action.modalTitle,
+        });
+        if (!collection?.product_lists || !hasCollectionData) {
           setQrState((prev) => ({
             ...prev,
             isLoading: false,
@@ -443,10 +446,11 @@ const AuthInput = ({ onLoginChange, styles }) => {
     >
       <div
         className={`flex items-center w-full  bg-white border border-gray-200 rounded-full pl-2 pr-4 py-2 shadow-sm ${
-          kioskLogin ? "w-fit justify-start cursor-pointer " : "justify-evenly   " 
+          kioskLogin
+            ? "w-fit justify-start cursor-pointer "
+            : "justify-evenly   "
         }`}
         onClick={kioskLogin ? handleUserButtonClick : undefined}
-
       >
         {!kioskLogin && (
           <input
@@ -510,7 +514,9 @@ const AuthInput = ({ onLoginChange, styles }) => {
                 } ${activeCollectionAction ? "cursor-not-allowed opacity-60" : ""}`}
               >
                 {renderCollectionActionIcon(action.key)}
-                {activeCollectionAction === action.key ? "Loading..." : action.label}
+                {activeCollectionAction === action.key
+                  ? "Loading..."
+                  : action.label}
               </button>
             );
           })}
@@ -521,7 +527,7 @@ const AuthInput = ({ onLoginChange, styles }) => {
             <svg
               className="w-5 h-5 "
               fill="none"
-              style={{color:'#6a7282'}}
+              style={{ color: "#6a7282" }}
               stroke="currentColor"
               strokeWidth="2"
               viewBox="0 0 24 24"

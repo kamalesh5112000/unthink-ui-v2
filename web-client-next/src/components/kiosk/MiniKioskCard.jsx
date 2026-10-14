@@ -21,7 +21,7 @@ const MiniKioskCard = ({
 
   const handleProductOpen = (mfrCode) => {
     if (!mfrCode) return;
-    router.push(`/product/${mfrCode}`);
+    router.push(`/kiosk/product/${mfrCode}`);
   };
 
   return (
@@ -38,6 +38,28 @@ const MiniKioskCard = ({
           </div>
         ) : products?.length ? (
           <div className="grid max-h-[70vh] w-full grid-cols-2 gap-4 overflow-y-auto pr-2 md:grid-cols-3">
+              {qrUrl ? (
+              <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+                <div className="flex aspect-square w-full items-center justify-center bg-gray-100 p-4">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={qrUrl}
+                    alt="Collection QR code"
+                    className="h-full w-full object-contain"
+                  />
+                </div>
+                <div className="space-y-1 p-3">
+                  <div className="text-sm font-semibold text-gray-900">
+                    Scan on mobile
+                  </div>
+                  {qrTargetUrl ? (
+                    <div className="break-all text-xs text-gray-500">
+                      {qrTargetUrl}
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
             {products.map((product, index) => {
               const price = getProductPrice(product);
 
@@ -88,28 +110,7 @@ const MiniKioskCard = ({
                 </div>
               );
             })}
-            {qrUrl ? (
-              <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-                <div className="flex aspect-square w-full items-center justify-center bg-gray-100 p-4">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={qrUrl}
-                    alt="Collection QR code"
-                    className="h-full w-full object-contain"
-                  />
-                </div>
-                <div className="space-y-1 p-3">
-                  <div className="text-sm font-semibold text-gray-900">
-                    Scan on mobile
-                  </div>
-                  {qrTargetUrl ? (
-                    <div className="break-all text-xs text-gray-500">
-                      {qrTargetUrl}
-                    </div>
-                  ) : null}
-                </div>
-              </div>
-            ) : null}
+          
           </div>
         ) : (
           <div className="flex min-h-32 w-full items-center justify-center rounded bg-gray-100 px-4 text-center text-sm text-gray-600">

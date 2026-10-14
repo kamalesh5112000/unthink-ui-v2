@@ -17,22 +17,33 @@ import {
 import LoggedInInfo from "../../components/kiosk/components/LoggedInInfo";
 import AuthInput from "../../components/kiosk/components/AuthInput";
 import { current_store_name } from "../../constants/config";
+import {
+  gTagKioskTabAutoSwitch,
+  gTagKioskTabClick,
+} from "../../helper/webTracker/gtag";
 
 const KIOSK_TAGS = ["Social Media", "Look Books", "#Trending"];
 const GIVA_NEELADRI_TAB_ROTATION_DELAY = 60 * 1000;
 
 const KioskHome = ({ props }) => {
   const userInfo = useSelector((state) => state.auth.user.data);
-  const Tags = KIOSK_TAGS;
-  const [showTags, setShowTags] = useState(
-    sessionStorage.getItem("selectedTag") || Tags[0],
-  );
+ 
   const [products, setProducts] = useState([]);
   const [lookBooks, setLookBooks] = useState([]);
   const [socialMediaData, setSocialMediaData] = useState([]);
 
-  //   console.log("products", products);
   const storeData = useSelector((state) => state.store.data);
+  const Tags = useMemo(() => {
+    const configuredTabs = storeData?.kiosk_settings?.tabs
+      ?.map((tab) => tab?.label)
+      ?.filter(Boolean);
+
+    return configuredTabs?.length ? configuredTabs : KIOSK_TAGS;
+  }, [storeData?.kiosk_settings?.tabs]);
+
+  const [showTags, setShowTags] = useState(
+    () => sessionStorage.getItem("selectedTag") || Tags[0],
+  );
   const [activeIndex, setActiveIndex] = useState(0);
   const rotationDelay = storeData?.kiosk_settings?.video_time_gap;
   const collectiondata = useMemo(
@@ -100,6 +111,7 @@ const KioskHome = ({ props }) => {
         const nextTag = Tags[(currentTagIndex + 1) % Tags.length];
 
         sessionStorage.setItem("selectedTag", nextTag);
+        gTagKioskTabAutoSwitch({ tab_name: nextTag });
         return nextTag;
       });
     }, GIVA_NEELADRI_TAB_ROTATION_DELAY);
@@ -129,6 +141,7 @@ const KioskHome = ({ props }) => {
               <button
                 key={i}
                 onClick={() => {
+                  gTagKioskTabClick({ tab_name: tag });
                   (setShowTags(tag),
                     sessionStorage.setItem("selectedTag", tag));
                 }}
@@ -148,7 +161,7 @@ const KioskHome = ({ props }) => {
             onLoginChange={handleKioskLoginChange}
           />
         </div>
-      </div>
+      </div>  
       <div
         className={`lg:flex ${showTags === "Social Media" ? "items-start" : "items-center"} gap-3`}
       >

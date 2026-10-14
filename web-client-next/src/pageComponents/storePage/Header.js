@@ -221,7 +221,7 @@ const Header = ({
 
   const onSignOut = () => {
     showMenu && setShowMenu(false);
-    router.push("/signout");
+    router.push(hasKioskAccess || router.pathname.startsWith("/kiosk") ? "/kiosk/signout" : "/signout");
   };
 
   const aura_header_theme = config.aura_header_theme;

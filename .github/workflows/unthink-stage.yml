@@ -11,9 +11,10 @@ jobs:
     name: Cloud Run Deployment Stage
     runs-on: ubuntu-latest
     env:
-      NEXT_PUBLIC_BACKEND_URL: "https://webbot-image-sync-314035436999.us-central1.run.app"
+      NEXT_PUBLIC_BACKEND_URL: "https://unthink-stage-backend-834750050334.us-central1.run.app"
       NEXT_PUBLIC_ACCESS_KEY: "e191921352124a06a09bb811a86a5c3a"
       NEXT_PUBLIC_STAGING_ENV: "true"
+      #NEXT_PUBLIC_GA_TRACKING_ID: "G-909K3N1VM0"
       NEXT_PUBLIC_IS_KIOSK_ENABLED: "false"
       NEXT_PUBLIC_SUPER_ADMIN_USER_NAME: "giva_indiranagar2_hs"
       NEXT_PUBLIC_AURA_HEADER_THEME: "light"
@@ -27,8 +28,8 @@ jobs:
       NEXT_PUBLIC_ENABLE_VENLY: "false"
       # NEXT_PUBLIC_WEBBOT_NFT_SERVICE__BASE_URL: ""
       NEXT_PUBLIC_FERNET_SECRET_KEY: "3CJeym0L9mZrk3SU7ydWYpZZTK7hIGcDnbG9kunFgc4="
-      NEXT_PUBLIC_PAYMENT_URL: "https://unthink-dropp-payment-prod-314035436999.us-central1.run.app"
-      NEXT_PUBLIC_EVENT_APP_API_BASE_URL: "https://unthinkadminconsole-314035436999.us-central1.run.app/api"
+      NEXT_PUBLIC_PAYMENT_URL: "https://unthink-dropp-payment-stage-314035436999.us-central1.run.app"
+      NEXT_PUBLIC_EVENT_APP_API_BASE_URL: "https://unthinkadminconsolestage-314035436999.us-central1.run.app/api"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -74,6 +75,7 @@ jobs:
           --build-arg NEXT_PUBLIC_ENABLE_VENLY=${{ env.NEXT_PUBLIC_ENABLE_VENLY }} \
           --build-arg NEXT_PUBLIC_FERNET_SECRET_KEY=${{ env.NEXT_PUBLIC_FERNET_SECRET_KEY }} \
           --build-arg NEXT_PUBLIC_PAYMENT_URL=${{ env.NEXT_PUBLIC_PAYMENT_URL }} \
+          --build-arg NEXT_PUBLIC_GA_TRACKING_ID=${{ env.NEXT_PUBLIC_GA_TRACKING_ID }} \
           --build-arg NEXT_PUBLIC_EVENT_APP_API_BASE_URL=${{ env.NEXT_PUBLIC_EVENT_APP_API_BASE_URL }} \
           -f web-client-next/Dockerfile .
       

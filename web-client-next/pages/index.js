@@ -12,7 +12,6 @@ import RootStatic from "../src/pageComponents/staticHomePage/RootStatic";
 import { ROUTES } from "../src/constants/codes";
 import { Spin } from "antd";
 import { useSelector } from "react-redux";
-import KioskRoot from "../src/pageComponents/kiosk/KioskRoot";
 import { normalizeStoreAssistantSettings } from "../src/pageComponents/storeAssistant/utils/normalizeStoreAssistantSettings";
 import { hasStoreAssistantAccess } from "../src/pageComponents/storeAssistant/utils/storeAssistantAccess";
 
@@ -55,9 +54,14 @@ const Index = ({ ...props }) => {
     );
 
     useEffect(() => {
-        if (!mounted || hasKioskAccess || !hasStoreAssistantDashboardAccess) return;
+        if (!mounted || hasKioskAccess !== false || !hasStoreAssistantDashboardAccess) return;
         router.replace("/store-assistant");
     }, [hasKioskAccess, hasStoreAssistantDashboardAccess, mounted, router]);
+
+    useEffect(() => {
+        if (!mounted || !hasKioskAccess) return;
+        router.replace("/kiosk");
+    }, [hasKioskAccess, mounted, router]);
 
 
     // Now we can do conditionals
@@ -65,15 +69,13 @@ const Index = ({ ...props }) => {
         return null; // Don't render anything until mounted on client
     }
 
-    if (mounted && !hasKioskAccess && hasStoreAssistantDashboardAccess) {
+    if (mounted && (hasKioskAccess === true || (hasKioskAccess === false && hasStoreAssistantDashboardAccess))) {
         return null;
     }
 
     return (
         <>
-            {hasKioskAccess ? (
-                <KioskRoot isRootPage {...props} />
-            ) : is_store_instance ? ( // for store home page
+            {is_store_instance ? ( // for store home page
                 mounted && (
                     <SharedPage
                         isRootPage

@@ -13,7 +13,7 @@ jobs:
       NODE_OPTIONS: "--max_old_space_size=4096"
       NEXT_PUBLIC_BACKEND_URL: "https://webbot-image-sync-314035436999.us-central1.run.app"
       NEXT_PUBLIC_ACCESS_KEY: "e191921352124a06a09bb811a86a5c3a"
-      GA_TRACKING_ID: "G-FWT5BRF22H"
+      #GA_TRACKING_ID: "G-FWT5BRF22H"
       NEXT_PUBLIC_SUPER_ADMIN_USER_NAME: "unthink-admin"
       NEXT_PUBLIC_CURRENT_STORE_NAME: "unthink_ai"
       # NEXT_PUBLIC_ENABLE_RECOMMENDATIONS: "false"

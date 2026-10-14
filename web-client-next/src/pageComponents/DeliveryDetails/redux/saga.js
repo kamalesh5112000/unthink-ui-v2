@@ -168,7 +168,7 @@ function* fetchCartSaga(action) {
 
     const data =
       response?.data?.data && response?.data?.data?.length
-        ? response?.data?.data[1] ||   response?.data?.data[0]
+        ?   response?.data?.data[0] ||  response?.data?.data[1] 
         : null; 
         // console.log('dsdsdsdsdsdsd', data);
 
@@ -206,12 +206,10 @@ function* removeProductsSaga(action) {
 }
 
 function* createLoyaltyBadgeSaga(action) {
+  // console.log("createLoyaltyBadgeSaga action.payload", action.payload);
   try {
     const response = yield call(CreateBadgeApiCall, {
-      name: action.payload?.name ,
-      points: action.payload?.points ,
-      badge_image_url: action.payload?.badge_image_url,
-      qr_page_url: action.payload?.qr_page_url,
+     data: action.payload
       });
 
     const blob = new Blob([response.data], {

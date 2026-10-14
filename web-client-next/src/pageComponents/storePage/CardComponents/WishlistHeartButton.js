@@ -172,24 +172,24 @@ const WishlistHeartButton = ({
         return;
       }
 
-      if (source === "SEARCH") {
-        onAddSelectedProductsToCollection(
-          event,
-          { isSave: true, product, skipWishlistStateAfterGuest: true },
-          {
-            addToHandpickedWishlist: ({ userId: selectedUserId } = {}) => {
-              const latestKioskLogin = getKioskLogin?.();
-              return callHandpickedAPI(
-                selectedUserId ||
-                  latestKioskLogin?.user_id ||
-                  authUserId ||
-                  getTTid(),
-              );
-            },
-          },
-        );
-        return;
-      }
+      // if (source === "SEARCH") {
+      //   onAddSelectedProductsToCollection(
+      //     event,
+      //     { isSave: true, product, skipWishlistStateAfterGuest: true },
+      //     {
+      //       addToHandpickedWishlist: ({ userId: selectedUserId } = {}) => {
+      //         const latestKioskLogin = getKioskLogin?.();
+      //         return callHandpickedAPI(
+      //           selectedUserId ||
+      //             latestKioskLogin?.user_id ||
+      //             authUserId ||
+      //             getTTid(),
+      //         );
+      //       },
+      //     },
+      //   );
+      //   return;
+      // }
 
       onAddSelectedProductsToCollection(event, product, {
         addToHandpickedWishlist: ({ userId: selectedUserId } = {}) => {

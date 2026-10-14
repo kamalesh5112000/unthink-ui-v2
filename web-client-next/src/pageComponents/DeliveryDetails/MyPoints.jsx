@@ -2,6 +2,22 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createLoyaltyBadge, fetchEarningPoints } from "./redux/action";
 
+const buildClaimPointsUrl = (baseUrl, userId, storeName) => {
+  if (!baseUrl || !userId || !storeName) {
+    return baseUrl;
+  }
+
+  const claimPointsBasePattern = /\/claim-points\/?$/;
+
+  if (!claimPointsBasePattern.test(baseUrl)) {
+    return baseUrl;
+  }
+
+  const normalizedBaseUrl = baseUrl.replace(/\/+$/, "");
+
+  return `${normalizedBaseUrl}/${encodeURIComponent(userId)}/${encodeURIComponent(storeName)}`;
+};
+
 const MyPoints = () => {
   const [
     authUser,
@@ -39,19 +55,33 @@ const MyPoints = () => {
     );
   }, [authUserId, dispatch, earningPoints, storeData?.store_name]);
   useEffect(() => {
-    if (!storeData?.pdp_settings?.badge_url || imageLoyaltyBadge) {
+    if ( !storeData?.badge_settings && earningPoints?.available_balance === 0) {
       return;
     }
 
+    const qrPageUrl = buildClaimPointsUrl(
+      storeData?.badge_settings?.qr_page_url,
+      authUserId,
+      storeData?.store_name,
+    );
+
+// api logic
     dispatch(
       createLoyaltyBadge({
         name: authUser?.first_name || authUser?.last_name || authUser?.user_name,
         points: earningPoints?.available_balance,
-        badge_image_url: storeData?.pdp_settings?.badge_url,
-        qr_page_url: `${window.location.origin}/claim-points/${authUserId}/${storeData?.store_name}`,
+        qr_page_url: qrPageUrl,
+        badge_image_url: storeData?.badge_settings?.badge_image_url,
+        badge_bg_color: storeData?.badge_settings?.badge_bg_color ||  null,
+        badge_card_bg_color: storeData?.badge_settings?.badge_card_bg_color || null,
+        badge_congrats_color: storeData?.badge_settings?.badge_congrats_color || null,
+        badge_primary_color: storeData?.badge_settings?.badge_primary_color || null,
+        badge_qr_bg_color: storeData?.badge_settings?.badge_qr_bg_color || null,
+        badge_redemption_instructions: storeData?.badge_settings?.badge_redemption_instructions || null,
+        badge_text_color: storeData?.badge_settings?.badge_text_color || null
       }),
     );
-  }, [dispatch, earningPoints?.available_balance]);
+  }, [authUserId, dispatch, earningPoints?.available_balance, storeData?.badge_settings, storeData?.store_name]);
 
   return (
     <div>

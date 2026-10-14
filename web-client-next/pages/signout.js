@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
@@ -15,6 +15,14 @@ import { fetchCartReset } from "../src/pageComponents/DeliveryDetails/redux/acti
 const SignOut = () => {
   const router = useRouter();
   const dispatch = useDispatch();
+
+  const getRedirectPath = useCallback(() => {
+    const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+    const redirect = params ? params.get("redirect") : null;
+    if (redirect) return redirect;
+    if (router.pathname.startsWith("/kiosk")) return "/kiosk";
+    return is_store_instance ? "/" : "/store";
+  }, [router.pathname]);
 
   useEffect(() => {
     const handleSignOut = async () => {
@@ -50,21 +58,17 @@ const SignOut = () => {
         setTimeout(() => {
           dispatch(getUserInfo());
           // Redirect to home or store page
-          const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
-          const redirect = params ? params.get("redirect") : null;
-          router.push(redirect || (is_store_instance ? "/" : "/store"));
+          router.push(getRedirectPath());
 
         }, 2000);
       } catch (error) {
         console.log("Sign out error:", error);
-        const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
-        const redirect = params ? params.get("redirect") : null;
-        router.push(redirect || (is_store_instance ? "/" : "/store"));
+        router.push(getRedirectPath());
       }
     };
 
     handleSignOut();
-  }, [dispatch, router]);
+  }, [dispatch, getRedirectPath, router]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
@@ -107,9 +111,7 @@ const SignOut = () => {
             If you are not redirected automatically,{" "}
             <button
               onClick={() => {
-                const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
-                const redirect = params ? params.get("redirect") : null;
-                router.push(redirect || (is_store_instance ? "/" : "/store"));
+                router.push(getRedirectPath());
               }}
               className="text-red-600 font-semibold hover:text-red-700 transition-colors underline"
             >

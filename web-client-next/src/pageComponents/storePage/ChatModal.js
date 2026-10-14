@@ -852,7 +852,6 @@ const ChatModal = ({
       dispatch(setAuraHelperMessage(activeSearchOption?.search_message));
       dispatch(setAuraSreverImage(""));
       dispatch(setOverlayCoordinates([]));
-      handleClearChatImage();
       setIsFigmaUploadPanelOpen(false);
       setIsSearchPopupOpen(false);
       // setLocalChatMessage('')
@@ -977,12 +976,11 @@ const ChatModal = ({
     if (auraServerImage || widgetImage) {
       const imageToUse = auraServerImage || widgetImage;
       // dispatch(setChatImageUrl(imageToUse));
+      handleClearChatImage();
       setIsImageLoading(false);
       setRegenarateImage(true);
-    } else {
-      dispatch(setChatImageUrl(auraServerImage));
     }
-  }, [auraServerImage, widgetImage]);
+  }, [auraServerImage, handleClearChatImage, widgetImage]);
 
   // Original image size (1024x1024)
   const originalWidth = 1024;
@@ -1587,6 +1585,7 @@ const ChatModal = ({
                                         <h2 className={styles["chatmodal-category-title"]}>
                                           {activeSearchOption?.title?.toUpperCase()}
                                         </h2>
+                                        <p className={styles["chatmodal-initial-layout-wrapperp"]}> {activeSearchOption?.description} </p>
                                         {isAllowedSplitLayout &&
                                           activeSearchOption?.text_example &&
                                           activeSearchOption?.id !== CHAT_SEARCH_OPTION_ID.complete_the_look &&
