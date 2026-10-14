@@ -42,7 +42,7 @@
 
 .createWishlistText {
   padding-left: 1rem;
-  color: #0EA5E9;
+  color: var(--color-secondary);
   font-weight: 600;
   font-size: 1rem;
 }
@@ -85,7 +85,7 @@
 }
 
 .tabButtonActive {
-  background-color: #0EA5E9;
+  background-color: var(--color-secondary);
   color: white;
 }
 
@@ -93,8 +93,8 @@
   background-color: transparent;
   border: 2px solid;
   border-style: solid;
-  border-color: #0EA5E9;
-  color: #0EA5E9;
+  border-color: var(--color-secondary);
+  color: var(--color-secondary);
 }
 
 /* Product Selection Container */
@@ -144,14 +144,14 @@
 }
 
 .deleteButtonEnabled {
-  color: #0EA5E9;
+  color: var(--color-secondary);
   cursor: pointer;
 }
 
  
 
 .selectableButton {
-  color: #0EA5E9;
+  color: var(--color-secondary);
   cursor: pointer;
   line-height: 44px;
   font-size: 1rem;

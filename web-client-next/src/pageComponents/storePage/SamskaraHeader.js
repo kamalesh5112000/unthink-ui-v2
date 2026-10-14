@@ -3,7 +3,7 @@ import { useNavigate } from "../../helper/useNavigate";
 import { Image } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
 
-import ChatContainer from "./ChatContainer";
+import ChatContainer from "./aura/ChatContainer";
 import { UserProfileMenu } from "./UserProfileMenu";
 
 import downArrowIcon from "../../images/downArrowIcon.svg";

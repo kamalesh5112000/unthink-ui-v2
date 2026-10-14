@@ -52,7 +52,6 @@ import { auraYfretUserCollBaseUrl } from "../../constants/config";
 import { ShareAltOutlined, SendOutlined } from "@ant-design/icons";
 import { MdShare } from "react-icons/md";
 
-import aura_assistant from "../../images/chat/aura_assistant_image.png";
 import star_ai_icon from "../../images/unthink_star_ai_icon.svg";
 
 import CropAndResizeImageModal from "../cropAndResizeImageModal/CropAndResizeImageModal";

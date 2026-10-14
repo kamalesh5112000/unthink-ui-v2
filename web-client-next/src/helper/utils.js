@@ -829,7 +829,7 @@ export function getCollectionDefaultDescription(collectionName) {
 
 export const makeBodyOverflowHidden = () => {
 	if (typeof window !== "undefined" && window.document?.body)
-		window.document.body.style.overflow = "hidden";
+		window.document.body.style.overflow = "";
 };
 
 export const makeBodyOverflowUnset = () => {

@@ -43,7 +43,7 @@
 .triggerButton {
     display: flex;
     cursor: pointer;
-    background-color: #4f46e5;
+    background-color: var(--color-secondary) ;
     /* bg-indigo-600 */
     border-radius: 9999px;
     /* rounded-full */
@@ -202,7 +202,7 @@
 }
 
 .submitButton {
-    background-color: #4f46e5;
+    background-color: var(--color-secondary) ;
     /* bg-indigo-600 */
     border-radius: 4px;
     /* rounded */

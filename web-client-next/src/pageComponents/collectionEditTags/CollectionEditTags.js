@@ -117,7 +117,7 @@ const CollectionEditTags = ({
 											{currentCollectionTags.map((tag) => (
 												<SwiperSlide key={tag} style={{ width: "auto" }}>
 													<div
-														className={`flex items-center border border-violet-400 rounded-3xl shadow px-2 py-0.75 sm:px-4 w-max ${selectedTags.includes(tag) ? "bg-violet-100 text-white" : "bg-transparent"
+														className={`flex items-center border border-accent rounded-3xl shadow px-2 py-0.75 sm:px-4 w-max ${selectedTags.includes(tag) ? "bg-accent text-white" : "bg-transparent"
 															}`}
 														onClick={() => handleTagClick({ tag })}
 														role="button"

@@ -359,7 +359,7 @@ display: block;
 
 .sort-container :global(.ant-select-arrow) {
   align-items: center !important;
-  background: #d4ccfc80 !important;
+  background: var(--color-accent) !important;
   border-radius: 12px !important;
   display: flex !important;
   justify-content: center !important;

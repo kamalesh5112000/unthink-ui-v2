@@ -1,9 +1,11 @@
 import { Html, Head, Main, NextScript } from 'next/document';
 import GoogleTagManagerNoscript from './GoogleTagManagerNoscript';
+import {  super_admin } from '../src/constants/config';
 
 export default function Document() {
+  const store =super_admin
   return (
-    <Html lang="en">
+    <Html lang="en"  data-theme={store}>
       <Head>
         {process.env.NODE_ENV === 'development' ? (
           <script

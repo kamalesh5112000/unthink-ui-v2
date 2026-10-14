@@ -1057,7 +1057,7 @@ setNotData(newOptionalFilters)
 	return (
 		<>
 			<div id={elementId} style={{ minHeight: "85vh" }}>
-				<div className="flex-1 min-w-0">
+				<div className="flex-1 min-w-0 px-1 ">
 					{!isCurrentTagLoading ? (
 						<>
 							{enableFilters ? (
@@ -1157,7 +1157,7 @@ setNotData(newOptionalFilters)
 						<>
 							<div
 								id='chat_products_inner_content'
-								className={`grid grid-cols-2 gap-2 sm:gap-3 ${selectedSearchOption?.id === "product_search"
+								className={`grid grid-cols-2 gap-2 sm:gap-3 p-1 ${selectedSearchOption?.id === "product_search"
 										? "md:grid-cols-3 lg:grid-cols-4"
 										: layoutMode === "both"
 											? 'md:grid-cols-3'

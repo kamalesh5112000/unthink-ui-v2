@@ -494,8 +494,8 @@ const ProductDetails = ({ params, ...props }) => {
                 rel="noreferrer"
                 className={
                   hasKioskAccess
-                    ? "text-kiosk-primary hover:underline"
-                    : "text-indigo-600 hover:underline"
+                    ? "text-brand hover:underline"
+                    : "text-secondary hover:underline"
                 }
               >
                 {qrTargetUrl}

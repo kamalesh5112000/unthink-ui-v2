@@ -95,7 +95,7 @@
     left: 0;
     height: 4px;
     width: 100%;
-    background: linear-gradient(90deg, #F2C94C 0%, #4F46E5 100%);
+    background: linear-gradient(90deg, #F2C94C 0%, var(--color-secondary)100%);
     border-radius: 2px;
 }
 

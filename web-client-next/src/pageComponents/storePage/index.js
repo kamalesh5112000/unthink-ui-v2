@@ -13,7 +13,6 @@ import { ArrowLeftOutlined, Loading3QuartersOutlined } from "@ant-design/icons";
 import dynamic from "next/dynamic";
 
 // import ProfileCollection from "../Influencer/ProfileCollection";
-// import ChatProducts from "./ChatProducts";
 import useWindowSize from "../../helper/useWindowSize.js";
 import useTheme from "../../hooks/chat/useTheme.js";
 import {
@@ -96,9 +95,6 @@ const DroppWallet = dynamic(() => import("../../components/DroppWallet.js"), {
 const Header = dynamic(() => import("./Header.js"), {
 	ssr: false,
 });
-const QAndAComponent = dynamic(() => import("../../components/QAndAComponent/QAndAComponent.js"), {
-	ssr: false,
-});
 const CollectionCarouselContainer = dynamic(() => import("../Influencer/CollectionCarouselContainer.js"), {
 	ssr: false,
 });
@@ -114,9 +110,15 @@ const DeliveryDetails = dynamic(() => import("../DeliveryDetails/DeliveryDetails
 const MyPoints = dynamic(() => import("../DeliveryDetails/MyPoints.jsx"), {
 	ssr: false,
 });
-const ChatContainer = dynamic(() => import("./ChatContainer.js"), {
+const ChatContainer = dynamic(() => import("./aura/ChatContainer.js"), {
 	ssr: false,
 });
+const ChatProducts = dynamic(
+	() => import("./aura/components/productResponse/ChatProducts.js"),
+	{
+		ssr: false,
+	}
+);
 const ProductDetails = dynamic(() => import("../../components/ProductDetails/ProductDetails.js"), {
 	ssr: false,
 	loading: () => (
@@ -1500,11 +1502,6 @@ const isAdminLog = authUser?.user_name ===  super_admin;
 			{/* to create new tailwind classes in build */}
 			<span className={styles.hiddenUtilityClasses} />
 			<span className={styles.hiddenTabletGrid} />
-
-			{/* {authUser.user_name === "takewalks" &&
-			!(isCreateFreeCollectionPage || isCollectionReviewPage) ? (
-				<QAndAComponent id='q_and_a_widget' config={config} />
-			) : null} */}
 
 			{/* show backdrop loader */}
 				{showBackdropLoader && (

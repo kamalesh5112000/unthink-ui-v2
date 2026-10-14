@@ -46,7 +46,7 @@ const ProductCardHeaderBottom = ({
   return (
     <>
       {product?.avlble === 0 && (
-        <div className="absolute bottom-4 left-3.5 rounded-3xl bg-red px-2 py-1 text-[10px] font-medium text-white">
+        <div className="absolute bottom-4 left-3.5 rounded-3xl bg-danger px-2 py-1 text-[10px] font-medium text-white">
           SOLD
         </div>
       )}
@@ -112,7 +112,7 @@ const ProductCardHeaderBottom = ({
                 onClick={handleStarClick}
               >
                 {product.starred ? (
-                  <StarFilled className="flex text-star" />
+                  <StarFilled className="flex text-amber-300" />
                 ) : (
                   <StarOutlined className="flex text-black" />
                 )}

@@ -24,7 +24,7 @@ const ProductRemoveAction = ({
 
   const removeIcon = (
     <p
-      className={`z-50 mb-0 flex items-center justify-center rounded-full bg-support font-semibold text-gray-dark ${sizeClassName}`}
+      className={`z-50 mb-0 flex items-center justify-center rounded-full bg-common font-semibold text-gray-dark ${sizeClassName}`}
     >
       <RxCross2 />
     </p>

@@ -3,12 +3,11 @@ import Head from 'next/head';
 import Script from 'next/script';
 import dynamic from 'next/dynamic';
 import Router from 'next/router';
-import '../src/style/antd.css'
 // Ant Design base styles (required for Grid/Row/Col gutters and component alignment)
-import "antd/dist/reset.css";
 
 // Import Tailwind CSS first (must be before SCSS that uses @layer)
 import "../src/style/global.css";
+import '../src/style/antd.css'
 // Then import SCSS utilities that extend Tailwind
 import "../src/style/index.module.scss";
 import "../src/pageComponents/swiftlyStyled/pageContents/mainContent.scss";

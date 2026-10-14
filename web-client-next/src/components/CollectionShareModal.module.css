@@ -37,7 +37,7 @@
     /* w-max */
     color: white;
     /* text-white */
-    background-color: #4f46e5;
+    background-color: var(--color-secondary) ;
     /* bg-indigo-600 */
     border: none;
     cursor: pointer;

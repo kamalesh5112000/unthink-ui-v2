@@ -121,7 +121,7 @@ const renderCollectionActionIcon = (actionKey) => {
   if (actionKey === "wishlist") {
     return (
       <svg
-        className="w-5 h-5 text-red"
+        className="w-5 h-5 text-danger"
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
@@ -509,7 +509,7 @@ const AuthInput = ({ onLoginChange, styles }) => {
                 aria-current={isActive ? "page" : undefined}
                 className={`w-full flex items-center gap-3 px-4 py-2 text-sm transition-colors ${
                   isActive
-                    ? "bg-support text-black font-semibold"
+                    ? "bg-common text-black font-semibold"
                     : "text-gray-700 hover:bg-gray-50"
                 } ${activeCollectionAction ? "cursor-not-allowed opacity-60" : ""}`}
               >

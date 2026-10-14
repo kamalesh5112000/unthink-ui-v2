@@ -88,7 +88,6 @@ import {
 	CREATE_ACTION,
 } from "../../constants/codes";
 
-import aura_assistant from "../../images/chat/aura_assistant_image.png";
 // import listening_avatar from "../../images/videos/listening_avatar.gif";
 // import star_ai_icon from "../../images/unthink_star_ai_icon.svg";
 import star_ai_icon from "../../images/unthink_star_ai_icon_new.svg";

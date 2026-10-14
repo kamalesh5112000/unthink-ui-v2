@@ -108,11 +108,22 @@
 }
 
 .announcementText {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
     white-space: normal;
     word-wrap: break-word;
 }
 
+.announcementText::before,
+.announcementText::after {
+    content: "♥";
+    flex: 0 0 auto;
+    line-height: 2;
+    
+}
+ 
 /* Header Container */
 .headerContainer {
     display: flex;

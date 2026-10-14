@@ -65,7 +65,7 @@ const AddToCartButton = ({
   storeName,
   isUserLogin,
   wrapperClassName = "flex flex-wrap gap-3 sm:gap-4 items-center w-full",
-  quantityControlsClassName = "h-12 items-center flex gap-6 sm:gap-8 px-4 border border-support rounded-xl bg-white",
+  quantityControlsClassName = "h-12 items-center flex gap-6 sm:gap-8 px-4 border border-common rounded-xl bg-white",
   quantityButtonClassName = "text-xl font-medium text-[#1f2c3b] cursor-pointer",
   quantityValueClassName = "text-base sm:text-lg font-semibold text-[#1f2c3b] cursor-pointer",
   buttonWrapperClassName = "text-white h-12 sm:h-14 w-full sm:w-auto sm:min-w-[210px]",

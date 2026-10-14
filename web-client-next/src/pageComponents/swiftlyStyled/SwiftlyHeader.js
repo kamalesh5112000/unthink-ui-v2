@@ -11,7 +11,7 @@ import { useNavigate } from "../../helper/useNavigate";
 import useTheme from "../../hooks/chat/useTheme";
 import { PATH_ROOT } from "../../constants/codes";
 import { THEME_ALL } from "../../constants/themeCodes";
-import ChatContainer from "../storePage/ChatContainer";
+import ChatContainer from "../storePage/aura/ChatContainer";
 import { UserProfileMenu } from "../storePage/UserProfileMenu";
 import { getThemeCollectionsPagePath } from "../../helper/utils";
 import { openWishlistModal } from "../wishlist/redux/actions";
@@ -270,7 +270,7 @@ const SwiftlyHeader = ({
                       className={styles.cartIcon}
                       style={{ filter: "brightness(0) opacity(0.7)" }}
                     />
-                    <span className="absolute -top-[6px] -right-[10px] bg-[var(--color-alert)] text-white rounded-full px-1.5 py-0.5 text-[11px] font-bold leading-none">
+                    <span className="absolute -top-[6px] -right-[10px] bg-[var(--color-danger)] text-white rounded-full px-1.5 py-0.5 text-[11px] font-bold leading-none">
                       {cartItemCount}
                     </span>
                   </button>
