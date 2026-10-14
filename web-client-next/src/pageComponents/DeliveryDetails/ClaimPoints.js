@@ -8,9 +8,8 @@ import {
 import { current_store_name } from "../../constants/config";
 import { useRouter } from "next/router";
 import { IoCartOutline } from "react-icons/io5";
-import { getUserInfo } from "../Auth/redux/actions";
 import { DEFAULT_NFT_INSTANCE_ID } from "../../constants/kioskCodes";
-
+import { authAPIs } from "../../helper/serverAPIs";
 
 
 const getPointValue = (source, keys, fallback = 0) => {
@@ -35,6 +34,8 @@ const ClaimPoints = ({
   // userDID,
   // claimImageUrl,
   checkoutPage = false,
+  customerUserId,
+  customerStoreName,
 }) => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -45,7 +46,10 @@ const ClaimPoints = ({
   const [confirmedPoints, setConfirmedPoints] = useState(0); 
   const [redeemPointsError, setRedeemPointsError] = useState("");
   const [pendingRedeemPoints, setPendingRedeemPoints] = useState(null);
+  const [customerUser, setCustomerUser] = useState(null);
+  const [customerUserLoading, setCustomerUserLoading] = useState(false);
   const routeUserId = getRouteValue(router.query.user_id);
+  const routeStoreName = getRouteValue(router.query.store_name);
   // console.log('redeemPoints',redeemPoints);
 
 const [
@@ -70,21 +74,49 @@ const [
     state.cart?.earningPointsLoading,
     state.store.data,
   ]);
+  const checkoutUserId = customerUserId || routeUserId || authUser?.user_id || authUser?._id;
+  const checkoutStoreName = customerStoreName || routeStoreName || storeData?.store_name || current_store_name;
+
   useEffect(() => {
-    if (!routeUserId) {
+    if (!checkoutUserId) {
       return;
     }
 
-    dispatch(getUserInfo({ user_id: routeUserId }));
-  }, [dispatch, routeUserId]);
+    let isActive = true;
+    setCustomerUserLoading(true);
+
+    authAPIs
+      .getUserInfoAPICall({ user_id: checkoutUserId })
+      .then((response) => {
+        if (!isActive) return;
+
+        const userData = response?.data?.data;
+        setCustomerUser(userData?.user_id ? userData : null);
+      })
+      .catch((error) => {
+        if (!isActive) return;
+
+        console.error("Error fetching redeem customer:", error.response?.data || error);
+        setCustomerUser(null);
+      })
+      .finally(() => {
+        if (!isActive) return;
+
+        setCustomerUserLoading(false);
+      });
+
+    return () => {
+      isActive = false;
+    };
+  }, [checkoutUserId]);
 
 
   const pointsLoading = checkoutPage
     ? checkoutUpdatePointsLoading
     : earningPointsLoading;
-  const userDID = authUser?.userDID;
-  const checkoutStoreName = storeData?.store_name || current_store_name;
-   const checkoutUserId = routeUserId || authUser?.user_id  
+  const isCustomerLookupRequired = Boolean(customerUserId || routeUserId);
+  const isRedeemCustomerReady = !isCustomerLookupRequired || !customerUserLoading;
+  const userDID = customerUser?.userDID || (!customerUserId && !routeUserId ? authUser?.userDID : undefined);
   const pointsData = checkoutPage
     ? checkoutUpdatedPoints?.events?.[0] ||
       checkoutUpdatedPoints?.event ||
@@ -274,19 +306,24 @@ const [
         <button
           type="button"
           onClick={handleCalculatePoints}
-          disabled={pointsLoading}
+          disabled={pointsLoading || !isRedeemCustomerReady}
           className="w-full bg-secondary py-1 text-center text-[16px] uppercase hover:bg-brand disabled:cursor-not-allowed disabled:opacity-70"
         >
           {pointsLoading
             ? checkoutPage ? "CALCULATING POINTS" : "FETCHING POINTS"
             : checkoutPage ? "CALCULATE POINTS" : "FETCH POINTS"}
         </button>
-        {pointsLoading && (
+          {pointsLoading && (
           <div className="px-3 py-2 leading-6">
             <p>{checkoutPage ? "Calculating points at checkout...." : "Fetching points...."}</p>
             <p>Reading rules..</p>
             <p>Checking for points per product........</p>
           </div>
+        )}
+        {customerUserLoading && (
+          <p className="px-3 py-2 text-center text-sm text-gray-500">
+            Loading customer details...
+          </p>
         )}
 
         <div className="mt-3 border-t-2 border-black pt-3 text-center">
@@ -383,6 +420,7 @@ const [
             onClick={handleConfirmRedemption}
             disabled={
               !hasCalculatedPoints ||
+              !isRedeemCustomerReady ||
               Boolean(redeemPointsError) ||
               redeemSessionHCS20PointsLoading || !redeemPoints
             }

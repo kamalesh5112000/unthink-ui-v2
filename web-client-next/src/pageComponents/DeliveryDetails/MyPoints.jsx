@@ -1,22 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createLoyaltyBadge, fetchEarningPoints } from "./redux/action";
-
-const buildClaimPointsUrl = (baseUrl, userId, storeName) => {
-  if (!baseUrl || !userId || !storeName) {
-    return baseUrl;
-  }
-
-  const claimPointsBasePattern = /\/claim-points\/?$/;
-
-  if (!claimPointsBasePattern.test(baseUrl)) {
-    return baseUrl;
-  }
-
-  const normalizedBaseUrl = baseUrl.replace(/\/+$/, "");
-
-  return `${normalizedBaseUrl}/${encodeURIComponent(userId)}/${encodeURIComponent(storeName)}`;
-};
 
 const MyPoints = () => {
   const [
@@ -42,6 +26,20 @@ const MyPoints = () => {
 
   const dispatch = useDispatch();
 
+  const redeemQrPageUrl = useMemo(() => {
+    if (!authUserId || !storeData?.store_name || typeof window === "undefined") {
+      return storeData?.badge_settings?.qr_page_url;
+    }
+
+    const params = new URLSearchParams({
+      tab: "redeem",
+      user_id: authUserId,
+      store_name: storeData.store_name,
+    });
+
+    return `${window.location.origin}/store-assistant?${params.toString()}`;
+  }, [authUserId, storeData?.badge_settings?.qr_page_url, storeData?.store_name]);
+
   useEffect(() => {
     if (!authUserId || !storeData?.store_name || earningPoints) {
       return;
@@ -59,18 +57,12 @@ const MyPoints = () => {
       return;
     }
 
-    const qrPageUrl = buildClaimPointsUrl(
-      storeData?.badge_settings?.qr_page_url,
-      authUserId,
-      storeData?.store_name,
-    );
-
 // api logic
     dispatch(
       createLoyaltyBadge({
         name: authUser?.first_name || authUser?.last_name || authUser?.user_name,
-        points: earningPoints?.available_balance,
-        qr_page_url: qrPageUrl,
+        points: earningPoints?.available_balance ,
+        qr_page_url: redeemQrPageUrl,
         badge_image_url: storeData?.badge_settings?.badge_image_url,
         badge_bg_color: storeData?.badge_settings?.badge_bg_color ||  null,
         badge_card_bg_color: storeData?.badge_settings?.badge_card_bg_color || null,
@@ -81,7 +73,7 @@ const MyPoints = () => {
         badge_text_color: storeData?.badge_settings?.badge_text_color || null
       }),
     );
-  }, [authUserId, dispatch, earningPoints?.available_balance, storeData?.badge_settings, storeData?.store_name]);
+  }, [dispatch, earningPoints?.available_balance, redeemQrPageUrl, storeData?.badge_settings]);
 
   return (
     <div>

@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import {
   FiBookOpen,
   FiCamera,
+  FiGift,
   FiRadio,
   FiSearch,
   FiTrendingUp,
@@ -52,6 +53,13 @@ const TAB_META = {
     shortLabel: "Upload",
     description: "Upload styling photos and product media.",
     icon: FiUploadCloud,
+  },
+  redeem: {
+    key: "redeem",
+    label: "Redeem",
+    shortLabel: "Redeem",
+    description: "Scan customer badges and redeem points.",
+    icon: FiGift,
   },
 };
 

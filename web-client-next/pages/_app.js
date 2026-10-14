@@ -30,6 +30,7 @@ const EarnedRewardModal = dynamic(() => import("../src/pageComponents/earnedRewa
 const AiExtractionDataModal = dynamic(() => import("../src/pageComponents/aiExtractionDataModal"), { ssr: false });
 const CustomProductModal = dynamic(() => import("../src/pageComponents/customProductModal"), { ssr: false });
 const AutoCreateCollectionModal = dynamic(() => import("../src/pageComponents/autoCreateCollectionModal"), { ssr: false });
+const KioskVersionUpdatePrompt = dynamic(() => import("../src/components/kiosk/KioskVersionUpdatePrompt"), { ssr: false });
 
 // Import utilities
 import appTracker from "../src/helper/webTracker/appTracker";
@@ -150,6 +151,7 @@ function MyApp({ Component, pageProps }) {
                       <AiExtractionDataModal />
                       <CustomProductModal />
                       <AutoCreateCollectionModal />
+                      <KioskVersionUpdatePrompt />
                     </>
                   ) : null}
                   <Component {...pageProps} />

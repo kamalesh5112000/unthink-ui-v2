@@ -247,6 +247,15 @@ const DeliveryDetails = () => {
     },
     [dispatch, guestTrackerId],
   );
+  const getRedeemRoute = () => {
+    const params = new URLSearchParams({
+      tab: "redeem",
+      user_id: kioskUser_id || authUserId,
+      store_name: storeData?.store_name || current_store_name,
+    });
+
+    return `/store-assistant?${params.toString()}`;
+  };
 
   let shareUrl
   // console.log('sharePageUrl', shareUrl);
@@ -279,7 +288,7 @@ const DeliveryDetails = () => {
       setIsCheckoutClaimQrModalOpen(true);
     } else {
       // navigate("/cart/checkout");
-      navigate(`/checkout-claim-badge`)
+      navigate(getRedeemRoute())
     }
   };
 
@@ -559,7 +568,7 @@ const DeliveryDetails = () => {
           )}
   
             <img
-              src={shareQrCodeImage(`/checkout-claim-badge/${kioskUser_id || authUserId}/${storeData?.store_name}`)}
+              src={shareQrCodeImage(getRedeemRoute())}
               alt="Digital cart QR"
               className="h-48 w-48 object-contain "
             />
