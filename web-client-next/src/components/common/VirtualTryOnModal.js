@@ -149,7 +149,7 @@ const VirtualTryOnModal = ({
     const payload = {
       image_urls: [uploadedImage, productImage],
       store: storeName,
-      image_tryon_prompt: `${imageTryonPrompt}${product?.size}`,
+      image_tryon_prompt: `${imageTryonPrompt} ${product?.size}`,
       additional_prompt: description || "",
       type: tryonType || "tryon",
     };
