@@ -144,15 +144,12 @@ const VirtualTryOnModal = ({
   const handleVTOClick = async (event) => {
     event.stopPropagation();
     event.preventDefault();
-    const productImageDimensions = await getImageDimensions(productImage);
-    const imageTryonPromptWithDimensions = productImageDimensions
-      ? `${imageTryonPrompt || ""} width ${productImageDimensions.width}px, height ${productImageDimensions.height}px.`
-      : imageTryonPrompt || "";
+    
 
     const payload = {
       image_urls: [uploadedImage, productImage],
       store: storeName,
-      image_tryon_prompt: imageTryonPromptWithDimensions,
+      image_tryon_prompt: `${imageTryonPrompt}${product?.size}`,
       additional_prompt: description || "",
       type: tryonType || "tryon",
     };
