@@ -424,7 +424,6 @@ const ChatModal = ({
               enableClickTracking
               trackCollectionData={trackCollectionData}
               chatTypeKey={CHAT_TYPE_CHAT}
-              isBTNormalUserLoggedIn={isBTNormalUserLoggedIn}
               isAuraChatPage={isAuraChatPage}
               handleLoadMore={handleLoadMore}
               localChatMessage={localChatMessage}

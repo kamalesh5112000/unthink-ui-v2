@@ -1,11 +1,10 @@
 import React from "react";
 
 import starAiIcon from "../../Images/Illustration.png";
+import { getImageSrc } from "../../utils/AuraUtils";
 
 const welcomePanelClassName =
   "w-full flex flex-col gap-2 mx-auto px-4 md:px-6 lg:max-w-[992px] lg:py-4 xl:max-w-[1192px] 2xl:max-w-[1328px] 2xl:px-0 max-lg:max-w-[550px] max-lg:p-2.5";
-
-const getImageSrc = (image) => image?.src || image;
 
 const WelcomePanel = () => {
   return (

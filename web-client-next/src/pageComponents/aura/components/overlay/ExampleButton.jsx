@@ -1,14 +1,6 @@
 import React from "react";
 
-const getTitleParts = (title = "") => {
-  const words = title.split(" ");
-
-  return {
-    leadingText: words.slice(0, -2).join(" "),
-    trailingText: words.slice(-2).join(" "),
-    hasGap: words.length > 2,
-  };
-};
+import { getTitleParts } from "../../utils/AuraUtils";
 
 const ExampleButton = ({
   activeSearchOption,

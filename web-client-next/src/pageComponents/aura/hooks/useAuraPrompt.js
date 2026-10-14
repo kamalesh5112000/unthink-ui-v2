@@ -19,21 +19,7 @@ import {
 import { setIsSendSocketMessageWithPrefix } from "../../../helper/getTrackerInfo";
 import { current_store_name } from "../../../constants/config";
 import { CHAT_SEARCH_OPTION_ID } from "../../../constants/codes";
-
-const createDebouncedFunction = (callback, wait) => {
-  let timeoutId;
-
-  const debounced = (...args) => {
-    window.clearTimeout(timeoutId);
-    timeoutId = window.setTimeout(() => callback(...args), wait);
-  };
-
-  debounced.cancel = () => {
-    window.clearTimeout(timeoutId);
-  };
-
-  return debounced;
-};
+import { createDebouncedFunction } from "../utils/AuraUtils";
 
 export const useAuraPrompt = ({
   activeSearchOption,

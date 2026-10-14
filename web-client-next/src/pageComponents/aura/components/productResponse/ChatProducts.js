@@ -3,17 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { Tooltip, Spin } from "antd";
 import { ArrowUpOutlined, HistoryOutlined, FormOutlined, CloseOutlined, Loading3QuartersOutlined, FolderOutlined } from "@ant-design/icons";
 
-import {
-  openWishlistModal,
-  setProductsToAddInWishlist,
-} from "../../../wishlist/redux/actions";
-import { handleRecProductClick } from "../../../recommendations/redux/actions";
-import { filterAvailableProductList, isEmpty } from "../../../../helper/utils";
-import { is_store_instance } from "../../../../constants/config";
+import { openWishlistModal } from "../../../wishlist/redux/actions";
+import { isEmpty } from "../../../../helper/utils";
 import {
   CHAT_TYPES_KEYS,
   CHAT_TYPE_CHAT,
-  CHAT_SEARCH_OPTION_ID,
 } from "../../../../constants/codes";
 import { setSuggestionsSelectedTag } from "../../../../hooks/chat/redux/actions";
 import styles from "./ChatProducts.module.css";
@@ -21,13 +15,18 @@ import ChatInput from "./ChatInput";
 import ProductDisplay from "./ProductDisplay";
 import Sidebar from "./Sidebar";
 import SearchWorkspace from "./SearchWorkspace";
+import {
+  isCompleteTheLookOptionId,
+  isProductSearchOptionId,
+  isShopALookOptionId,
+  isShopByThemeOptionId,
+} from "../../utils/AuraUtils";
 
 const ChatProducts = ({
   enableClickFetchRec,
   enableClickTracking,
   trackCollectionData = {},
   chatTypeKey = CHAT_TYPE_CHAT,
-  isBTNormalUserLoggedIn,
   isAuraChatPage,
   handleLoadMore,
   localChatMessage,
@@ -48,8 +47,6 @@ const ChatProducts = ({
   handleGoBack,
   layoutMode,
   setLayoutMode,
-  closeChatModal,
-  onOpenSearchPopup,
   isMobile,
   regenarateImage,
   handleRegenrateImage,
@@ -71,8 +68,6 @@ const ChatProducts = ({
     widgetHeader,
     widgetImage,
     chatImageUrl,
-    authUser,
-    isUserLogin,
     suggestionsWithProducts,
     products,
     shopALookData,
@@ -85,8 +80,6 @@ const ChatProducts = ({
     state.chatV2.widgetHeader,
     state.chatV2.widgetImage,
     state.chatV2[CHAT_TYPES_KEYS[chatTypeKey].chatImageUrl],
-    state.auth.user.data,
-    state.auth.user.isUserLogin,
     state.chatV2.suggestions,
     state.chatV2[CHAT_TYPES_KEYS[chatTypeKey].products],
     state.chatV2.shopALook,
@@ -96,8 +89,6 @@ const ChatProducts = ({
     state.chatV2.chatHistory,
   ]);
 
-  const [enableSelectProduct, setEnableSelectProduct] = useState(false);
-  const [selectedProducts, setSelectedProducts] = useState([]);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -280,42 +271,25 @@ const ChatProducts = ({
   const originalWidth = 1024;
   const originalHeight = 1027;
 
-  const onProductClick = () => {
-    if (enableClickFetchRec) dispatch(handleRecProductClick());
-  };
-
   const NEW_AURA_PRODUCTS_UI_ENABLED = useMemo(() => true, []);
 
-  const chatProductsDataToShow = useMemo(
-    () =>
-      filterAvailableProductList(
-        isEmpty(suggestionsWithProducts.suggestions) ? chatProductsData : [],
-      ),
-    [suggestionsWithProducts.suggestions, chatProductsData],
-  );
-
-  const isTagAvailable = useMemo(
-    () => !isEmpty(suggestionsWithProducts?.suggestions.tags),
-    [suggestionsWithProducts?.suggestions.tags],
-  );
-
   const isShopByThemeOptionActive = useMemo(
-    () => activeSearchOption?.id === CHAT_SEARCH_OPTION_ID.smart_search,
+    () => isShopByThemeOptionId(activeSearchOption?.id),
     [activeSearchOption?.id],
   );
 
   const isCompleteTheLookOptionActive = useMemo(
-    () => activeSearchOption?.id === CHAT_SEARCH_OPTION_ID.complete_the_look,
+    () => isCompleteTheLookOptionId(activeSearchOption?.id),
     [activeSearchOption?.id],
   );
 
   const isProductSearchOptionActive = useMemo(
-    () => activeSearchOption?.id === CHAT_SEARCH_OPTION_ID.product_search,
+    () => isProductSearchOptionId(activeSearchOption?.id),
     [activeSearchOption?.id],
   );
 
   const isShopALookOptionActiveCustom = useMemo(
-    () => activeSearchOption?.id === CHAT_SEARCH_OPTION_ID.shop_a_look,
+    () => isShopALookOptionId(activeSearchOption?.id),
     [activeSearchOption?.id],
   );
 
@@ -361,81 +335,13 @@ const ChatProducts = ({
     [suggestionsWithProducts?.suggestions?.tags],
   );
 
-  const handleResetSelectProduct = useCallback(
-    () => {
-      setEnableSelectProduct(false);
-      setSelectedProducts([]);
-    },
-    [],
-  );
-
   useEffect(() => {
-    handleResetSelectProduct();
     setIsSwipeDrawerOpen(false);
-  }, [chatProductsDataToShow, activeSearchOption, handleResetSelectProduct]);
-
-  const onSelectProductClick = (mfr_code) => {
-    if (selectedProducts.includes(mfr_code)) {
-      setSelectedProducts(selectedProducts.filter((p) => p !== mfr_code));
-    } else {
-      setSelectedProducts([...selectedProducts, mfr_code]);
-    }
-  };
-
-  const onSelectAllChange = useCallback(() => {
-    setSelectedProducts(
-      selectedProducts.length < chatProductsDataToShow.length
-        ? chatProductsDataToShow.map((i) => i.mfr_code)
-        : [],
-    );
-  }, [chatProductsDataToShow, selectedProducts.length]);
-
-  const onAddSelectedProductsToCollection = useCallback(() => {
-    const SelectedProductsData = chatProductsDataToShow.filter((p) =>
-      selectedProducts.includes(p.mfr_code),
-    );
-
-    dispatch(setProductsToAddInWishlist(SelectedProductsData));
-    dispatch(openWishlistModal());
-    handleResetSelectProduct();
-  }, [chatProductsDataToShow, dispatch, handleResetSelectProduct, selectedProducts]);
-
-  useEffect(() => {
-    if (!NEW_AURA_PRODUCTS_UI_ENABLED && registerSelectActions) {
-      registerSelectActions({
-        enableSelectProduct,
-        selectedProducts,
-        chatProductsDataToShow,
-        is_store_instance,
-        handleResetSelectProduct,
-        setEnableSelectProduct,
-        onSelectAllChange,
-        onAddSelectedProductsToCollection,
-      });
-    }
-  }, [
-    NEW_AURA_PRODUCTS_UI_ENABLED,
-    enableSelectProduct,
-    selectedProducts,
-    chatProductsDataToShow,
-    handleResetSelectProduct,
-    onSelectAllChange,
-    onAddSelectedProductsToCollection,
-    registerSelectActions,
-  ]);
+  }, [activeSearchOption]);
 
   const onWishlistClick = () => {
     dispatch(openWishlistModal());
   };
-  const scrollToProductsContainer = () => {
-    const products = document.getElementById(
-      "aura-response-products-with-tags-container",
-    );
-    if (products) {
-      products.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   const MobileSideDrawer = () => (
     <>
       {isMobileSidebarOpen && (
@@ -621,38 +527,20 @@ const ChatProducts = ({
               </div>
 
               <ProductDisplay
-                authUser={authUser}
-                chatProductsDataToShow={chatProductsDataToShow}
                 chatTypeKey={chatTypeKey}
-                closeChatModal={closeChatModal}
                 enableClickFetchRec={enableClickFetchRec}
                 enableClickTracking={enableClickTracking}
-                enableSelectProduct={enableSelectProduct}
                 handleGoBack={handleGoBack}
                 handleLoadMore={handleLoadMore}
-                handleResetSelectProduct={handleResetSelectProduct}
                 isMobile={isMobile}
-                isBTNormalUserLoggedIn={isBTNormalUserLoggedIn}
                 isAuraChatPage={isAuraChatPage}
-                isTagAvailable={isTagAvailable}
                 isProductSearchOptionActive={isProductSearchOptionActive}
-                isUserLogin={isUserLogin}
                 layoutMode={layoutMode}
                 localChatMessage={localChatMessage}
                 newAuraProductsUiEnabled={NEW_AURA_PRODUCTS_UI_ENABLED}
-                onAddSelectedProductsToCollection={onAddSelectedProductsToCollection}
-                onOpenSearchPopup={onOpenSearchPopup}
-                onProductClick={onProductClick}
-                onSelectAllChange={onSelectAllChange}
-                onSelectProductClick={onSelectProductClick}
-                onWishlistClick={onWishlistClick}
                 registerSelectActions={registerSelectActions}
-                scrollToProductsContainer={scrollToProductsContainer}
-                selectedProducts={selectedProducts}
-                setEnableSelectProduct={setEnableSelectProduct}
                 shouldShowPanelChrome={shouldShowShopLookSplitLayout}
                 shouldShowShopLookSplitLayout={shouldShowShopLookSplitLayout}
-                shopALookData={shopALookData}
                 showChatLoader={showChatLoader}
                 suggestionsWithProducts={suggestionsWithProducts}
                 trackCollectionCampCode={trackCollectionCampCode}
