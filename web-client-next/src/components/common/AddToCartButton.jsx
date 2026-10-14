@@ -15,7 +15,7 @@ export const addProductToCart = ({
   qty = 1,
   userId,
   source,
-  collection,
+  cartSourceCollection,
   eventId,
 }) => {
   if (!product?.mfr_code || !dispatch) return;
@@ -28,7 +28,7 @@ export const addProductToCart = ({
   };
 
   if (source) cartProduct.source = source;
-  if (collection) cartProduct.collection = collection;
+  if (cartSourceCollection) cartProduct.collection = cartSourceCollection;
   if (eventId) cartProduct.event_id = eventId;
 
   dispatch(
@@ -51,7 +51,7 @@ const AddToCartButton = ({
   authUserId,
   onGuestPopupOpen,
   source,
-  collection,
+  cartSourceCollection,
   eventId,
   isOutOfStock = false,
   disabled,
@@ -130,7 +130,7 @@ const AddToCartButton = ({
       qty: nextNormalizedQty,
       userId: kioskUserId || authUserId || getTTid(),
       source,
-      collection,
+      cartSourceCollection,
       eventId,
     });
   };
