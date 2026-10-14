@@ -15,9 +15,12 @@ function GuestUserPopUp({
   isOpen,
   setIsOpen,
   storeName,
+  guestUserId,
   onSuccess,
   onSkip,
   onClose,
+  phoneValidator,
+  phoneErrorMessage = "Please enter a valid phone number",
   persistKioskLogin = false,
   cookieExpireDays = DEFAULT_GUEST_COOKIE_EXPIRE_DAYS,
   isUserLogin,
@@ -87,6 +90,11 @@ function GuestUserPopUp({
         return;
       }
 
+      if (phone && phoneValidator && !phoneValidator(phone)) {
+        setErrors({ email: "", phone: phoneErrorMessage });
+        return;
+      }
+
       if (!Cookies.get("isGuestLoggedIn")) {
         Cookies.set("isGuestLoggedIn", false, {
           expires: cookieExpireDays,
@@ -94,12 +102,17 @@ function GuestUserPopUp({
       }
 
       try {
-        const res = await authAPIs.GuestRegisterAPICall({
+        const guestRegisterPayload = {
           emailId: email,
-          // user_id: tid,
           store: storeName,
           phone,
-        });
+        };
+
+        if (guestUserId) {
+          guestRegisterPayload.user_id = guestUserId;
+        }
+
+        const res = await authAPIs.GuestRegisterAPICall(guestRegisterPayload);
         const userId = res?.data?.data?.user_id;
         // console.log('userId',userId);
         
@@ -152,8 +165,11 @@ function GuestUserPopUp({
       cookieExpireDays,
       guestData.email,
       guestData.phone,
+      guestUserId,
       onSuccess,
       persistKioskLogin,
+      phoneErrorMessage,
+      phoneValidator,
       storeName,
       validateEmail,
       dispatch,
