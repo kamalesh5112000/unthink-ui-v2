@@ -200,7 +200,8 @@ const DeliveryDetails = () => {
             qty: item.qty,
             tagged_by: item.tagged_by,
             collection:item.collection[0],
-            source:item.source[0]
+            source:item.source[0],
+            event_id:item.event_id
 
           }));
           // console.log("unsignedProducts", unsignedProducts);
