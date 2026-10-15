@@ -321,12 +321,12 @@ const [
             htmlFor="store-name"
             className="mb-1 block text-center text-base font-semibold"
           >
-            [Store Assistance Name ]
+            [Store Staff Name ]
           </label>
           <input
             id="store-name"
             type="text"
-            placeholder="Enter Store Assistance Name"
+            placeholder="Enter Store Staff Name"
             value={storeName}
             onChange={handleStoreNameChange}
             disabled={!hasCalculatedPoints}
@@ -336,17 +336,17 @@ const [
           <p className="mt-3 p-1">or</p>
           <div className="flex-1">
 
-
+ 
             <label
             htmlFor="store-assistance-id"
             className="mb-1 block text-center text-base font-semibold"
-          >
-            [Store Assistance Id ]
+          > 
+            [Store Staff  Id ]
           </label>
           <input
             id="store-assistance-id"
             type="text"
-            placeholder="Enter Store Assistance Id"
+            placeholder="Enter Store Staff Id"
             value={storeAssistanceId}
             onChange={handleStoreAssistanceIdChange}
             disabled={!hasCalculatedPoints}

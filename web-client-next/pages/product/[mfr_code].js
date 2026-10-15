@@ -1,16 +1,19 @@
-import dynamic from "next/dynamic";
+import React from "react";
 
-import { PDPPageSkeleton } from "../../src/components/ProductDetails/ProductDetailsSkeleton";
+import StorePage from "../../src/pageComponents/storePage";
+import { aura_header_theme } from "../../src/constants/config";
 
-const ProductDetails = dynamic(
-	() => import("../../src/components/ProductDetails/ProductDetails"),
-	{
-		ssr: false,
-		loading: () => <PDPPageSkeleton />,
-	}
+const ProductDetailsPage = (props) => (
+	<StorePage
+		isProductDetailPage
+		{...props}
+		serverData={{
+			config: {
+				aura_header_theme: aura_header_theme,
+			},
+		}}
+	/>
 );
-
-const ProductDetailsPage = (props) => <ProductDetails {...props} />;
 
 export default ProductDetailsPage;
 
