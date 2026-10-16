@@ -7,6 +7,7 @@ import {
 	OPEN_WISHLIST_MODAL,
 	CLOSE_WISHLIST_MODAL,
 	SET_PRODUCTS_TO_SAVE_IN_WISHLIST,
+	SET_SELECTED_COLLECTION_PAYLOAD,
 } from "./constants";
 
 const initialState = {
@@ -15,6 +16,7 @@ const initialState = {
 	showCollectionDetails: false,
 	productsToAddInWishlist: [],
 	productsToAddInWishlistData: {},
+	collectionPayload: {},
 	removeFromFavorites: true,
 	isCreateWishlist: false,
 	isEditWishlist: false,
@@ -55,6 +57,10 @@ const wishlistReducer = (state = initialState, action) => {
 		case SET_PRODUCTS_TO_SAVE_IN_WISHLIST:
 			newState.productsToAddInWishlist = payload ?? [];
 			newState.productsToAddInWishlistData = action.createWishlistData ?? {};
+			return newState;
+		case SET_SELECTED_COLLECTION_PAYLOAD:
+			newState.collectionPayload = payload ?? [];
+			 
 			return newState;
 		case REMOVE_FROM_FAVORITES:
 			newState.removeFromFavorites = payload ?? false;

@@ -8,6 +8,7 @@ import {
 	SET_SHOW_WISHLIST_PRODUCTS,
 	CLOSE_WISHLIST_MODAL,
 	SET_PRODUCTS_TO_SAVE_IN_WISHLIST,
+	SET_SELECTED_COLLECTION_PAYLOAD,
 } from "./constants";
 
 export const openWishlistModal = (payload) => ({
@@ -33,6 +34,10 @@ export const setProductsToAddInWishlist = (payload, createWishlistData) => ({
 	type: SET_PRODUCTS_TO_SAVE_IN_WISHLIST,
 	payload,
 	createWishlistData,
+});
+export const setSelectedCollectionPayload = (payload ) => ({
+	type: SET_SELECTED_COLLECTION_PAYLOAD,
+	payload,
 });
 
 export const setRemoveFromFavorites = (payload) => ({

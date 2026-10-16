@@ -5,10 +5,14 @@ import {
 	CREATE_WISHLIST_RESET,
 } from "./constants";
 
-export const createWishlist = (payload) => ({
-	type: CREATE_WISHLIST,
-	payload,
-});
+export const createWishlist = (payload) => {
+	//  console.log("createWishlist action payload", payload);
+
+    return {
+        type: CREATE_WISHLIST,
+        payload,
+    };
+}
 
 export const createWishlistSuccess = (payload) => ({
 	type: CREATE_WISHLIST_SUCCESS,
