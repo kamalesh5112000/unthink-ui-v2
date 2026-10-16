@@ -8,10 +8,7 @@ import React, {
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { handleRecProductClick } from "../recommendations/redux/actions";
-import {
-  getUserInfo,
-  GuestPopUpShow,
-} from "../Auth/redux/actions";
+import { GuestPopUpShow } from "../Auth/redux/actions";
 import {
   collectionQRCodeGenerator,
   filterAvailableProductList,
@@ -19,14 +16,9 @@ import {
   getBlogCollectionPagePath,
   getCurrentPath,
   getEditCollectionPagePath,
-  setCookie,
   getTTid,
 } from "../../helper/utils";
-import {
-  COLLECTION_COVER_IMG_SIZE_900_900,
-  COOKIE_TT_ID,
-  SIGN_IN_EXPIRE_DAYS,
-} from "../../constants/codes";
+import { COLLECTION_COVER_IMG_SIZE_900_900 } from "../../constants/codes";
 import { addToWishlist } from "../wishlistActions/addToWishlist/redux/actions";
 import { current_store_name, super_admin } from "../../constants/config";
 import {
@@ -34,7 +26,7 @@ import {
   setProductsToAddInWishlist,
   setSelectedCollectionPayload,
 } from "../wishlist/redux/actions";
-import { authAPIs, profileAPIs } from "../../helper/serverAPIs";
+import { profileAPIs } from "../../helper/serverAPIs";
 import Cookies from "js-cookie";
 import SingleCollectionProductListView from "./components/SingleCollectionProductListView";
 import { updateWishlist } from "../wishlistActions/updateWishlist/redux/actions";
@@ -101,9 +93,8 @@ const url = window.location.pathname === '/my-profile/'
   const navigate = useCallback((path) => router.push(path), [router]);
 
 
-  const [isGuestPopUpShow, singleCollection, influencerCollections,influencer] =
+  const [singleCollection, influencerCollections,influencer] =
     useSelector((state) => [
-      state.GuestPopUpReducer.isGuestPopUpShow,
       state.auth.user.singleCollections.data,
       state.auth.user.data,
        state.influencer.collections.data,
@@ -441,7 +432,7 @@ const url = window.location.pathname === '/my-profile/'
     const productsToAdd = resolveProductsToAdd(product);
     const isUserLoginCokkies = Cookies.get("isGuestLoggedIn") === "true";
     // const isGuestUserSkip = Cookies.get('isGuestSkip') === 'true';
-    if (!isUserLogin && !isUserLoginCokkies) {
+    if (!options.context?.userId && !isUserLogin && !isUserLoginCokkies) {
       setPendingProductsToAdd(productsToAdd);
       setPendingAddOptions(options);
       setIsPopupShow(true);
@@ -525,35 +516,6 @@ const url = window.location.pathname === '/my-profile/'
   getTTid,
   ])
 
-  // guest email functions
-
-  const [guestData, setGuestData] = useState({
-    email: "",
-    phone: "",
-  });
-  const [errors, setErrors] = useState({ email: "", phone: "" });
-
-  const guestChange = useCallback(
-    (e) => {
-      const { name, value } = e.target;
-      setGuestData((data) => ({ ...data, [name]: value }));
-      if (name === "email" || name === "phone") {
-        setErrors((currentErrors) => ({
-          ...currentErrors,
-          email: "",
-          phone: "",
-        }));
-      }
-    },
-    [],
-  );
-
-  const validateEmail = (email) => {
-    // Basic email validation regex
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
   const handleGuestSkip = () => {
     // Cookies.set('isGuestSkip', true, { expires: GUESTSKIP_EXPIRE_HOURS / 24 });
     dispatch(GuestPopUpShow(false));
@@ -561,63 +523,6 @@ const url = window.location.pathname === '/my-profile/'
     setPendingProductsToAdd([]);
     setPendingAddOptions({});
   };
-
-  const handleGuestSubmit = useCallback(
-    async (e) => {
-      e.preventDefault();
-      const email = guestData.email?.trim();
-      const phone = guestData.phone?.trim();
-
-      if (!email && !phone) {
-        setErrors({ email: "Email or phone number is required", phone: "" });
-        return;
-      }
-
-      if (email && !validateEmail(email)) {
-        setErrors({ email: "Please enter a valid email address", phone: "" });
-        return;
-      }
-
-      const tid = Cookies.get("tid");
-      const store = current_store_name;
-
-      // Set default value of isGuestLoggedIn to false if not already set
-      if (!Cookies.get("isGuestLoggedIn")) {
-        Cookies.set("isGuestLoggedIn", false, { expires: SIGN_IN_EXPIRE_DAYS });
-      }
-
-      if (email || phone) {
-        try {
-          const res = await authAPIs.GuestRegisterAPICall({
-            emailId: email,
-            // user_id: tid,
-            store,
-            phone,
-          });
-
-          const { data } = res;
-          const user_id = data.data.user_id;
-
-          if (res.data.status_code === 200) {
-            dispatch(GuestPopUpShow(false));
-            setCookie(COOKIE_TT_ID, user_id, SIGN_IN_EXPIRE_DAYS);
-            dispatch(getUserInfo());
-            Cookies.set("isGuestLoggedIn", true, {
-              expires: SIGN_IN_EXPIRE_DAYS,
-            });
-            // Cookies.set('isGuestSkip', false, { expires: GUESTSKIP_EXPIRE_HOURS / 24 });
-            setIsPopupShow(false);
-            onAddSelectedProductsToCollection(null, null, {
-              context: { userId: user_id },
-            });
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    },
-    [guestData.email, guestData.phone, onAddSelectedProductsToCollection],
-  );
 
   const onProductClick = (product) => {
     if (enableClickTracking) dispatch(handleRecProductClick());
@@ -1092,12 +997,7 @@ const url = window.location.pathname === '/my-profile/'
       showcasedProductsData={showcasedProductsData}
       showAuraTile={showAuraTile}
       isPopupShow={isPopupShow}
-      isGuestPopUpShow={isGuestPopUpShow}
-      handleGuestSubmit={handleGuestSubmit}
-      errors={errors}
       handleGuestSkip={handleGuestSkip}
-      guestChange={guestChange}
-      guestData={guestData}
       setIsPopupShow={setIsPopupShow}
       showCoverImage={showCoverImage}
       videoContainerRef={videoContainerRef}
