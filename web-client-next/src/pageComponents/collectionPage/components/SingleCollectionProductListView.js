@@ -11,7 +11,7 @@ import {
 
 import ProductCard from "../../../components/ProductCard";
 import AskAuraCard from "../../../components/singleCollection/AskAuraCard";
-import GuestPopUp from "../../Auth/GuestPopUp";
+import GuestUserPopUp from "../../Auth/GuestUserPopUp";
 import ShareOptions from "../../shared/shareOptions";
 import styles from "../../../components/singleCollection/collectionDetails.module.scss";
 import Addmore from "../../../images/addmore.svg";
@@ -29,7 +29,11 @@ import {
   PRODUCT_SORT_OPTIONS,
   COLLECTION_COVER_IMG_SIZE_900_900,
 } from "../../../constants/codes";
-import { is_store_instance, super_admin } from "../../../constants/config";
+import {
+  current_store_name,
+  is_store_instance,
+  super_admin,
+} from "../../../constants/config";
 import "swiper/css";
 import "swiper/css/free-mode";
 import SwiperCore, { FreeMode } from "swiper";
@@ -95,12 +99,7 @@ const SingleCollectionProductListView = ({
   showcasedProductsData,
   showAuraTile,
   isPopupShow,
-  isGuestPopUpShow,
-  handleGuestSubmit,
-  errors,
   handleGuestSkip,
-  guestChange,
-  guestData,
   setIsPopupShow,
   showCoverImage,
   videoContainerRef,
@@ -1099,16 +1098,18 @@ const SingleCollectionProductListView = ({
                 )}
               </div>
             </div>
-            {isPopupShow && isGuestPopUpShow && (
-              <GuestPopUp
-                handleGuestSubmit={handleGuestSubmit}
-                errors={errors}
-                handleGuestSkip={handleGuestSkip}
-                guestChange={guestChange}
-                guestData={guestData}
-                setIsPopupShow={setIsPopupShow}
-              />
-            )}
+            <GuestUserPopUp
+              isOpen={isPopupShow}
+              setIsOpen={setIsPopupShow}
+              storeName={current_store_name}
+              isUserLogin={!isUserLogin ? true : false}
+              onSuccess={({ userId }) => {
+                onAddSelectedProductsToCollection(null, null, {
+                  context: { userId },
+                });
+              }}
+              onSkip={handleGuestSkip}
+            />
           </>
         )) ||
         null}
