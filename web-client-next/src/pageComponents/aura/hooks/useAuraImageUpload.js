@@ -5,8 +5,8 @@ import { useDispatch } from "react-redux";
 import {
   setChatImageUrl,
   setShowChatLoader,
-} from "../../../../hooks/chat/redux/actions";
-import { profileAPIs } from "../../../../helper/serverAPIs";
+} from "../../../hooks/chat/redux/actions";
+import { profileAPIs } from "../../../helper/serverAPIs";
 
 export const useAuraImageUpload = ({ chatTypeKey }) => {
   const dispatch = useDispatch();

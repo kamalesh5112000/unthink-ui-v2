@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { SettingOutlined } from "@ant-design/icons";
 import {
   AURA_CLICK,
   CHAT_SEARCH_OPTION_ID,
@@ -10,8 +11,8 @@ import {
   STORE_USER_NAME_BUDGETTRAVEL,
   STORE_USER_NAME_DOTHELOOK,
   STORE_USER_NAME_SWIFTLYSTYLED,
-} from "../../../constants/codes";
-import { AdminCheck, getParams, isEmpty } from "../../../helper/utils";
+} from "../../constants/codes";
+import { AdminCheck, getParams } from "../../helper/utils";
 import {
   setChatMessage,
   setChatUserAction,
@@ -19,14 +20,18 @@ import {
   setChatProductsData,
   setShowChatModal,
   resetAuraSearchResponse,
-} from "../../../hooks/chat/redux/actions";
-import { useChat } from "../../../hooks/chat/useChat";
+} from "../../hooks/chat/redux/actions";
+import { useChat } from "../../hooks/chat/useChat";
 import Chat from "./Chat";
 import ChatModal from "./components/overlay/ChatModal";
-import AuraChatSettingModal from "../../auraChatSettingModal";
-import { AuraChatSettingModalModes } from "../../auraChatSettingModal/AuraChatSettingModal";
-import { adminUserId, current_store_name, is_store_instance, super_admin } from "../../../constants/config";
+import AuraChatSettingModal from "../auraChatSettingModal";
+import { adminUserId, current_store_name, is_store_instance, super_admin } from "../../constants/config";
 import { useRouter } from "next/router";
+import {
+  getActiveSearchOption,
+  getAuraChatInputMetadata,
+  getAuraChatSettingMode,
+} from "./utils/AuraUtils";
 
 const defaultHiMessage = "Hi";
 
@@ -92,8 +97,8 @@ const ChatContainer = ({ disabledOutSideClick, config, trackCollectionData, isBT
   const isBTNormalUserLoggedIn = useMemo(() => isBTInstance === STORE_USER_NAME_BUDGETTRAVEL, [isBTInstance]);
 
   const activeSearchOption = useMemo(
-    () => (!isEmpty(selectedSearchOption) ? selectedSearchOption : ''),
-    [searchOptions, selectedSearchOption]
+    () => getActiveSearchOption(selectedSearchOption),
+    [selectedSearchOption]
   );
 
   const isSendSTLTemplates = useMemo(() => showSettings && activeSearchOption.id === CHAT_SEARCH_OPTION_ID.shop_a_look, [showSettings, activeSearchOption.id]);
@@ -164,15 +169,15 @@ const ChatContainer = ({ disabledOutSideClick, config, trackCollectionData, isBT
   }, [auraSearchText, isAuraChatPage, user?.data?.user_id, userDataSent]);
 
   const chatInputMetadata = useMemo(
-    () => ({
-      searchOptionId: activeSearchOption?.id,
-      follow_qn:activeSearchOption.follow_up_search_enable  ?  isFollowUpQuery : false,
-      aura_text_ss: isSendSSTemplates && !isEmpty(auraChatSetting.aura_text_ss) ? auraChatSetting.aura_text_ss : undefined,
-      aura_text_stl: isSendSTLTemplates && !isEmpty(auraChatSetting.aura_text_stl) ? auraChatSetting.aura_text_stl : undefined,
-      aura_text_ctl: isSendCTLTemplates && !isEmpty(auraChatSetting.aura_text_ctl) ? auraChatSetting.aura_text_ctl : undefined,
-      aura_image_stl: isSendSTLTemplates && !isEmpty(auraChatSetting.aura_image_stl) ? auraChatSetting.aura_image_stl : undefined,
-      aura_image_ctl: isSendCTLTemplates && !isEmpty(auraChatSetting.aura_image_ctl) ? auraChatSetting.aura_image_ctl : undefined,
-    }),
+    () =>
+      getAuraChatInputMetadata({
+        activeSearchOption,
+        auraChatSetting,
+        isFollowUpQuery,
+        isSendCTLTemplates,
+        isSendSSTemplates,
+        isSendSTLTemplates,
+      }),
     [showSettings, activeSearchOption?.id, JSON.stringify(auraChatSetting), isSendSTLTemplates, isSendCTLTemplates, auraChatSetting, isFollowUpQuery, chatImageUrl]
   );
   const router = useRouter();
@@ -199,9 +204,7 @@ const ChatContainer = ({ disabledOutSideClick, config, trackCollectionData, isBT
   };
 
   const auraChatSettingMode = useMemo(() => {
-    if (activeSearchOption.id === CHAT_SEARCH_OPTION_ID.shop_a_look) return AuraChatSettingModalModes.SHOP_A_LOOK;
-    if (activeSearchOption.id === CHAT_SEARCH_OPTION_ID.complete_the_look) return AuraChatSettingModalModes.COMPLETE_THE_LOOK;
-    if (activeSearchOption.id === CHAT_SEARCH_OPTION_ID.smart_search) return AuraChatSettingModalModes.SMART_SEARCH;
+    return getAuraChatSettingMode(activeSearchOption);
   }, [activeSearchOption.id]);
   
 

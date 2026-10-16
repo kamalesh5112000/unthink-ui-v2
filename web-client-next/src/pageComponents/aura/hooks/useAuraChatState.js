@@ -4,12 +4,19 @@ import { useSelector } from "react-redux";
 import {
   CHAT_SEARCH_OPTION_ID,
   CHAT_TYPES_KEYS,
-} from "../../../../constants/codes";
+} from "../../../constants/codes";
 import {
   getRandomArrayElements,
   isEmpty,
-} from "../../../../helper/utils";
-import { socket } from "../../../../context/socketV2";
+} from "../../../helper/utils";
+import { socket } from "../../../context/socketV2";
+import {
+  isAuraSplitLayoutOptionId,
+  isCompleteTheLookOptionId,
+  isProductSearchOptionId,
+  isShopALookOptionId,
+  isShopByThemeOptionId,
+} from "../utils/AuraUtils";
 
 export const useAuraChatState = ({
   chatTypeKey,
@@ -123,33 +130,27 @@ export const useAuraChatState = ({
   );
 
   const isShopALookOptionActive = useMemo(
-    () => activeSearchOption?.id === CHAT_SEARCH_OPTION_ID.shop_a_look,
+    () => isShopALookOptionId(activeSearchOption?.id),
     [activeSearchOption?.id],
   );
 
   const isShopByThemeOptionActive = useMemo(
-    () => activeSearchOption?.id === CHAT_SEARCH_OPTION_ID.smart_search,
+    () => isShopByThemeOptionId(activeSearchOption?.id),
     [activeSearchOption?.id],
   );
 
   const isCompleteTheLookOptionActive = useMemo(
-    () => activeSearchOption?.id === CHAT_SEARCH_OPTION_ID.complete_the_look,
+    () => isCompleteTheLookOptionId(activeSearchOption?.id),
     [activeSearchOption?.id],
   );
 
   const isProductSearchOptionActive = useMemo(
-    () => activeSearchOption?.id === CHAT_SEARCH_OPTION_ID.product_search,
+    () => isProductSearchOptionId(activeSearchOption?.id),
     [activeSearchOption?.id],
   );
 
   const isAllowedSplitLayout = useMemo(
-    () =>
-      [
-        CHAT_SEARCH_OPTION_ID.smart_search,
-        CHAT_SEARCH_OPTION_ID.product_search,
-        CHAT_SEARCH_OPTION_ID.complete_the_look,
-        CHAT_SEARCH_OPTION_ID.shop_a_look,
-      ].includes(activeSearchOption?.id),
+    () => isAuraSplitLayoutOptionId(activeSearchOption?.id),
     [activeSearchOption?.id],
   );
 

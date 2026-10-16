@@ -3,7 +3,7 @@ import { useNavigate } from "../../helper/useNavigate";
 import { Image } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
 
-import ChatContainer from "./aura/ChatContainer";
+import ChatContainer from "../aura/ChatContainer";
 import { UserProfileMenu } from "./UserProfileMenu";
 
 import heroesVillainsLogo from "../../images/heroesvillains_instance_logo.webp";

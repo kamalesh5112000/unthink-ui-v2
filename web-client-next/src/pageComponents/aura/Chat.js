@@ -13,23 +13,23 @@ import {
   setShowAuraIntro,
   setShowChatLoader,
   setAuraHelperMessage,
-} from "../../../hooks/chat/redux/actions";
-import header_aura from "../../../images/chat/header_aura_image_transparent.png";
-import star_ai_icon_logo from "../../../images/unthink_star_ai_icon.svg";
-import iconVolumeMute from "../../../images/chat/icon_volume_mute.svg";
-import iconVolume from "../../../images/chat/icon_volume.svg";
-import headerSearchIcon from "../../../images/chat/header_search_icon.svg";
-import close_bg_icon from "../../../images/close_bg_icon.svg";
-import AuraCameraSpinLoader from "../../../components/Loader/AuraCameraSpinLoader";
+} from "../../hooks/chat/redux/actions";
+import header_aura from "../../images/chat/header_aura_image_transparent.png";
+import star_ai_icon_logo from "../../images/unthink_star_ai_icon.svg";
+import iconVolumeMute from "../../images/chat/icon_volume_mute.svg";
+import iconVolume from "../../images/chat/icon_volume.svg";
+import headerSearchIcon from "../../images/chat/header_search_icon.svg";
+import close_bg_icon from "../../images/close_bg_icon.svg";
+import AuraCameraSpinLoader from "../../components/Loader/AuraCameraSpinLoader";
 import {
   CHAT_SEARCH_OPTION_ID,
   CHAT_SEARCH_TYPES,
   CHAT_TYPES_KEYS,
   CHAT_TYPE_CHAT,
-} from "../../../constants/codes";
-import { availableChatSearchTypes as _availableChatSearchTypes } from "../../../constants/config";
-import { profileAPIs } from "../../../helper/serverAPIs";
-import { isEmpty } from "../../../helper/utils";
+} from "../../constants/codes";
+import { availableChatSearchTypes as _availableChatSearchTypes } from "../../constants/config";
+import { profileAPIs } from "../../helper/serverAPIs";
+import { isEmpty } from "../../helper/utils";
 import { useRouter } from "next/router";
 
 const Chat = ({

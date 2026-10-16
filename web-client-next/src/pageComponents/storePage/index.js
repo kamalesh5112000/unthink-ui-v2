@@ -110,11 +110,11 @@ const DeliveryDetails = dynamic(() => import("../DeliveryDetails/DeliveryDetails
 const MyPoints = dynamic(() => import("../DeliveryDetails/MyPoints.jsx"), {
 	ssr: false,
 });
-const ChatContainer = dynamic(() => import("./aura/ChatContainer.js"), {
+const ChatContainer = dynamic(() => import("../aura/ChatContainer.js"), {
 	ssr: false,
 });
 const ChatProducts = dynamic(
-	() => import("./aura/components/productResponse/ChatProducts.js"),
+	() => import("../aura/components/productResponse/ChatProducts.js"),
 	{
 		ssr: false,
 	}
