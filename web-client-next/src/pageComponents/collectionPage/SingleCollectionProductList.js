@@ -32,6 +32,7 @@ import { current_store_name, super_admin } from "../../constants/config";
 import {
   openWishlistModal,
   setProductsToAddInWishlist,
+  setSelectedCollectionPayload,
 } from "../wishlist/redux/actions";
 import { authAPIs, profileAPIs } from "../../helper/serverAPIs";
 import Cookies from "js-cookie";
@@ -491,6 +492,12 @@ const url = window.location.pathname === '/my-profile/'
       dispatch(openWishlistModal());
     }
     dispatch(setProductsToAddInWishlist(finalProductsToAdd));
+    const payload = {
+      tags: blogCollectionPage?.tags || [],
+      tag_map: blogCollectionPage?.tag_map || {},
+      keyword_tag_map: blogCollectionPage?.keyword_tag_map || {},
+    }
+    dispatch(setSelectedCollectionPayload(payload));
     setPendingProductsToAdd([]);
     setPendingAddOptions({});
     if (isUserLoginCokkies) {
@@ -507,6 +514,9 @@ const url = window.location.pathname === '/my-profile/'
   blogCollectionPage?._id,
   blogCollectionPage?.collection_name,
   blogCollectionPage?.path,
+  blogCollectionPage?.tags,
+  blogCollectionPage?.tag_map,
+  blogCollectionPage?.keyword_tag_map,
   storeData?.store_name,
   current_store_name,
   singleCollection?._id,
