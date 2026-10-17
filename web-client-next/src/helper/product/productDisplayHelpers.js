@@ -26,3 +26,6 @@ export const getProductDiscountPercentage = (product) =>
 
 export const isProductOutOfStock = (product) =>
   String(product?.avlble ?? "").trim() === "0";
+
+export const isProductAvailable = (product) =>
+  String(product?.avlble ?? "").trim() === "1";
