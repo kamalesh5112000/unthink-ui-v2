@@ -26,6 +26,7 @@ import {
   getCollectionFlags,
   getCurrentCollectionForCard,
 } from "../../helper/product/productCardHelpers";
+import { isProductAvailable } from "../../helper/product/productDisplayHelpers";
 import ProductCardFooter from "./ProductCardFooter";
 import  ProductCardHeaderTop  from "./ProductCardHeaderTop";
 import ProductCardHeaderBottom from "./ProductCardHeaderBottom";
@@ -346,6 +347,10 @@ const ProductCard = ({
       !hasKioskAccess && window.matchMedia("(min-width: 1024px)").matches;
     handleProductClick({ open: openInNewTab });
   };
+
+  if (!isProductAvailable(product)) {
+    return null;
+  }
 
   return (
     <div
