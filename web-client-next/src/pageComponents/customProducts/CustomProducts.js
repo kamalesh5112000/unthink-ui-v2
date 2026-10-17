@@ -163,7 +163,7 @@ router.replace("/");
 				getIsSellerLoggedIn(storeSellerList, authUser.emailId) ||
 				getIsSellerLoggedIn(storeSellerList, authUser.phone)) &&
 			isMyProductsEnable,
-		[isAdminLoggedIn, isMyProductsEnable, storeSellerList, authUser.emailId]
+		[isAdminLoggedIn, isMyProductsEnable, storeSellerList, authUser.emailId, authUser.phone]
 	);
 
 	const [selectedSortOptionProduct, setSelectedSortOptionProduct] = useState(
