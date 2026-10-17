@@ -1,9 +1,9 @@
-name: CI unthink shop stage
+name: CI unthink shop stagenew
 
 on:
   push:
     branches: 
-      - new branch
+      - stagenew
   workflow_dispatch:
 
 jobs:
@@ -54,7 +54,7 @@ jobs:
       
       - name: Build
         run: |
-          IMAGE=us-central1-docker.pkg.dev/${{ secrets.DEV_GCP_PROJECT_ID }}/unthink-ui-v2/unthink-ui-next-stage-ui-v2
+          IMAGE=us-central1-docker.pkg.dev/${{ secrets.DEV_GCP_PROJECT_ID }}/unthink-ui-v2/unthink-ui-next-stagenew-ui-v2
           docker buildx build \
           --push \
           --tag $IMAGE \
@@ -82,8 +82,8 @@ jobs:
       - name: Deploy
         #working-directory: "web-client-next"
         run: |
-          gcloud run deploy unthink-ui-next-stage-ui-v2 \
+          gcloud run deploy unthink-ui-next-stagenew-ui-v2 \
           --region us-central1 \
-          --image us-central1-docker.pkg.dev/${{ secrets.DEV_GCP_PROJECT_ID }}/unthink-ui-v2/unthink-ui-next-stage-ui-v2 \
+          --image us-central1-docker.pkg.dev/${{ secrets.DEV_GCP_PROJECT_ID }}/unthink-ui-v2/unthink-ui-next-stagenew-ui-v2 \
           --platform managed \
           --project ${{ secrets.DEV_GCP_PROJECT_ID }}

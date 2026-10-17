@@ -24,12 +24,14 @@ import {
   authAPIs,
   collectionAPIs,
   profileAPIs,
+  SendSessionHCS20PointsApiCall,
 } from "../../../helper/serverAPIs";
 import { getTTid } from "../../../helper/getTrackerInfo";
 import { getCollectionsView } from "../../../helper/utils";
 import { getAuthUserUserName } from "./selector";
 import { customProductsWatcher } from "../../customProducts/redux/saga";
 import { current_store_name } from "../../../constants/config";
+import { generateDID } from "../utils/LoginUtils";
 // import { getInfluencerInfoSuccess } from "../../Influencer/redux/actions"; // REMOVE
 // import {
 // 	authUserState,
@@ -40,11 +42,43 @@ export function* getUserInfoData(action) {
   try {
     let { data, status } = yield call(authAPIs.getUserInfoAPICall, action?.payload);
     if (status === 200 && data?.status_code === 200 && data?.data?.user_id) {
+      let authUser = data.data;
+
+      if (authUser && !authUser?.userDID ) {
+        try {
+          const storeData = yield select((state) => state.store.data);
+          const userDID = generateDID();
+          const profileData = {
+            userDID, 
+            user_id: authUser.user_id,
+            _id: authUser._id,
+          };
+          
+
+          yield call(profileAPIs.saveUserInfoAPICall, { profileData });
+          authUser = {
+            ...authUser,
+            userDID,
+          };
+
+          const signupPoints = Number(storeData?.signup_points);
+          if (Number.isFinite(signupPoints)) {
+            yield call(SendSessionHCS20PointsApiCall, {
+              recipientId: userDID,
+              pointsAmount: signupPoints,
+            });
+          }
+        } catch (userDIDError) {
+          console.log(userDIDError);
+        }
+      }
+
       yield put(
-        getUserInfoSuccess(data.data, {
+        getUserInfoSuccess(authUser, {
           resetCollections: true,
         }),
       );
+      
       // const authUser = yield select(authUserState); // REMOVE
       // const sharedUser = yield select(sharedUserState);
       // if (

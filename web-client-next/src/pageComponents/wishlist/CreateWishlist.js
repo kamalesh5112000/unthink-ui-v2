@@ -96,6 +96,7 @@ const CreateWishlist = ({
 		isEditWishlist,
 		productsToAddInWishlist,
 		productsToAddInWishlistData,
+		collectionPayload,
 		showProcessingLoader,
 		// isSaveProductLists,
 		updateWishlistReducer,
@@ -110,12 +111,14 @@ const CreateWishlist = ({
 		state.appState.wishlist.isEditWishlist,
 		state.appState.wishlist.productsToAddInWishlist,
 		state.appState.wishlist.productsToAddInWishlistData,
+		state.appState.wishlist.collectionPayload,
 		state.appState.wishlist.selectedCollection.showProcessingLoader,
 		// state.appState.wishlist.isSaveProductLists,
 		state.wishlistActions.updateWishlist,
 		state.wishlistActions.createWishlist,
 		state.store.data.collection_properties,
 	]);
+	// console.log('collectionPayload',collectionPayload)
 	const currentStore = useSelector(getCurrentUserStore);
 
 	const {
@@ -537,6 +540,17 @@ const CreateWishlist = ({
 					product_lists: productsToAddInWishlist,
 					type: COLLECTION_TYPE_CUSTOM_PLIST,
 				};
+
+				if (collectionPayload?.tags?.length) {
+					createPayload.tags = collectionPayload.tags;
+				}
+				if (!isEmpty(collectionPayload?.keyword_tag_map)) {
+					createPayload.keyword_tag_map = collectionPayload.keyword_tag_map;
+				}
+
+				createPayload.tag_map = !isEmpty(collectionPayload?.tag_map)
+					? collectionPayload.tag_map
+					: createPayload.tag_map || {};
 
 				if (wishlistData.generated_by) {
 					createPayload.generated_by = wishlistData.generated_by;

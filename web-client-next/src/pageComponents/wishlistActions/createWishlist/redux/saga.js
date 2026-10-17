@@ -29,6 +29,7 @@ import {
 import appTracker from "../../../../helper/webTracker/appTracker";
 import { closeWishlistModal } from "../../../wishlist/redux/actions";
 import { current_store_name } from "../../../../constants/config";
+import { isEmpty } from "../../../../helper/utils";
  
 function* createWishlistSaga(action) {
 	try {
@@ -40,6 +41,7 @@ function* createWishlistSaga(action) {
 			description,
 			cover_image,
 			tags,
+			tag_map,
 			status,
 			type,
 			generated_by,
@@ -83,6 +85,7 @@ function* createWishlistSaga(action) {
 			cover_image,
 			more_instruction,
 			tags,
+			tag_map,
 			status,
 			type,
 			generated_by,
@@ -100,7 +103,11 @@ function* createWishlistSaga(action) {
 			faq_count,
 			...attributesData,
 		};
-
+		payload.tags = payload.tags || tags || [];
+		payload.tag_map = payload.tag_map || tag_map || {};
+		payload.keyword_tag_map = !isEmpty(payload.keyword_tag_map)
+			? payload.keyword_tag_map
+			: keyword_tag_map || {};
 		const authUser = yield select((state) => state.auth.user.data);
 		const isGuestUser = yield select(getIsGuestUser);
 		if (isGuestUser) {

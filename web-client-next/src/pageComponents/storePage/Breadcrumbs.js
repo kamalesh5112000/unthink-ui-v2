@@ -68,6 +68,9 @@ const Breadcrumbs = ({
 		if (isCustomProductsPage) {
 			breadCrumbItems.push({ label: "My products" });
 		}
+		if (isCartPage) {
+			breadCrumbItems.push({ label: "Cart" });
+		}
 
 		const addUserName = userName;
 		const isCollectionOrReviewPage = isCollectionPage || isCollectionReviewPage ;
