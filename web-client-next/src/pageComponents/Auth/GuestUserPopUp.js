@@ -4,10 +4,11 @@ import Cookies from "js-cookie";
 import { useDispatch, useSelector } from "react-redux";
 import GuestPopUp from "./GuestPopUp";
 import { getUserInfo, GuestPopUpShow } from "./redux/actions";
-import { authAPIs } from "../../helper/serverAPIs";
+import { authAPIs, profileAPIs, SendSessionHCS20PointsApiCall } from "../../helper/serverAPIs";
 import { COOKIE_TT_ID, KIOSK_LOGIN_CHANGE_EVENT, SIGN_IN_EXPIRE_DAYS } from "../../constants/codes";
 import { KIOSK_LOGIN_STORAGE_KEY, setCookie } from "../../helper/utils";
 import { setKioskLogin } from "../../components/kiosk/redux/actions";
+import { generateDID } from "./utils/LoginUtils";
 
 const DEFAULT_GUEST_COOKIE_EXPIRE_DAYS = 7;
 
@@ -15,9 +16,12 @@ function GuestUserPopUp({
   isOpen,
   setIsOpen,
   storeName,
+  guestUserId,
   onSuccess,
   onSkip,
   onClose,
+  phoneValidator,
+  phoneErrorMessage = "Please enter a valid phone number",
   persistKioskLogin = false,
   cookieExpireDays = DEFAULT_GUEST_COOKIE_EXPIRE_DAYS,
   isUserLogin,
@@ -28,7 +32,14 @@ function GuestUserPopUp({
   );
   const [guestData, setGuestData] = useState({ email: "", phone: "" });
   const [errors, setErrors] = useState({ email: "", phone: "" });
-
+   const [  authUser, storeData,  ] = useSelector((state) => [
+          
+         state.auth.user.data,
+         state.store.data,
+          
+     ]);;
+  const userDID = authUser?.userDID;
+  const authUserId = authUser?.user_id;
   const setPopupOpen = useCallback(
     (show) => {
       setIsOpen?.(show);
@@ -87,6 +98,11 @@ function GuestUserPopUp({
         return;
       }
 
+      if (phone && phoneValidator && !phoneValidator(phone)) {
+        setErrors({ email: "", phone: phoneErrorMessage });
+        return;
+      }
+
       if (!Cookies.get("isGuestLoggedIn")) {
         Cookies.set("isGuestLoggedIn", false, {
           expires: cookieExpireDays,
@@ -94,13 +110,19 @@ function GuestUserPopUp({
       }
 
       try {
-        const res = await authAPIs.GuestRegisterAPICall({
+        const guestRegisterPayload = {
           emailId: email,
-          // user_id: tid,
           store: storeName,
           phone,
-        });
+        };
+
+        if (guestUserId) {
+          guestRegisterPayload.user_id = guestUserId;
+        }
+
+        const res = await authAPIs.GuestRegisterAPICall(guestRegisterPayload);
         const userId = res?.data?.data?.user_id;
+        const User_ID = res?.data?.data?._id;
         // console.log('userId',userId);
         
         const registeredUserName =
@@ -124,21 +146,27 @@ function GuestUserPopUp({
             dispatch(setKioskLogin(kioskLoginData));
             window.dispatchEvent(new Event(KIOSK_LOGIN_CHANGE_EVENT));
           }
-          if(isUserLogin){
+          if (isUserLogin) {
             setCookie(COOKIE_TT_ID, userId, SIGN_IN_EXPIRE_DAYS);
+          }
+          if (isUserLogin) {
             dispatch(getUserInfo());
           }
+
+         
+
           notification.success({
             message: "Login Successfully",
           });
           closePopup();
-          onSuccess?.({
+          await onSuccess?.({
             userId,
             response: res,
             userName: registeredUserName || registeredEmail || phone,
             email: registeredEmail,
             phone,
           });
+
         }
       } catch (error) {
         console.error("Guest registration error:", error);
@@ -152,12 +180,17 @@ function GuestUserPopUp({
       cookieExpireDays,
       guestData.email,
       guestData.phone,
+      guestUserId,
       onSuccess,
       persistKioskLogin,
+      phoneErrorMessage,
+      phoneValidator,
       storeName,
       validateEmail,
       dispatch,
       isUserLogin,
+      authUserId,
+      userDID,
     ],
   );
 

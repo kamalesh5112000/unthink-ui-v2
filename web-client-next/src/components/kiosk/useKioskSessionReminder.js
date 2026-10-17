@@ -68,7 +68,7 @@ export default function useKioskSessionReminder({ time } = {}) {
       // clearStorages();
       clearStoragesKiosk();
       notifyKioskLoginChange();
-      router.replace('/')
+      router.replace('/kiosk')
     } catch (e) {}
     try {
       dispatch(getUserCollectionsReset());

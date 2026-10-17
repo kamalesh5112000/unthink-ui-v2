@@ -5,6 +5,7 @@ import {
   collectionQRCodeGenerator,
   getBlogCollectionPagePath,
 } from "../../helper/utils";
+import { gTagKioskCollectionClick } from "../../helper/webTracker/gtag";
 
 const BannerKisok = ({ products, Tags, lookBooks, storeData }) => {
   const router = useRouter();
@@ -65,7 +66,12 @@ const BannerKisok = ({ products, Tags, lookBooks, storeData }) => {
   }, [displayedProductPaths, displayedProducts]);
 
   const handleNavCollection = (Singlecollectiondata) => {
-    router.push(`/kioskcollections/${Singlecollectiondata.path}`);
+    gTagKioskCollectionClick({
+      collection: Singlecollectiondata,
+      tab_name: Tags,
+      source: "kiosk_collection_grid",
+    });
+    router.push(`/kiosk/collections/${Singlecollectiondata.path}`);
   };
 
   const desktopColumns = Array.from(

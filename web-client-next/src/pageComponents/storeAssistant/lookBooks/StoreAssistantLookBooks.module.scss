@@ -447,6 +447,85 @@
   }
 }
 
+.coverEditSection {
+  display: grid;
+  gap: 8px;
+}
+
+.coverEditLabel {
+  color: #344054;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.coverPreviewWrap {
+  display: grid;
+  gap: 10px;
+
+  img {
+    width: 100%;
+    height: 220px;
+    object-fit: contain;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    background: #fff;
+  }
+}
+
+.coverActions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px;
+
+  > button,
+  :global(.ant-upload-wrapper),
+  :global(.ant-upload),
+  :global(.ant-upload-drag) {
+    width: 100%;
+  }
+
+  > button,
+  :global(.ant-upload-drag) {
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #d1d5db;
+    border-radius: 999px;
+    background: #fff;
+    color: #111827;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  > button {
+    color: #b91c1c;
+    border-color: #fecaca;
+  }
+
+  :global(.ant-upload-drag-container) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.coverUploadWrap {
+  min-height: 154px;
+  display: grid;
+  place-items: center;
+
+  :global(.ant-upload-wrapper),
+  :global(.ant-upload),
+  :global(.ant-upload-drag) {
+    width: 100%;
+  }
+
+  :global(.ant-upload-drag) {
+    border-radius: 14px;
+  }
+}
+
 .collectionEditActions {
   display: flex;
   justify-content: flex-end;
@@ -625,6 +704,17 @@
   white-space: nowrap;
 }
 
+.starredProductButton {
+  border-color: #facc15 !important;
+  background: #fef9c3 !important;
+  color: #a16207 !important;
+
+  svg {
+    color: #ca8a04;
+    fill: #facc15;
+  }
+}
+
 .productInfo {
   padding: 12px;
 
@@ -799,6 +889,10 @@
     button {
       width: 100%;
     }
+  }
+
+  .coverActions {
+    grid-template-columns: 1fr;
   }
 
   .productDetailsPanel {

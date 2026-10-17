@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Drawer, Modal, notification, Spin } from "antd";
+import { Drawer, Modal, notification, Spin, Upload } from "antd";
+import { PictureOutlined } from "@ant-design/icons";
 import { FiEdit2, FiEye, FiImage, FiRefreshCw, FiShoppingBag, FiStar, FiTrash2 } from "react-icons/fi";
 import {
   DndContext,
@@ -16,6 +17,7 @@ import {
 
 import LookBookCollectionCard from "./LookBookCollectionCard";
 import { getCollectionNameToShow } from "../../../helper/utils";
+import { profileAPIs } from "../../../helper/serverAPIs";
 import {
   fetchStoreAssistantLookBooks,
   fetchStoreAssistantTrendingCollections,
@@ -26,6 +28,8 @@ import {
   updateLookBookKioskVisibility,
 } from "./storeAssistantLookBooksApi";
 import styles from "./StoreAssistantLookBooks.module.scss";
+
+const { Dragger } = Upload;
 
 const getProductImage = (product) => product?.image || product?.image_url || product?.img_url || product?.thumbnail || "";
 const getProductName = (product) => product?.name || product?.product_name || product?.title || "Untitled product";
@@ -141,6 +145,8 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
   const [drawerProduct, setDrawerProduct] = useState(null);
   const [editCollectionName, setEditCollectionName] = useState("");
   const [editDescription, setEditDescription] = useState("");
+  const [editCoverImage, setEditCoverImage] = useState("");
+  const [uploadingCoverImage, setUploadingCoverImage] = useState(false);
   const [savingCollection, setSavingCollection] = useState(false);
   const [productActionId, setProductActionId] = useState("");
   const [hasUnsavedOrderChanges, setHasUnsavedOrderChanges] = useState(false);
@@ -174,6 +180,7 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
     setDrawerProduct(null);
     setEditCollectionName(selectedCollection ? getCollectionNameToShow(selectedCollection) || "" : "");
     setEditDescription(selectedCollection?.description || "");
+    setEditCoverImage(selectedCollection?.cover_image || "");
   }, [selectedCollection]);
 
   const closeDrawer = () => {
@@ -252,6 +259,29 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
     setDrawerMode("collectionEdit");
   };
 
+  const uploadCoverProps = {
+    accept: "image/*",
+    multiple: false,
+    showUploadList: false,
+    customRequest: async (info) => {
+      setUploadingCoverImage(true);
+      try {
+        if (info?.file) {
+          const response = await profileAPIs.uploadImage({ file: info.file });
+          const uploadedImage = response?.data?.data?.[0]?.url;
+          if (uploadedImage) {
+            setEditCoverImage(uploadedImage);
+            notification.success({ message: "Cover image uploaded" });
+          }
+        }
+      } catch (error) {
+        notification.error({ message: "Failed to upload cover image" });
+      } finally {
+        setUploadingCoverImage(false);
+      }
+    },
+  };
+
   const onSaveCollection = async () => {
     const collectionId = selectedCollection?._id;
     if (!collectionId) return;
@@ -262,12 +292,14 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
         collectionId,
         collectionName: editCollectionName,
         description: editDescription,
+        coverImage: editCoverImage,
       });
       replaceCollection(collectionId, (collection) => ({
         ...collection,
         collection_name: editCollectionName,
         name: collection.name ? editCollectionName : collection.name,
         description: editDescription,
+        cover_image: editCoverImage,
       }));
       closeDrawer();
       notification.success({ message: config.updatedMessage });
@@ -449,7 +481,12 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
                     <button type="button" onClick={() => onShowProduct(product)}>
                       <FiEye /> <span className={styles.productActionLabel}>Show</span>
                     </button>
-                    <button type="button" onClick={() => onToggleProductStar(product)} disabled={!productMfrCode || !!productActionId}>
+                    <button
+                      type="button"
+                      className={product?.starred ? styles.starredProductButton : ""}
+                      onClick={() => onToggleProductStar(product)}
+                      disabled={!productMfrCode || !!productActionId}
+                    >
                       <FiStar /> <span className={styles.productActionLabel}>{starring ? "Saving..." : product?.starred ? "Unstar" : "Star"}</span>
                     </button>
                     <button type="button" onClick={() => onDeleteProduct(product)} disabled={!productMfrCode || !!productActionId}>
@@ -497,6 +534,33 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
         ) : null}
         {drawerMode === "collectionEdit" ? (
           <div className={styles.collectionEditPanel}>
+            <div className={styles.coverEditSection}>
+              <span className={styles.coverEditLabel}>Cover image</span>
+              {editCoverImage ? (
+                <div className={styles.coverPreviewWrap}>
+                  <img src={editCoverImage} alt={`${selectedCollectionName} cover`} />
+                  <div className={styles.coverActions}>
+                    <button type="button" onClick={() => setEditCoverImage("")} disabled={uploadingCoverImage || savingCollection}>
+                      Remove cover
+                    </button>
+                    <Dragger {...uploadCoverProps} disabled={uploadingCoverImage || savingCollection}>
+                      <span>{uploadingCoverImage ? "Uploading..." : "Change cover"}</span>
+                    </Dragger>
+                  </div>
+                </div>
+              ) : (
+                <div className={styles.coverUploadWrap}>
+                  {uploadingCoverImage ? (
+                    <Spin />
+                  ) : (
+                    <Dragger {...uploadCoverProps} disabled={savingCollection}>
+                      <p className="ant-upload-drag-icon"><PictureOutlined /></p>
+                      <p className="ant-upload-text">Click or drag a file to add a cover image</p>
+                    </Dragger>
+                  )}
+                </div>
+              )}
+            </div>
             <label>
               Collection name
               <input value={editCollectionName} onChange={(event) => setEditCollectionName(event.target.value)} />

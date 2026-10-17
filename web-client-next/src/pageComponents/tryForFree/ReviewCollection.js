@@ -2743,6 +2743,7 @@ const isNewCollection = router.query.isNewCollection === "true";
 		({ tag, isAdditional }) => {
 			if (enableTagSelection) {
 				checkAndShowContainer({ isFilterOptionsVisible: filterOptionsVisible }); // If the filter container is already shown then keep shown while changing the tag
+				setUpdateTagsCurrentPage(1)
 				if (isAdditional) {
 					setSelectedAdditionalTags(() => [tag]);
 				} else {

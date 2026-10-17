@@ -1,20 +1,19 @@
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 // import icon_all_products from "../../images/Logo.svg";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart, fetchCart, removeFromCart } from "./redux/action";
-import { removeFromWishlist } from "../wishlistActions/removeFromWishlist/redux/actions";
+import { addToCart, removeFromCart } from "./redux/action";
 // import inputIcon from "../../images/icons/input-icon.svg";
 import Link from "next/link";
 import { useNavigate } from "../../helper/useNavigate";
 import cart_icon from "../../images/cart.svg";
 import { getTTid } from "../../helper/getTrackerInfo";
 import Cookies from "js-cookie";
-import { getUserInfo, GuestPopUpShow } from "../Auth/redux/actions";
-import GuestPopUp from "../Auth/GuestPopUp";
-import { COOKIE_TT_ID, SIGN_IN_EXPIRE_DAYS } from "../../constants/codes";
-import { authAPIs, collectionAPIs } from "../../helper/serverAPIs";
+import { GuestPopUpShow } from "../Auth/redux/actions";
+import GuestUserPopUp from "../Auth/GuestUserPopUp";
+import { SIGN_IN_EXPIRE_DAYS } from "../../constants/codes";
+import { collectionAPIs } from "../../helper/serverAPIs";
 import { current_store_name, isGivaStore } from "../../constants/config";
-import { collectionQRCodeGenerator, setCookie } from "../../helper/utils";
+import { collectionQRCodeGenerator } from "../../helper/utils";
 import Modal from "../../components/modal/Modal";
 import { buildKioskAutoLoginUrls } from "../../helper/autoLogin";
 
@@ -31,16 +30,6 @@ const DeliveryDetails = () => {
   ]);
   const { collection, loading } = useSelector((state) => state.cart);
   // console.log("collection", storeData?.store_name   );
-  const [unSignedData, setUnSignedData] = useState(null);
-  const [isGuestPopUpShow] = useSelector((state) => [
-    state.GuestPopUpReducer.isGuestPopUpShow,
-  ]);
-  const [guestData, setGuestData] = useState({
-    email: "",
-    phone: "",
-  });
-
-  const [errors, setErrors] = useState({ email: "", phone: "" });
   const [isPopupShow, setIsPopupShow] = useState(false);
   const [isCheckoutClaimQrModalOpen, setIsCheckoutClaimQrModalOpen] =
     useState(false);
@@ -50,20 +39,12 @@ const DeliveryDetails = () => {
     shareUrl: "",
   });
   
-  const mycartcollectionpath = `${ kioskUser_id || authUserId || getTTid()}`;
+  const guestTrackerId = getTTid();
+  const mycartcollectionpath = `${ kioskUser_id || authUserId || guestTrackerId}`;
  
   const shouldShowCheckoutClaimQr = authUserId && isGivaStore;
   const checkoutClaimMessage =
     storeData?.cart_settings?.checkout_claim_message;
-
-  const extractedProducts = useMemo(() => {
-    if (!collection?.product_lists) return [];
-    return collection.product_lists.map((item) => ({
-      mfr_code: item.mfr_code,
-      qty: item.qty,
-      tagged_by: item.tagged_by,
-    }));
-  }, [collection]);
 
   useEffect(() => {
     if (!(kioskUser_id || authUserId)) return undefined;
@@ -187,179 +168,87 @@ const DeliveryDetails = () => {
     return value;
   }
 
-  // Email validation
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  // Phone validation
-  const validatePhone = (phone) => {
-    const phoneRegex = /^[0-9]{10}$/; // 10 digit phone number
+  const validateGuestPhone = useCallback((phone) => {
+    const phoneRegex = /^[0-9]{10}$/;
     return phoneRegex.test(phone.replace(/\D/g, ""));
-  };
-
-  // Guest data change handler
-  const guestChange = useCallback((e) => {
-    const { name, value } = e.target;
-    setGuestData((data) => ({ ...data, [name]: value }));
-    if (name === "email" || name === "phone") {
-      setErrors((currentErrors) => ({
-        ...currentErrors,
-        email: "",
-        phone: "",
-      }));
-    }
   }, []);
 
-  // Guest skip handler
-  const handleGuestSkip = () => {
-    dispatch(GuestPopUpShow(false));
-    setIsPopupShow(false);
-  };
+  const handleGuestSuccess = useCallback(
+    async ({ userId }) => {
+      Cookies.set("isGuestLoggedIn", true, {
+        expires: SIGN_IN_EXPIRE_DAYS,
+      });
 
-  const handleGuestSubmit = useCallback(
-    async (e) => {
-      e.preventDefault();
-      const email = guestData.email?.trim();
-      const phone = guestData.phone?.trim();
+      if (!userId || !guestTrackerId) return;
 
-      if (email && !validateEmail(email)) {
-        setErrors({ ...errors, email: "Please enter a valid email address" });
-        return;
-      }
-
-      // Phone validation for cart page
-      // if (!phone  ) {
-      // 	setErrors({
-      // 		...errors,
-      // 		phone: "At least one phone number is required",
-      // 	});
-      // 	return;
-      // }
-      if (!phone && !email) {
-        setErrors({
-          ...errors,
-          phone: !phone ? "Please enter a valid 10 digit phone number" : "",
-          email: !email ? "Please enter a valid email address" : "",
-        });
-        return;
-      }
-
-      if (phone && !validatePhone(phone)) {
-        setErrors({
-          ...errors,
-          phone: "Please enter a valid 10-digit phone number",
-        });
-        return;
-      }
-
-      const tid = Cookies.get("tid");
-      const store = current_store_name;
-
-      // Set default value of isGuestLoggedIn to false if not already set
-      if (!Cookies.get("isGuestLoggedIn")) {
-        Cookies.set("isGuestLoggedIn", false, { expires: SIGN_IN_EXPIRE_DAYS });
-      }
-
-      if (phone || email) {
-        try {
-          const response = await collectionAPIs.fetchCollectionsAPICall({
+      try {
+        const unsignedCartResponse =
+          await collectionAPIs.fetchCollectionsAPICall({
             is_display_amount: true,
-            path: `my_cart_${tid}`,
+            path: `my_cart_${guestTrackerId}`,
           });
 
-          setUnSignedData(response?.data?.data?.[0] || null);
-
-          const res = await authAPIs.GuestRegisterAPICall({
-            emailId: email,
-            user_id: tid,
-            store,
-            phone,
+        const signedCartResponse =
+          await collectionAPIs.fetchCollectionsAPICall({
+            is_display_amount: true,
+            path: `my_cart_${userId}`,
           });
 
-          const { data } = res;
-          const user_id = data.data.user_id;
+        const unsignedProducts =
+          unsignedCartResponse?.data?.data?.[0]?.product_lists?.map((item) => ({
+            mfr_code: item.mfr_code,
+            qty: item.qty,
+            tagged_by: item.tagged_by,
+            collection:item.collection[0],
+            source:item.source[0],
+            event_id:item.event_id
 
-          if (res.data.status_code === 200) {
-            dispatch(GuestPopUpShow(false));
-            setCookie(COOKIE_TT_ID, user_id, SIGN_IN_EXPIRE_DAYS);
-            dispatch(getUserInfo());
-            Cookies.set("isGuestLoggedIn", true, {
-              expires: SIGN_IN_EXPIRE_DAYS,
-            });
-            // Cookies.set('isGuestSkip', false, { expires: GUESTSKIP_EXPIRE_HOURS / 24 });
-            setIsPopupShow(false);
+          }));
+          // console.log("unsignedProducts", unsignedProducts);
+        const signedProducts =
+          signedCartResponse?.data?.data?.[0]?.product_lists?.map((item) => ({
+            mfr_code: item.mfr_code,
+            qty: item.qty,
+            tagged_by: item.tagged_by,
+          }));
+          // console.log("signedProducts", signedProducts);
 
-            const responseNew = await collectionAPIs.fetchCollectionsAPICall({
-              is_display_amount: true,
-              path: `my_cart_${user_id}`,
-            });
+        const mergedProducts = {};
 
-            const unSignDat = response?.data?.data?.[0]?.product_lists?.map(
-              (item) => ({
-                mfr_code: item.mfr_code,
-                qty: item.qty,
-                tagged_by: item.tagged_by,
-              }),
-            );
+        [unsignedProducts, signedProducts].forEach((productList) => {
+          if (!Array.isArray(productList)) return;
 
-            const newSignData =
-              responseNew?.data?.data?.[0]?.product_lists?.map((item) => ({
-                mfr_code: item.mfr_code,
-                qty: item.qty,
-                tagged_by: item.tagged_by,
-              }));
-
-            // Merge quantities from unSignDat and newSignData
-            const mergedProducts = {};
-
-            // Add all unsigned items to merge map
-            if (unSignDat && Array.isArray(unSignDat)) {
-              unSignDat.forEach((item) => {
-                const key = item.mfr_code;
-                if (!mergedProducts[key]) {
-                  mergedProducts[key] = { ...item };
-                } else {
-                  mergedProducts[key].qty += item.qty;
-                }
-              });
+          productList.forEach((item) => {
+            const key = item.mfr_code;
+            if (!mergedProducts[key]) {
+              mergedProducts[key] = { ...item };
+            } else {
+              mergedProducts[key].qty += item.qty;
             }
+          });
+        });
 
-            // Add/merge signed items with quantities
-            if (newSignData && Array.isArray(newSignData)) {
-              newSignData.forEach((item) => {
-                const key = item.mfr_code;
-                if (!mergedProducts[key]) {
-                  mergedProducts[key] = { ...item };
-                } else {
-                  mergedProducts[key].qty += item.qty;
-                }
-              });
-            }
+        const mergedProductsArray = Object.values(mergedProducts);
+        if (!mergedProductsArray.length) return;
 
-            // Convert merged map back to array
-            const mergedProductsArray = Object.values(mergedProducts);
-
-            const payload = {
-              is_display_amount: true,
-              products: mergedProductsArray,
-              product_lists: [],
-              collection_name: "my cart",
-              type: "system",
-              user_id: user_id || getTTid(),
-              path: `my_cart_${user_id || getTTid()}`,
-            };
-
-            dispatch(addToCart(payload));
-          }
-        } catch (error) {
-          console.log(error);
-        }
+        dispatch(
+          addToCart({
+            is_display_amount: true,
+            products: mergedProductsArray,
+            product_lists: [],
+            collection_name: "my cart",
+            type: "system",
+            user_id: userId,
+            path: `my_cart_${userId}`,
+          }),
+        );
+      } catch (error) {
+        console.log(error);
       }
     },
-    [guestData.email, guestData.phone, dispatch, extractedProducts],
+    [dispatch, guestTrackerId],
   );
+
   let shareUrl
   // console.log('sharePageUrl', shareUrl);
     const shareQrCodeImage = (sharePageUrl) => {
@@ -649,17 +538,17 @@ const DeliveryDetails = () => {
         </div>
       </div>
 
-      {isGuestPopUpShow && (
-        <GuestPopUp
-          handleGuestSubmit={handleGuestSubmit}
-          errors={errors}
-          handleGuestSkip={handleGuestSkip}
-          guestChange={guestChange}
-          guestData={guestData}
-          setIsPopupShow={setIsPopupShow}
-          cartPageGuestPopup
-        />
-      )}
+      <GuestUserPopUp
+        isOpen={isPopupShow}
+        setIsOpen={setIsPopupShow}
+        storeName={storeData?.store_name || current_store_name}
+        guestUserId={guestTrackerId}
+        isUserLogin
+        cookieExpireDays={SIGN_IN_EXPIRE_DAYS}
+        phoneValidator={validateGuestPhone}
+        phoneErrorMessage="Please enter a valid 10-digit phone number"
+        onSuccess={handleGuestSuccess}
+      />
 
       <Modal
         headerText="Scan QR"

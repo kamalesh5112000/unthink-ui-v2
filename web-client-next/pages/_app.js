@@ -32,6 +32,7 @@ const AutoCreateCollectionModal = dynamic(() => import("../src/pageComponents/au
 
 // Import utilities
 import appTracker from "../src/helper/webTracker/appTracker";
+import AnalyticsTracker from "../src/helper/webTracker/AnalyticsTracker";
 import { checkAndGenerateUserId, generateSessionId } from "../src/helper/utils";
 import {
   STORE_USER_NAME_BUDGETTRAVEL,
@@ -123,7 +124,7 @@ function MyApp({ Component, pageProps }) {
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', '${GA_TRACKING_ID}');
+              gtag('config', '${GA_TRACKING_ID}', { send_page_view: false });
             `}
           </Script>
         </>
@@ -135,6 +136,7 @@ function MyApp({ Component, pageProps }) {
             <ActionWrapper>
               <ContextWrapper>
                 <UserDataProvider>
+                <AnalyticsTracker />
                 {mounted ? (
                   <>
                     {isRouteLoading ? <RouteLoader /> : null}

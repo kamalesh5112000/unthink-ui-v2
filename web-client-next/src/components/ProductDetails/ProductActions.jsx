@@ -14,7 +14,8 @@ const ProductActions = ({
   storeId,
 }) => {
   const kioskLogin = useSelector((state) => state.kiosk.login);
-
+  const storedSource = JSON.parse(sessionStorage.getItem('cart_source') || '{}');
+  // console.log('storedSource',storedSource)
   return (
     <>
       {brandsDetails?.paymentMethod && productDetails?.avlble > 0 ? (
@@ -51,6 +52,9 @@ const ProductActions = ({
                   hasAccess: hasKioskAccess,
                   getLogin: () => kioskLogin,
                 }}
+                source={storedSource.source}
+                cartSourceCollection={storedSource.cartSourceCollection}
+                eventId={storeData?.event_id}
                 hasKioskAccess={hasKioskAccess}
                 storeName={storeData?.store_name}
                 isUserLogin={isUserLogin}
