@@ -679,7 +679,8 @@ export const getCollectionNameToShow = (collection) =>
 		? favorites_collection_name
 		: collection.name || collection.collection_name;
 
-export const filterAvailableProductList = (pList) => pList;
+export const filterAvailableProductList = (pList = []) =>
+	pList.filter((product) => String(product?.avlble ?? "").trim() === "1");
 
 export const getIsSellerLoggedIn = (storeSellerList = [], emailId ) =>
 	storeSellerList.includes(emailId);

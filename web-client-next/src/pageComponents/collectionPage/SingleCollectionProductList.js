@@ -174,7 +174,7 @@ const url = window.location.pathname === '/my-profile/'
         singleCollection.tag_map,
       );
     }
-    list = sponsorProductList.concat(list);
+    list = filterAvailableProductList(sponsorProductList.concat(list));
 
     return productCountToShow ? list.slice(0, productCountToShow) : list;
   }, [
