@@ -13,24 +13,7 @@ import { vtoIconState } from "../singleCollection/redux/actions";
 import { GuestPopUpShow } from "../../pageComponents/Auth/redux/actions";
 import camera from "../singleCollection/images/Card/camera.svg";
 
-const getImageDimensions = (imageUrl) =>
-  new Promise((resolve) => {
-    if (typeof window === "undefined" || !imageUrl) {
-      resolve(null);
-      return;
-    }
-
-    const image = new Image();
-
-    image.onload = () => {
-      resolve({
-        width: image.naturalWidth,
-        height: image.naturalHeight,
-      });
-    };
-    image.onerror = () => resolve(null);
-    image.src = imageUrl;
-  });
+ 
 
 const VirtualTryOnModal = ({
   size,
@@ -58,7 +41,11 @@ const VirtualTryOnModal = ({
   saveText = "Save",
 }) => {
   const dispatch = useDispatch();  
-  const ButtonClick = useSelector((state) => state.VtoIconReducer.ButtonClick);
+   
+  const [ButtonClick ,authUser ] = useSelector((state) => [ 
+    state.VtoIconReducer.ButtonClick,
+    state.auth.user.data 
+  ]);
   const isMobile = typeof window !== "undefined" && window.innerWidth < 878;
   const isOpen = Boolean(storeData && ButtonClick === product?.mfr_code);
   const modalSubText =
@@ -152,6 +139,7 @@ const VirtualTryOnModal = ({
       image_tryon_prompt: `${imageTryonPrompt} ${product?.size}`,
       additional_prompt: description || "",
       type: tryonType || "tryon",
+      user_id: authUser?.user_id
     };
 
     try {
