@@ -210,7 +210,7 @@ const AuraResponseProductsWithTags = ({
 							className={`relative flex h-[34px] w-max min-w-12 items-center justify-center rounded-full px-1 transition-all duration-200 ease-in-out max-[768px]:min-w-0 max-[768px]:py-0.5 ${!selectedTag && isAllEnabled
 								? 'bg-secondary text-white '
 								: isAllEnabled
-									? 'cursor-pointer border border-secondary/30 [&_h5]:cursor-pointer [&_h5]:font-medium [&_h5]:text-highlight [&_.aura-tag-close-icon]:cursor-pointer [&_.aura-tag-close-icon]:border-highlight'
+									? 'cursor-pointer border border-common [&_h5]:cursor-pointer [&_h5]:font-medium [&_h5]:text-highlight [&_.aura-tag-close-icon]:cursor-pointer [&_.aura-tag-close-icon]:border-highlight'
 									: 'cursor-pointer border border-secondary/30 [&_h5]:cursor-pointer [&_h5]:font-medium [&_h5]:text-highlight [&_.aura-tag-close-icon]:cursor-pointer [&_.aura-tag-close-icon]:bg-secondary/10 [&_.aura-tag-close-icon]:text-secondary'
 								}`}
 							onClick={() => isAllEnabled && handleSuggestionClick("")}>
@@ -232,11 +232,11 @@ const AuraResponseProductsWithTags = ({
 					<div
 						id={`tag-${suggestion}`}
 						key={index}
-						className={`relative flex h-[34px] w-max min-w-12 items-center justify-center rounded-full px-1 transition-all duration-200 ease-in-out max-[768px]:min-w-0 max-[768px]:py-0.5 ${suggestion === selectedTag
+						className={`relative flex h-[34px] border-common w-max min-w-12 items-center justify-center rounded-full px-1 transition-all duration-200 ease-in-out max-[768px]:min-w-0 max-[768px]:py-0.5 ${suggestion === selectedTag
 							? 'bg-secondary text-white font-medium'
 							: checkIsTagEnabled(suggestion)
-								? 'cursor-pointer border border-secondary/30 [&_h5]:cursor-pointer [&_h5]:font-medium [&_h5]:text-highlight [&_.aura-tag-close-icon]:cursor-pointer [&_.aura-tag-close-icon]:border-highlight'
-								: 'cursor-pointer border border-secondary/30 [&_h5]:cursor-pointer [&_h5]:font-medium [&_h5]:text-highlight [&_.aura-tag-close-icon]:cursor-pointer [&_.aura-tag-close-icon]:bg-secondary/10 [&_.aura-tag-close-icon]:text-secondary'
+								? 'cursor-pointer border border-common [&_h5]:cursor-pointer [&_h5]:font-medium [&_h5]:text-highlight [&_.aura-tag-close-icon]:cursor-pointer [&_.aura-tag-close-icon]:border-highlight'
+								: 'cursor-pointer border border-common [&_h5]:cursor-pointer [&_h5]:font-medium [&_h5]:text-highlight [&_.aura-tag-close-icon]:cursor-pointer [&_.aura-tag-close-icon]:bg-secondary/10 [&_.aura-tag-close-icon]:text-secondary'
 							} ${tags.length > 1 ? 'gap-1 pl-2' : ''}`}>
 						<h5
 							className="m-0 cursor-inherit px-2.5 text-xs font-normal leading-4 sm:px-3 md:text-sm max-[768px]:px-1.5 max-[768px]:py-0.5"
