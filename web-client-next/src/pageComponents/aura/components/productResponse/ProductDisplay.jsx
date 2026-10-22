@@ -29,29 +29,8 @@ const ProductDisplay = ({
   widgetHeader,
   widgetImage,
 }) => {
-  
-
-  if (!shouldShowPanelChrome) {
-    return productsResultsContent;
-  }
-
-  return (
-    <div
-      className={`w-full min-w-0 overflow-x-hidden max-lg:px-0 max-lg:py-4 lg:box-border lg:flex lg:h-full lg:min-h-0 lg:w-auto lg:flex-col lg:overflow-hidden lg:bg-white lg:px-2.5 lg:py-0 ${
-        layoutMode === "left" ? "lg:hidden" : ""
-      }`}
-    >
-      <div
-        className={`sticky top-0 z-50 mb-4 flex h-16 w-full box-border items-center border-b border-slate-200 px-6 py-3 backdrop-blur-md ${
-          isMobile ? "max-lg:hidden" : ""
-        }`}
-      >
-        <h2 className="m-0 text-xl font-semibold uppercase leading-tight tracking-wide text-slate-950 md:text-2xl">
-          Products
-        </h2>
-      </div>
-      <div className="min-h-0 lg:flex-auto lg:overflow-x-hidden lg:overflow-y-auto">
-   
+  const productsResultsContent = (
+    <>
       {showChatLoader &&
         isEmpty(suggestionsWithProducts.suggestions) &&
         !newAuraProductsUiEnabled && (
@@ -93,7 +72,30 @@ const ProductDisplay = ({
           isProductSearchOptionActive={isProductSearchOptionActive}
         />
       ) : null}
-  
+    </>
+  );
+
+  if (!shouldShowPanelChrome) {
+    return productsResultsContent;
+  } 
+ 
+  return (
+    <div
+      className={`w-full min-w-0 overflow-x-hidden max-lg:px-0 max-lg:py-4 lg:box-border lg:flex lg:h-full lg:min-h-0 lg:w-auto lg:flex-col lg:overflow-hidden lg:bg-white lg:px-2.5 lg:py-0 ${
+        layoutMode === "left" ? "lg:hidden" : ""
+      }`}
+    >
+      <div
+        className={`sticky top-0 z-50 mb-4 flex h-16 w-full box-border items-center border-b border-slate-200 px-6 py-3 backdrop-blur-md ${
+          isMobile ? "max-lg:hidden" : ""
+        }`}
+      >
+        <h2 className="m-0 text-xl font-semibold uppercase leading-tight tracking-wide text-slate-950 md:text-2xl">
+          Products
+        </h2>
+      </div>
+      <div className="min-h-0 lg:flex-auto lg:overflow-x-hidden lg:overflow-y-auto">
+        {productsResultsContent}
       </div>
     </div>
   );

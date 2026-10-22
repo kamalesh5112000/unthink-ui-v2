@@ -50,10 +50,8 @@ import filterIcon from "../../images/filter_outline.svg";
 import Cookies from "js-cookie";
 import {
 	getUserCollections,
-	GuestPopUpShow,
 	getwishlistUserCollection,
 } from "../Auth/redux/actions";
-import GuestUserPopUp from "../Auth/GuestUserPopUp";
 import { addProductToWishlistCollection } from "../wishlistActions/addProductToWishlistCollection/redux/actions";
 import {
 	FaRegArrowAltCircleRight,
@@ -154,6 +152,7 @@ const [notData,setNotData] = useState(null)
 	const dispatch = useDispatch();
 	const { sendMessage } = useChat();
 	const guestActionRef = useRef(null);
+	const addSelectedProductsToCollectionRef = useRef(null);
 	const skipWishlistStateAfterGuestRef = useRef(false);
 	const pendingWishlistProductAfterGuestRef = useRef(null);
 	const checked = useRef([]);
@@ -406,6 +405,7 @@ const [notData,setNotData] = useState(null)
 	const productsToRender = cachedProductsToRender.length
 		? cachedProductsToRender
 		: chatProductsDataToShow;
+		console.log('productsToRender',productsToRender)
 	const productsToRenderCodes = useMemo(
 		() => productsToRender.map((product) => product.mfr_code).filter(Boolean),
 		[productsToRender],
@@ -617,6 +617,44 @@ const [notData,setNotData] = useState(null)
 		[],
 	);
 
+	const handleGuestSkip = useCallback(() => {
+		if (guestActionRef.current === "share") {
+			addSelectedProductsToCollectionRef.current?.(null, {
+				isShare: true,
+				isSkip: true,
+			});
+		}
+	}, []);
+
+	const handleGuestSuccess = useCallback(
+		({ userId, response }) => {
+			if (guestActionRef.current === "share") {
+				const registeredUser = response?.data?.data;
+				if (registeredUser?.user_id) {
+					setUserData(registeredUser);
+				}
+				addSelectedProductsToCollectionRef.current?.(null, {
+					isShare: true,
+					isGuestSubmit: true,
+					userId,
+				});
+			} else if (guestActionRef.current === "save") {
+				addSelectedProductsToCollectionRef.current?.(null, {
+					isSave: true,
+					isGuestSubmit: true,
+					userId,
+				});
+			} else if (["cart", "wishlist"].includes(guestActionRef.current)) {
+				addSelectedProductsToCollectionRef.current?.(null, {
+					action: guestActionRef.current,
+					isGuestSubmit: true,
+					userId,
+				});
+			}
+		},
+		[setUserData],
+	);
+
 	const onAddSelectedProductsToCollection = useCallback(
 		(e =null,options ={}) => {
 			const { action = "", isSave = false, isShare = false, isSkip = false, isGuestSubmit = false,userId = null, product: productToAdd = null, skipWishlistStateAfterGuest = false } = options;
@@ -643,23 +681,10 @@ const [notData,setNotData] = useState(null)
 				openGuestPopup({
 					action: pendingGuestAction,
 					storeName: current_store_name,
-					refreshUserInfo: true,
-					onSuccess: ({ userId, response }) => {
-						if (response?.data?.data) {
-							setUserData(response.data.data);
-						}
-						onAddSelectedProductsToCollection(null, {
-							isShare: true,
-							isGuestSubmit: true,
-							userId,
-						});
-					},
-					onSkip: () => {
-						onAddSelectedProductsToCollection(null, {
-							isShare: true,
-							isSkip: true,
-						});
-					},
+					refreshUserInfo: false,
+					waitForAuth: false,
+					onSuccess: handleGuestSuccess,
+					onSkip: handleGuestSkip,
 				});
 				return;
 			}
@@ -669,24 +694,7 @@ const [notData,setNotData] = useState(null)
 					action: pendingGuestAction,
 					storeName: current_store_name,
 					refreshUserInfo: true,
-					onSuccess: ({ userId, response }) => {
-						if (response?.data?.data) {
-							setUserData(response.data.data);
-						}
-						if (pendingGuestAction === "save") {
-							onAddSelectedProductsToCollection(null, {
-								isSave: true,
-								isGuestSubmit: true,
-								userId,
-							});
-							return;
-						}
-						onAddSelectedProductsToCollection(null, {
-							action: pendingGuestAction,
-							isGuestSubmit: true,
-							userId,
-						});
-					},
+					onSuccess: handleGuestSuccess,
 				});
 				return;
 			}
@@ -810,13 +818,15 @@ const [notData,setNotData] = useState(null)
 			chatImageUrl,
 			dispatch,
 			handleResetSelectProduct,
+			handleGuestSkip,
+			handleGuestSuccess,
 			openGuestPopup,
-			setUserData,
 			storeData?.event_id,
 			storeData?.store_name,
 			userData?.user_id,
 		]
 	);
+	addSelectedProductsToCollectionRef.current = onAddSelectedProductsToCollection;
 
 	const handleSelectedProductsAction = useCallback(
 		(item, e) => {
@@ -927,29 +937,6 @@ setNotData(newOptionalFilters)
 			// setShowCustomFilterInput(isShowCustomFilterInput);
 		},
 		[]
-	);
-
-	const handleGuestSkip = useCallback(() => {
-		if (guestActionRef.current === "share") {
-			onAddSelectedProductsToCollection(null,{ isShare: true, isSkip: true });
-		}
-	}, [onAddSelectedProductsToCollection]);
-
-	const handleGuestSuccess = useCallback(
-		({ userId, response }) => {
-			if (guestActionRef.current === "share") {
-				const registeredUser = response?.data?.data;
-				if (registeredUser?.user_id) {
-					setUserData(registeredUser);
-				}
-				onAddSelectedProductsToCollection(null, { isShare: true, isGuestSubmit: true, userId });
-			} else if (guestActionRef.current === "save") {
-				onAddSelectedProductsToCollection(null, { isSave: true, isGuestSubmit: true, userId });
-			} else if (["cart", "wishlist"].includes(guestActionRef.current)) {
-				onAddSelectedProductsToCollection(null, { action: guestActionRef.current, isGuestSubmit: true, userId });
-			}
-		},
-		[onAddSelectedProductsToCollection, setUserData],
 	);
 
 	useEffect(() => {
@@ -1350,16 +1337,6 @@ setNotData(newOptionalFilters)
 					</Modal>
 				)}
 			</div>
-			<GuestUserPopUp
-				isOpen={isGuestPopUpShow}
-				storeName={current_store_name}
-				isUserLogin={
-					!isUserLogin && guestActionRef.current !== "share"
-				}
-				onSuccess={handleGuestSuccess}
-				onSkip={handleGuestSkip}
-			/>
-
 			{isAuraChatPage && <WishListModal />}
 		</>
 	);

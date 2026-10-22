@@ -288,6 +288,11 @@ const ChatProducts = ({
     [activeSearchOption?.id],
   );
 
+  const isSmartSearchActive = useMemo(
+    () => activeSearchOption?.title === "Smart Search",
+    [activeSearchOption?.title],
+  );
+
   const isShopALookOptionActiveCustom = useMemo(
     () => isShopALookOptionId(activeSearchOption?.id),
     [activeSearchOption?.id],
@@ -307,23 +312,36 @@ const ChatProducts = ({
     ],
   );
 
+  const isSuggestionsWithProductsAvailable = useMemo(
+    () =>
+      Object.values(suggestionsWithProducts || {}).some(
+        (value) => !isEmpty(value),
+      ),
+    [suggestionsWithProducts],
+  );
+
   const shouldShowShopLookSplitLayout = useMemo(
     () =>
       (isShopALookOptionActiveCustom ||
-        isShopByThemeOptionActive ||
         isCompleteTheLookOptionActive ||
         isProductSearchOptionActive) &&
-      (widgetHeader || !isEmpty(shopALookData) || !isEmpty(chatProductsData)),
+      (widgetHeader ||
+        !isEmpty(shopALookData) ||
+        !isEmpty(chatProductsData) ||
+        isSuggestionsWithProductsAvailable),
     [
       isShopALookOptionActiveCustom,
-      isShopByThemeOptionActive,
       isCompleteTheLookOptionActive,
       isProductSearchOptionActive,
       widgetHeader,
       shopALookData,
       chatProductsData,
+      isSuggestionsWithProductsAvailable,
     ],
   );
+
+  const shouldShowProductPanelChrome =
+    shouldShowShopLookSplitLayout && !isSmartSearchActive;
 
   const shopLookPreviewImage = useMemo(
     () => widgetImage || chatImageUrl || products?.image_url || "",
@@ -342,6 +360,34 @@ const ChatProducts = ({
   const onWishlistClick = () => {
     dispatch(openWishlistModal());
   };
+
+  const productDisplay = (
+    <ProductDisplay
+      chatTypeKey={chatTypeKey}
+      enableClickFetchRec={enableClickFetchRec}
+      enableClickTracking={enableClickTracking}
+      handleGoBack={handleGoBack}
+      handleLoadMore={handleLoadMore}
+      isMobile={isMobile}
+      isAuraChatPage={isAuraChatPage}
+      isProductSearchOptionActive={isProductSearchOptionActive}
+      layoutMode={layoutMode}
+      localChatMessage={localChatMessage}
+      newAuraProductsUiEnabled={NEW_AURA_PRODUCTS_UI_ENABLED}
+      registerSelectActions={registerSelectActions}
+      shouldShowPanelChrome={shouldShowProductPanelChrome}
+      shouldShowShopLookSplitLayout={shouldShowProductPanelChrome}
+      showChatLoader={showChatLoader}
+      suggestionsWithProducts={suggestionsWithProducts}
+      trackCollectionCampCode={trackCollectionCampCode}
+      trackCollectionICode={trackCollectionICode}
+      trackCollectionId={trackCollectionId}
+      trackCollectionName={trackCollectionName}
+      widgetHeader={widgetHeader}
+      widgetImage={widgetImage}
+    />
+  );
+
   const MobileSideDrawer = () => (
     <>
       {isMobileSidebarOpen && (
@@ -472,84 +518,67 @@ const ChatProducts = ({
             </>
           ))}
 
+        {!shouldShowShopLookSplitLayout ? productDisplay : null}
+
         {shouldShowShopLookSplitLayout && (
           <div className={`${styles["chat-products-shop-look-wrapper"]} flex flex-col lg:flex-row`}>
-            <Sidebar
-              chatHistory={chatHistory}
-              handleChangeImageConfirm={handleChangeImageConfirm}
-              handleSelectPastChat={handleSelectPastChat}
-              isHistoryOpen={isHistoryOpen}
-              layoutMode={layoutMode}
-              onWishlistClick={onWishlistClick}
-              setIsHistoryOpen={setIsHistoryOpen}
-              setLayoutMode={setLayoutMode}
-            />
-            <div
-              className={`flex w-full flex-col gap-4 lg:grid lg:items-stretch lg:gap-6 lg:flex-1 lg:min-h-0 lg:overflow-hidden lg:pb-0 ${layoutMode === "both" ? "lg:grid-cols-[minmax(340px,35%)_minmax(0,1fr)] xl:grid-cols-[minmax(400px,39%)_minmax(0,1fr)]" : "lg:grid-cols-1"} ${layoutMode === "left" ? "lg:px-48" : ""}`}
-            >
-              <div className={layoutMode === "right" ? "hidden" : ""}>
-                <SearchWorkspace
-                  activeSearchOption={activeSearchOption}
-                  auraOverlayCoordinates={auraOverlayCoordinates}
-                  auraServerImage={auraServerImage}
-                  chatHistory={chatHistory}
-                  chatImagePreviewUrl={chatImagePreviewUrl}
-                  chatImageUrl={chatImageUrl}
-                  chatTypeKey={chatTypeKey}
-                  handleClearChatImage={handleClearChatImage}
-                  handleInputChange={handleInputChange}
-                  handlePromptKeyDown={handlePromptKeyDown}
-                  handleRegenrateImage={handleRegenrateImage}
-                  handleSubmitChatInput={handleSubmitChatInput}
-                  handleSuggestionClick={handleSuggestionClick}
-                  handleTryAgainClick={handleTryAgainClick}
-                  inputRef={inputRef}
-                  isDescriptionExpanded={isDescriptionExpanded}
-                  isFollowUpQuery={isFollowUpQuery}
-                  isImageLoading={isImageLoading}
-                  isShowFollowUpSearch={isShowFollowUpSearch}
-                  isShowTryAgain={isShowTryAgain}
-                  isUploadingImage={isUploadingImage}
-                  layoutMode={layoutMode}
-                  localChatMessage={localChatMessage}
-                  originalHeight={originalHeight}
-                  originalWidth={originalWidth}
-                  regenarateImage={regenarateImage}
-                  setIsDescriptionExpanded={setIsDescriptionExpanded}
-                  shopLookKeywords={shopLookKeywords}
-                  shopLookPreviewImage={shopLookPreviewImage}
-                  shouldMoveInputBelowResults={shouldMoveInputBelowResults}
-                  showChatLoader={showChatLoader}
-                  storeData={storeData}
-                  uploadImageProps={uploadImageProps}
-                  widgetHeader={widgetHeader}
-                />
-              </div>
-
-              <ProductDisplay
-                chatTypeKey={chatTypeKey}
-                enableClickFetchRec={enableClickFetchRec}
-                enableClickTracking={enableClickTracking}
-                handleGoBack={handleGoBack}
-                handleLoadMore={handleLoadMore}
-                isMobile={isMobile}
-                isAuraChatPage={isAuraChatPage}
-                isProductSearchOptionActive={isProductSearchOptionActive}
+            {!isSmartSearchActive ? (
+              <Sidebar
+                chatHistory={chatHistory}
+                handleChangeImageConfirm={handleChangeImageConfirm}
+                handleSelectPastChat={handleSelectPastChat}
+                isHistoryOpen={isHistoryOpen}
                 layoutMode={layoutMode}
-                localChatMessage={localChatMessage}
-                newAuraProductsUiEnabled={NEW_AURA_PRODUCTS_UI_ENABLED}
-                registerSelectActions={registerSelectActions}
-                shouldShowPanelChrome={shouldShowShopLookSplitLayout}
-                shouldShowShopLookSplitLayout={shouldShowShopLookSplitLayout}
-                showChatLoader={showChatLoader}
-                suggestionsWithProducts={suggestionsWithProducts}
-                trackCollectionCampCode={trackCollectionCampCode}
-                trackCollectionICode={trackCollectionICode}
-                trackCollectionId={trackCollectionId}
-                trackCollectionName={trackCollectionName}
-                widgetHeader={widgetHeader}
-                widgetImage={widgetImage}
+                onWishlistClick={onWishlistClick}
+                setIsHistoryOpen={setIsHistoryOpen}
+                setLayoutMode={setLayoutMode}
               />
+            ) : null}
+            <div
+              className={`flex w-full flex-col lg:grid lg:items-stretch lg:flex-1 lg:min-h-0 lg:pb-0 ${!isSmartSearchActive ? "gap-4 lg:gap-6 lg:overflow-hidden" : "gap-0"} ${!isSmartSearchActive && layoutMode === "both" ? "lg:grid-cols-[minmax(340px,35%)_minmax(0,1fr)] xl:grid-cols-[minmax(400px,39%)_minmax(0,1fr)]" : "lg:grid-cols-1"} ${!isSmartSearchActive && layoutMode === "left" ? "lg:px-48" : ""}`}
+            >
+              {!isSmartSearchActive ? (
+                <div className={layoutMode === "right" ? "hidden" : ""}>
+                  <SearchWorkspace
+                    activeSearchOption={activeSearchOption}
+                    auraOverlayCoordinates={auraOverlayCoordinates}
+                    auraServerImage={auraServerImage}
+                    chatHistory={chatHistory}
+                    chatImagePreviewUrl={chatImagePreviewUrl}
+                    chatImageUrl={chatImageUrl}
+                    chatTypeKey={chatTypeKey}
+                    handleClearChatImage={handleClearChatImage}
+                    handleInputChange={handleInputChange}
+                    handlePromptKeyDown={handlePromptKeyDown}
+                    handleRegenrateImage={handleRegenrateImage}
+                    handleSubmitChatInput={handleSubmitChatInput}
+                    handleSuggestionClick={handleSuggestionClick}
+                    handleTryAgainClick={handleTryAgainClick}
+                    inputRef={inputRef}
+                    isDescriptionExpanded={isDescriptionExpanded}
+                    isFollowUpQuery={isFollowUpQuery}
+                    isImageLoading={isImageLoading}
+                    isShowFollowUpSearch={isShowFollowUpSearch}
+                    isShowTryAgain={isShowTryAgain}
+                    isUploadingImage={isUploadingImage}
+                    layoutMode={layoutMode}
+                    localChatMessage={localChatMessage}
+                    originalHeight={originalHeight}
+                    originalWidth={originalWidth}
+                    regenarateImage={regenarateImage}
+                    setIsDescriptionExpanded={setIsDescriptionExpanded}
+                    shopLookKeywords={shopLookKeywords}
+                    shopLookPreviewImage={shopLookPreviewImage}
+                    shouldMoveInputBelowResults={shouldMoveInputBelowResults}
+                    showChatLoader={showChatLoader}
+                    storeData={storeData}
+                    uploadImageProps={uploadImageProps}
+                    widgetHeader={widgetHeader}
+                  />
+                </div>
+              ) : null}
+
+              {productDisplay}
             </div>
           </div>
         ) }

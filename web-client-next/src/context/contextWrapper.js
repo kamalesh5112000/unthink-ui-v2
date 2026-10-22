@@ -358,7 +358,8 @@ const ContextWrapper = ({ children }) => {
 		if (typeof data === "object") {
 			if (data.suggestions) {
 				dispatch(setSuggestionsList(data.suggestions));
-			} else if (data.products) {
+			}
+			if (data.products) {
 				dispatch(setSuggestionsProducts(data.products));
 			}
 		}

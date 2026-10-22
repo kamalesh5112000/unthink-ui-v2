@@ -131,6 +131,14 @@ const AuraResponseProductsWithTags = ({
 		[tags, JSON.stringify(moreAuraProducts)]
 	);
 
+	const hasSuggestionsProducts = useMemo(
+		() =>
+			!isEmpty(allProductList) ||
+			Object.values(suggestionsProducts || {}).some(
+				(value) => !isEmpty(value?.product_lists)
+			),
+		[allProductList, suggestionsProducts]
+	);
 
 	const isAllEnabled = useMemo(
 		() => !isEmpty(allProductList), // "All" is enabled only if there are products in `allProductList`
@@ -171,13 +179,7 @@ const AuraResponseProductsWithTags = ({
 	const RecomIsTagEnabled = RecomCheckIsTagEnabled(recommendationsTagToShow) || recommendationsTagToShow === "";
 	const moreProductsIsTagEnabled = moreProductsCheckIsTagEnabled(moreProductsTagToShow) || moreProductsTagToShow === "";
 
-	if (!isTagEnabled && !tags?.length) {
-		return null;
-	}
-	if (!RecomIsTagEnabled && !RecTags?.length) {
-		return null;
-	}
-	if (!moreProductsIsTagEnabled && !moreProductsTags?.length) {
+	if (!showChatLoader && !hasSuggestionsProducts && !tags?.length) {
 		return null;
 	}
 
