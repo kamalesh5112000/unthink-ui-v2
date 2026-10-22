@@ -71,6 +71,7 @@ import SelectedProductsActionBar, {
 	SELECTED_PRODUCTS_ACTIONS,
 } from "../shared/SelectedProductsActionBar";
 import singleCollectionStyles from "../../components/singleCollection/collectionDetails.module.scss";
+import { useGuestPopup } from "../../context/GuestPopupContext";
 
 SwiperCore.use([FreeMode, Navigation]);
 
@@ -117,7 +118,6 @@ const AuraResponseProducts = ({
 		widgetHeaderRequest,
 		chatHistory,
 		selectedSearchOption,
-		isGuestPopUpShow,
 		showWishlistModal,
 		suggestionsTags,
 		showChatLoader,
@@ -130,12 +130,12 @@ const AuraResponseProducts = ({
 		state.chatV2.widgetHeaderRequest,
 		state.chatV2.chatHistory,
 		state.chatV2.activeSearchOption || {},
-		state.GuestPopUpReducer.isGuestPopUpShow,
 		state.appState.wishlist.showWishlistModal,
 		state.chatV2.suggestions?.selectedTag,
 		state.chatV2[CHAT_TYPES_KEYS[chatTypeKey].showChatLoader],
 	]);
   const {setUserData ,userData } = useUserData()
+	const { openGuestPopup } = useGuestPopup();
 const [notData,setNotData] = useState(null)
 
 	const [filterOptionsVisible, setFilterOptionsVisible] = useState(false);
@@ -639,11 +639,55 @@ const [notData,setNotData] = useState(null)
 			const isSkipPopUp = isSkip && guestActionRef.current === "share";
 
 			if ( isShare && !isSkipPopUp && !isGuestSubmit) {
-				dispatch(GuestPopUpShow(true));
+				const pendingGuestAction = guestActionRef.current;
+				openGuestPopup({
+					action: pendingGuestAction,
+					storeName: current_store_name,
+					refreshUserInfo: true,
+					onSuccess: ({ userId, response }) => {
+						if (response?.data?.data) {
+							setUserData(response.data.data);
+						}
+						onAddSelectedProductsToCollection(null, {
+							isShare: true,
+							isGuestSubmit: true,
+							userId,
+						});
+					},
+					onSkip: () => {
+						onAddSelectedProductsToCollection(null, {
+							isShare: true,
+							isSkip: true,
+						});
+					},
+				});
 				return;
 			}
 			else if ((isSave || isReusableSelectedProductsAction) && !isUserLogin && !isUserLoginCokkies && !isGuestSubmit) {
-				dispatch(GuestPopUpShow(true));
+				const pendingGuestAction = guestActionRef.current;
+				openGuestPopup({
+					action: pendingGuestAction,
+					storeName: current_store_name,
+					refreshUserInfo: true,
+					onSuccess: ({ userId, response }) => {
+						if (response?.data?.data) {
+							setUserData(response.data.data);
+						}
+						if (pendingGuestAction === "save") {
+							onAddSelectedProductsToCollection(null, {
+								isSave: true,
+								isGuestSubmit: true,
+								userId,
+							});
+							return;
+						}
+						onAddSelectedProductsToCollection(null, {
+							action: pendingGuestAction,
+							isGuestSubmit: true,
+							userId,
+						});
+					},
+				});
 				return;
 			}
 
@@ -766,6 +810,8 @@ const [notData,setNotData] = useState(null)
 			chatImageUrl,
 			dispatch,
 			handleResetSelectProduct,
+			openGuestPopup,
+			setUserData,
 			storeData?.event_id,
 			storeData?.store_name,
 			userData?.user_id,

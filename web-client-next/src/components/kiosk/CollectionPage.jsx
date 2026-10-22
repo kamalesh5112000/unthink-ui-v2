@@ -6,9 +6,6 @@ import {
   filterAvailableProductList,
   filterProductListBySelectedTags,
 } from "../../helper/utils";
-
-import Cookies from "js-cookie";
-import profilebanner from "../../images/package.jpg";
 import { Spin } from "antd";
 import ShareOptions from "../../pageComponents/shared/shareOptions";
 import share_icon from "../../images/profilePage/share_icon.svg";
@@ -18,27 +15,19 @@ import {
   getProductDetailsPagePath,
 } from "../../helper/utils";
 import { buildKioskAutoLoginUrls } from "../../helper/autoLogin";
-import useKioskSessionReminder, {
-  KioskSessionPopup,
-} from "./useKioskSessionReminder";
-import GuestUserPopUp from "../../pageComponents/Auth/GuestUserPopUp";
-import { GuestPopUpShow } from "../../pageComponents/Auth/redux/actions";
-import LoggedInInfo from "./components/LoggedInInfo";
-import { loggedInInfo } from "../../pageComponents/Auth/redux/selector";
-import { useNavigate } from "../../helper/useNavigate";
 import AuthInput from "./components/AuthInput";
-import { addToCart } from "../../pageComponents/DeliveryDetails/redux/action";
-import { current_store_name, is_kiosk } from "../../constants/config";
+import { current_store_name } from "../../constants/config";
 import GoBack from "../common/GoBack";
 import {
   gTagKioskCollectionView,
   gTagKioskProductClick,
 } from "../../helper/webTracker/gtag";
+import { useGuestPopup } from "../../context/GuestPopupContext";
 
 const CollectionPage = ({ params }) => {
   // console.log(params);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const { openGuestPopup } = useGuestPopup();
   const [isTagsShowMoreActive, setIsTagsShowMoreActive] = useState(false);
   const [activeCategory, setActiveCategory] = useState("All");
   const [selectedTags, setSelectedTags] = useState([]);
@@ -55,10 +44,9 @@ const CollectionPage = ({ params }) => {
     singleCollectionKiosk?.path === requestedCollectionPath
       ? singleCollectionKiosk
       : null;
-  const [isUserLogin, storeData, isGuestPopUpShow, kioskLogin] = useSelector((state) => [
+  const [isUserLogin, storeData, kioskLogin] = useSelector((state) => [
     state.auth.user.isUserLogin,
     state.store.data,
-    state.GuestPopUpReducer.isGuestPopUpShow,
     state.kiosk.login,
   ]);
  
@@ -114,9 +102,6 @@ useEffect(() => {
   const [qrUrl, setQrUrl] = useState("");
   const [shareContext, setShareContext] = useState("collection");
   // console.log("sharePageUrl", sharePageUrl);
-  const [isPopupShow, setIsPopupShow] = useState(false);
-  const [pendingGuestAction, setPendingGuestAction] = useState(null);
-  
 
   const collectionPagePath = useMemo(() => {
     if (!currentCollection) return "";
@@ -191,7 +176,6 @@ useEffect(() => {
   //   console.log('colleztctionData',singleCollectionKiosk);
   const handleGuestPopupOpen = useCallback((action) => {
   if (action === "") {
-    setPendingGuestAction(null);
     setOnMfrCode(null);
     return;
   }
@@ -199,9 +183,6 @@ useEffect(() => {
   if (action?.product) {
     setOnMfrCode(action.product);
   }
-
-  setPendingGuestAction(action || null);
-  setIsPopupShow(true);
 }, []);
 
   const productCardKiosk = (productdata,i) => {
@@ -299,14 +280,39 @@ useEffect(() => {
   const handleShareClick = useCallback(() => {
     if (isUserLogin && !kioskLogin?.user_id) {
       setShowShareProductDetails(false);
-      setPendingGuestAction({ type: "share" });
-      setIsPopupShow(true);
-      dispatch(GuestPopUpShow(true));
+      openGuestPopup({
+        action: "share",
+        storeName: storeData?.store_name || currentCollection?.store_name,
+        persistKioskLogin: true,
+        refreshUserInfo: !isUserLogin,
+        onSuccess: async ({ userId, email, phone }) => {
+          const urls = await getCollectionAutoLoginUrls({
+            userId,
+            email,
+            phone,
+          });
+
+          if (urls) {
+            setSharePageUrl(urls.shareUrl);
+            setQrUrl(urls.qrUrl);
+            setShareContext("collection");
+          }
+          setShowShareProductDetails(true);
+        },
+      });
       return;
     }
 
     openShareOptions();
-  }, [dispatch, isUserLogin, kioskLogin?.user_id, openShareOptions]);
+  }, [
+    currentCollection?.store_name,
+    getCollectionAutoLoginUrls,
+    isUserLogin,
+    kioskLogin?.user_id,
+    openGuestPopup,
+    openShareOptions,
+    storeData?.store_name,
+  ]);
 
   const buildVtoProductAutoLoginUrls = useCallback(
     async (productOrMfrCode, { email = null, phone = null } = {}) => {
@@ -453,65 +459,6 @@ useEffect(() => {
         ))}
       </div>
 
-      <GuestUserPopUp
-        isOpen={isPopupShow || isGuestPopUpShow}
-        setIsOpen={setIsPopupShow}
-        storeName={storeData?.store_name || currentCollection?.store_name}
-        persistKioskLogin
-        onSuccess={async ({ userId, email, phone }) => {
-          if (pendingGuestAction?.type === "cart" && userId) {
-            const cartProduct = pendingGuestAction.product;
-
-            if (cartProduct?.mfr_code) {
-              dispatch(
-                addToCart({
-                  is_display_amount: true,
-                  products: [
-                    {
-                      mfr_code: cartProduct.mfr_code,
-                      tagged_by: cartProduct.tagged_by || [],
-                      qty: Number(pendingGuestAction.qty) || 1,
-                    },
-                  ],
-                  product_lists: [],
-                  collection_name: "my cart",
-                  type: "system",
-                  user_id: userId,
-                  path: `my_cart_${userId}`,
-                }),
-              );
-            }
-          }
-
-          const vtoMfrCode =
-            pendingGuestAction?.type === "vto"
-              ? pendingGuestAction.mfrCode
-              : !pendingGuestAction && onMfrCode;
-
-          if (vtoMfrCode) {
-            await buildVtoProductAutoLoginUrls(vtoMfrCode, { email, phone });
-          } else if (
-            pendingGuestAction?.type === "share" ||
-            (!pendingGuestAction && isPopupShow)
-          ) {
-            const urls = await getCollectionAutoLoginUrls({
-              userId,
-              email,
-              phone,
-            });
-
-            if (urls) {
-              setSharePageUrl(urls.shareUrl);
-              setQrUrl(urls.qrUrl);
-              setShareContext("collection");
-            }
-            setShowShareProductDetails(true);
-          }
-          setPendingGuestAction(null);
-        }}
-        onSkip={() => setPendingGuestAction(null)}
-      />
-     
     </div>
   );
 };

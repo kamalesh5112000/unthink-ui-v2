@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
 import { Spin } from "antd";
-import { SIGN_IN_EXPIRE_DAYS } from "../src/constants/codes";
 import { checkAndGenerateUserId, clearStorages, generateSessionId } from "../src/helper/utils";
 import { logoutVenlyUser } from "../src/helper/venlyUtils";
 import { getUserCollectionsReset, getUserInfo, getUserInfoSuccess, getWishlistUserCollectionReset } from "../src/pageComponents/Auth/redux/actions";
@@ -28,7 +27,7 @@ const SignOut = () => {
     const handleSignOut = async () => {
       try {
         // Clear cookies and storage
-        Cookies.set("isGuestLoggedIn", false, { expires: SIGN_IN_EXPIRE_DAYS });
+        Cookies.remove("isGuestLoggedIn");
         localStorage.removeItem("adminRolePopupShown", "false");
          
          
