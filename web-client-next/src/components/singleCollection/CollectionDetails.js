@@ -1001,7 +1001,7 @@ const CollectionDetails = ({
           <div className={styles.relativeContainer}>
             <p
               ref={descriptionRef}
-              className={`${isCollectionPage ? "lg:text-xl text-sm md:text-lg text-gray-105 whitespace-pre-wrap" : styles.descriptionText} ${
+              className={`${isCollectionPage ? "lg:text-xl text-sm md:text-lg text-gray-600 whitespace-pre-wrap" : styles.descriptionText} ${
                 isShowMoreActive ? "" : styles.collection_description_ellipsis
               }`}
             >

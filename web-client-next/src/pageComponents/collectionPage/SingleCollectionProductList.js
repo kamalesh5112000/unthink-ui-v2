@@ -8,7 +8,6 @@ import React, {
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { handleRecProductClick } from "../recommendations/redux/actions";
-import { GuestPopUpShow } from "../Auth/redux/actions";
 import {
   collectionQRCodeGenerator,
   filterAvailableProductList,
@@ -33,6 +32,7 @@ import { updateWishlist } from "../wishlistActions/updateWishlist/redux/actions"
 import { notification } from "antd";
 import CropAndResizeImageModal from "../cropAndResizeImageModal/CropAndResizeImageModal";
 import { dispatchSelectedProductsAction } from "../shared/selectedProductsActions";
+import { useGuestPopup } from "../../context/GuestPopupContext";
 
 const tagsMinSizeForShowMore = 5;
 
@@ -90,6 +90,8 @@ const url = window.location.pathname === '/my-profile/'
  
 
   const dispatch = useDispatch();
+  const { openGuestPopup } = useGuestPopup();
+  console.log('openGuestPopup',openGuestPopup)
   const navigate = useCallback((path) => router.push(path), [router]);
 
 
@@ -174,7 +176,7 @@ const url = window.location.pathname === '/my-profile/'
         singleCollection.tag_map,
       );
     }
-    list = sponsorProductList.concat(list);
+    list = filterAvailableProductList(sponsorProductList.concat(list));
 
     return productCountToShow ? list.slice(0, productCountToShow) : list;
   }, [
@@ -397,7 +399,6 @@ const url = window.location.pathname === '/my-profile/'
     // );
   };
 
-  const [isPopupShow, setIsPopupShow] = useState(false);
   const [pendingProductsToAdd, setPendingProductsToAdd] = useState([]);
   const [pendingAddOptions, setPendingAddOptions] = useState({});
 
@@ -435,8 +436,20 @@ const url = window.location.pathname === '/my-profile/'
     if (!options.context?.userId && !isUserLogin && !isUserLoginCokkies) {
       setPendingProductsToAdd(productsToAdd);
       setPendingAddOptions(options);
-      setIsPopupShow(true);
-      dispatch(GuestPopUpShow(true));
+      openGuestPopup({
+        action: options.action || "collection-products",
+        storeName: storeData?.store_name || current_store_name,
+        refreshUserInfo: true,
+        onSuccess: ({ userId }) => {
+          onAddSelectedProductsToCollection(null, null, {
+            context: { userId },
+          });
+        },
+        onCancel: () => {
+          setPendingProductsToAdd([]);
+          setPendingAddOptions({});
+        },
+      });
       return;
     }
 
@@ -499,6 +512,7 @@ const url = window.location.pathname === '/my-profile/'
  resolveProductsToAdd,
   isUserLogin,
   pendingProductsToAdd,
+  pendingAddOptions,
   dispatch,
   authUser?.user_id,
   selectedProducts,
@@ -509,20 +523,10 @@ const url = window.location.pathname === '/my-profile/'
   blogCollectionPage?.tag_map,
   blogCollectionPage?.keyword_tag_map,
   storeData?.store_name,
-  current_store_name,
   singleCollection?._id,
-  dispatchSelectedProductsAction,
   handleResetSelectProduct,
-  getTTid,
+  openGuestPopup,
   ])
-
-  const handleGuestSkip = () => {
-    // Cookies.set('isGuestSkip', true, { expires: GUESTSKIP_EXPIRE_HOURS / 24 });
-    dispatch(GuestPopUpShow(false));
-    setIsPopupShow(false);
-    setPendingProductsToAdd([]);
-    setPendingAddOptions({});
-  };
 
   const onProductClick = (product) => {
     if (enableClickTracking) dispatch(handleRecProductClick());
@@ -996,9 +1000,6 @@ const url = window.location.pathname === '/my-profile/'
       showMoreEnabled={showMoreEnabled}
       showcasedProductsData={showcasedProductsData}
       showAuraTile={showAuraTile}
-      isPopupShow={isPopupShow}
-      handleGuestSkip={handleGuestSkip}
-      setIsPopupShow={setIsPopupShow}
       showCoverImage={showCoverImage}
       videoContainerRef={videoContainerRef}
       isSocialMediaVideo={isSocialMediaVideo}

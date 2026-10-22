@@ -5,13 +5,11 @@ import { Button, Collapse, notification, Select, Upload } from "antd";
 import ReactPlayer from "react-player/lazy";
 import { Swiper, SwiperSlide } from "swiper/react";
 import {
-  MdOutlineFileUpload,
   MdOutlineKeyboardArrowLeft,
 } from "react-icons/md";
 
 import ProductCard from "../../../components/ProductCard";
 import AskAuraCard from "../../../components/singleCollection/AskAuraCard";
-import GuestUserPopUp from "../../Auth/GuestUserPopUp";
 import ShareOptions from "../../shared/shareOptions";
 import styles from "../../../components/singleCollection/collectionDetails.module.scss";
 import Addmore from "../../../images/addmore.svg";
@@ -24,13 +22,10 @@ import {
 } from "../../../helper/utils";
 import {
   PUBLISHED,
-  WISHLIST_TITLE,
   favorites_collection_name,
   PRODUCT_SORT_OPTIONS,
-  COLLECTION_COVER_IMG_SIZE_900_900,
 } from "../../../constants/codes";
 import {
-  current_store_name,
   is_store_instance,
   super_admin,
 } from "../../../constants/config";
@@ -98,9 +93,6 @@ const SingleCollectionProductListView = ({
   showMoreEnabled,
   showcasedProductsData,
   showAuraTile,
-  isPopupShow,
-  handleGuestSkip,
-  setIsPopupShow,
   showCoverImage,
   videoContainerRef,
   isSocialMediaVideo,
@@ -1098,18 +1090,6 @@ const SingleCollectionProductListView = ({
                 )}
               </div>
             </div>
-            <GuestUserPopUp
-              isOpen={isPopupShow}
-              setIsOpen={setIsPopupShow}
-              storeName={current_store_name}
-              isUserLogin={!isUserLogin ? true : false}
-              onSuccess={({ userId }) => {
-                onAddSelectedProductsToCollection(null, null, {
-                  context: { userId },
-                });
-              }}
-              onSkip={handleGuestSkip}
-            />
           </>
         )) ||
         null}

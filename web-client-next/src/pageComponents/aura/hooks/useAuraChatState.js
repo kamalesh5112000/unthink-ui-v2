@@ -70,17 +70,26 @@ export const useAuraChatState = ({
     state.chatV2.chatProductsData || [],
     state.chatV2.chatHistory,
   ]);
-
+// console.log('suggestionsWithProducts',suggestionsWithProducts)
   const {
     suggestions: { tags = [], title = "" },
   } = suggestionsWithProducts;
 
-  const isSuggestionsWithProductsAvailable = useMemo(
-    () =>
-      Object.values(suggestionsWithProducts).some((value) => !isEmpty(value)),
-    [suggestionsWithProducts],
-  );
+ const isSuggestionsWithProductsAvailable = useMemo(
+  () => (suggestionsWithProducts?.allProductList?.length ?? 0) > 0,
+  [suggestionsWithProducts?.allProductList],
+);
 
+
+// console.log('isSuggestionsWithProductsAvailable',isSuggestionsWithProductsAvailable)
+// console.log("suggestionsWithProducts:", suggestionsWithProducts);
+// console.log("products:", suggestionsWithProducts?.products);
+// console.log(
+//   "product lists:",
+//   Object.values(suggestionsWithProducts?.products ?? {}).map(
+//     (value) => value?.product_lists,
+//   ),
+// );
   const showChatResponse = useMemo(
     () =>
       widgetHeader ||
@@ -113,8 +122,14 @@ export const useAuraChatState = ({
   );
 
   const isShowAuraResponse = useMemo(
-    () => showChatResponse && isActiveSearchOptionAvailable,
-    [showChatResponse, isActiveSearchOptionAvailable],
+    () =>
+      showChatResponse &&
+      (isActiveSearchOptionAvailable || isSuggestionsWithProductsAvailable),
+    [
+      showChatResponse,
+      isActiveSearchOptionAvailable,
+      isSuggestionsWithProductsAvailable,
+    ],
   );
 
   const shouldCenterModalContent = useMemo(
@@ -198,22 +213,22 @@ export const useAuraChatState = ({
   const isShowShopLookSplitLayout = useMemo(
     () =>
       (isShopALookOptionActive ||
-        isShopByThemeOptionActive ||
         isCompleteTheLookOptionActive ||
         isProductSearchOptionActive) &&
       (widgetHeader ||
         !isEmpty(shopALookData) ||
         !isEmpty(products) ||
-        !isEmpty(chatProductsData)),
+        !isEmpty(chatProductsData) ||
+        isSuggestionsWithProductsAvailable),
     [
       isShopALookOptionActive,
-      isShopByThemeOptionActive,
       isCompleteTheLookOptionActive,
       isProductSearchOptionActive,
       widgetHeader,
       shopALookData,
       products,
       chatProductsData,
+      isSuggestionsWithProductsAvailable,
     ],
   );
 

@@ -1,9 +1,11 @@
 import { notification } from "antd";
+import Cookies from "js-cookie";
 
 import {
 	COLLECTION,
 	COOKIE_EMAIL,
 	COOKIE_TT_ID,
+	KIOSK_LOGIN_CHANGE_EVENT,
 	defaultFavoriteColl,
 	favorites_collection_name,
 	INFLUENCER,
@@ -531,19 +533,26 @@ export const getCurrentTheme = () => {
 };
 
 export const clearStorages = () => {
+	Cookies.remove("isGuestLoggedIn");
 	removeTTid();
 	removeUserEmail();
 	setIsRegistered(false);
 	removeSid();
 	removePrevSid();
 	removeUserId();
-	sessionStorage.removeItem("Kiosk-login");
-	sessionStorage.removeItem('selectedTag')
+	sessionStorage.removeItem(KIOSK_LOGIN_STORAGE_KEY);
+	sessionStorage.removeItem("selectedTag");
+	if (typeof window !== "undefined") {
+		window.dispatchEvent(new Event(KIOSK_LOGIN_CHANGE_EVENT));
+	}
 	// window.location.href = shared_profile_on_root ? "/" : "/store"; // removed reload page on logout
 };
 export const clearStoragesKiosk = () => {
-	sessionStorage.removeItem("Kiosk-login");
+	sessionStorage.removeItem(KIOSK_LOGIN_STORAGE_KEY);
 	sessionStorage.removeItem("selectedTag");
+	if (typeof window !== "undefined") {
+		window.dispatchEvent(new Event(KIOSK_LOGIN_CHANGE_EVENT));
+	}
 };
 
 export const getIsStoreInstance = () =>
@@ -679,7 +688,8 @@ export const getCollectionNameToShow = (collection) =>
 		? favorites_collection_name
 		: collection.name || collection.collection_name;
 
-export const filterAvailableProductList = (pList) => pList;
+export const filterAvailableProductList = (pList = []) =>
+	pList.filter((product) => String(product?.avlble ?? "").trim() === "1");
 
 export const getIsSellerLoggedIn = (storeSellerList = [], emailId ) =>
 	storeSellerList.includes(emailId);

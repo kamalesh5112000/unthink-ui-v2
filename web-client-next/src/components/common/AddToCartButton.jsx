@@ -1,13 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FiShoppingCart } from "react-icons/fi";
 import { FaCartArrowDown } from "react-icons/fa";
 import { addToCart } from "../../pageComponents/DeliveryDetails/redux/action";
-import { GuestPopUpShow } from "../../pageComponents/Auth/redux/actions";
 import { getTTid } from "../../helper/getTrackerInfo";
 import { getNormalizedCartQty } from "../../helper/product/productCardHelpers";
 import { useRouter } from "next/router";
-import GuestUserPopUp from "../../pageComponents/Auth/GuestUserPopUp";
+import { useGuestPopup } from "../../context/GuestPopupContext";
 
 export const addProductToCart = ({
   dispatch,
@@ -72,8 +71,7 @@ const AddToCartButton = ({
 }) => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const [isCartPopupOpen, setIsCartPopupOpen] = useState(false);
-  const [pendingCartQty, setPendingCartQty] = useState(null);
+  const { openGuestPopup } = useGuestPopup();
   const isDisabled = disabled ?? (!product?.price && !product?.listprice);
   const normalizedQty = getNormalizedCartQty(qty);
   const { collection: cartData } = useSelector((state) => state.cart);
@@ -91,8 +89,6 @@ const AddToCartButton = ({
   const shouldUseKioskGuest = hasKioskAccess || hasKioskAccessFromConfig;
 
   const openCartGuestPopup = (nextQty) => {
-    setIsCartPopupOpen(true);
-    setPendingCartQty(nextQty);
     onGuestPopupOpen?.({
       type: "cart",
       product: product
@@ -103,7 +99,23 @@ const AddToCartButton = ({
         : null,
       qty: nextQty,
     });
-    dispatch(GuestPopUpShow(true));
+    openGuestPopup({
+      action: "cart",
+      storeName,
+      persistKioskLogin: true,
+      refreshUserInfo: !isUserLogin,
+      onSuccess: ({ userId }) => {
+        addProductToCart({
+          dispatch,
+          product,
+          qty: nextQty,
+          userId,
+          source,
+          cartSourceCollection,
+          eventId,
+        });
+      },
+    });
   };
 
   const handleGoToCart = (event) => {
@@ -176,42 +188,28 @@ const AddToCartButton = ({
 
   if (showQuantityControls) {
     return (
-      <>
-        <div className={wrapperClassName}>
-          <div className={quantityControlsClassName}>
-            <button
-              type="button"
-              className={quantityButtonClassName}
-              onClick={() => handleCartAction((cartItem?.qty || 0) - 1)}
-            >
-              -
-            </button>
-            <button type="button" className={quantityValueClassName}>
-              {cartItem?.qty || 0}
-            </button>
-            <button
-              type="button"
-              className={quantityButtonClassName}
-              onClick={() => handleCartAction((cartItem?.qty || 0) + 1)}
-            >
-              +
-            </button>
-          </div>
-          <div className={buttonWrapperClassName}>{button}</div>
+      <div className={wrapperClassName}>
+        <div className={quantityControlsClassName}>
+          <button
+            type="button"
+            className={quantityButtonClassName}
+            onClick={() => handleCartAction((cartItem?.qty || 0) - 1)}
+          >
+            -
+          </button>
+          <button type="button" className={quantityValueClassName}>
+            {cartItem?.qty || 0}
+          </button>
+          <button
+            type="button"
+            className={quantityButtonClassName}
+            onClick={() => handleCartAction((cartItem?.qty || 0) + 1)}
+          >
+            +
+          </button>
         </div>
-        <GuestUserPopUp
-          isOpen={isCartPopupOpen}
-          setIsOpen={setIsCartPopupOpen}
-          storeName={storeName}
-          isUserLogin={!isUserLogin ? true : false}
-          persistKioskLogin
-          onSuccess={({ userId }) => {
-            handleCartAction(pendingCartQty ?? 1, userId);
-            setPendingCartQty(null);
-          }}
-          onSkip={() => setPendingCartQty(null)}
-        />
-      </>
+        <div className={buttonWrapperClassName}>{button}</div>
+      </div>
     );
   }
 

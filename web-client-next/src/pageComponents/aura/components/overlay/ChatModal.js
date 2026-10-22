@@ -1,4 +1,5 @@
 import React, {
+  useEffect,
   useMemo,
   useCallback,
   useState,
@@ -467,17 +468,7 @@ const ChatModal = ({
             />
           </>
         )
-         : isBTNormalUserLoggedIn ? (
-          <>
-            {/* <WelcomePanel
-              isMobile={isMobile}
-              isProductSearchOptionActive={isProductSearchOptionActive}
-              selectedSearchOptionExamples={selectedSearchOptionExamples}
-              onTryExample={handleTryThisClick}
-            /> */}
-            
-          </>
-        ) : null}
+         :   null}
 
         {enable_recommendations && (
           <Recommendations trackCollectionData={trackCollectionData} />
