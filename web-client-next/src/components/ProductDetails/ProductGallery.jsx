@@ -17,8 +17,6 @@ const ProductGallery = ({
   kioskLogin,
   hasKioskAccess,
   buildProductAutoLoginQr,
-  setIsPopupShow,
-  setGuestPopupAction,
   authUser,
   pdploader,
 }) => {
@@ -81,8 +79,6 @@ const ProductGallery = ({
                 login={kioskLogin}
                 hasKioskAccess={hasKioskAccess}
                 buildProductAutoLoginQr={buildProductAutoLoginQr}
-                setIsPopupShow={setIsPopupShow}
-                setGuestPopupAction={setGuestPopupAction}
                 storeData={storeData}
                 saveUserId={kioskLogin?.user_id || authUser?.user_id || null}
                 kioskEmail={kioskLogin?.email || null}

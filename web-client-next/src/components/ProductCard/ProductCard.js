@@ -7,7 +7,6 @@ import React, {
 import { useDispatch, useSelector } from "react-redux";
 import sharedPageTracker from "../../helper/webTracker/sharedPageTracker";
 import { closeWishlistModal } from "../../pageComponents/wishlist/redux/actions";
-import { GuestPopUpShow } from "../../pageComponents/Auth/redux/actions";
 import {
   addSidInProductUrl,
   cleanImage,
@@ -30,6 +29,7 @@ import { isProductAvailable } from "../../helper/product/productDisplayHelpers";
 import ProductCardFooter from "./ProductCardFooter";
 import  ProductCardHeaderTop  from "./ProductCardHeaderTop";
 import ProductCardHeaderBottom from "./ProductCardHeaderBottom";
+import { useGuestPopup } from "../../context/GuestPopupContext";
 
 export const PRODUCT_CARD_WIDGET_TYPES = {
   DEFAULT: "default",
@@ -73,6 +73,7 @@ const ProductCard = ({
 }) => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const { openGuestPopup } = useGuestPopup();
 
   const [
     authUserId,
@@ -244,8 +245,8 @@ const ProductCard = ({
       dispatch(vtoIconState(mfrCode));
       return;
     }
-    dispatch(GuestPopUpShow(true));
-  },[]) 
+    openGuestPopup({ action: "vto", storeName: storeData?.store_name });
+  },[dispatch, openGuestPopup, storeData?.store_name])
 
   const kioskConfig = useMemo(()=>(
    {

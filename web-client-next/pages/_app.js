@@ -21,6 +21,7 @@ import ReduxWrapper from "../src/state/reduxWrapper";
 import ActionWrapper from "../src/state/actionWrapper";
 import ContextWrapper from "../src/context/contextWrapper";
 import { ThemeContextWrapper } from "../src/context/themeContext";
+import { GuestPopupProvider } from "../src/context/GuestPopupContext";
 
 const ProductDetailsCopyModalComponent = dynamic(() => import("../src/pageComponents/productDetailsCopyModal"), { ssr: false });
 const CollectionShareModalComponent = dynamic(() => import("../src/pageComponents/collectionShareModal"), { ssr: false });
@@ -134,27 +135,29 @@ function MyApp({ Component, pageProps }) {
       <div style={fontStyle} suppressHydrationWarning>
         <ThemeContextWrapper>
           <ReduxWrapper>
-            <ActionWrapper>
-              <ContextWrapper>
-                <UserDataProvider>
-                <AnalyticsTracker />
-                {mounted ? (
-                  <>
-                    {isRouteLoading ? <RouteLoader /> : null}
-                    <AppLoaderComponent />
-                    <AppMessageModal />
-                    <ProductDetailsCopyModalComponent />
-                    <CollectionShareModalComponent />
-                    <EarnedRewardModal />
-                    <AiExtractionDataModal />
-                    <CustomProductModal />
-                    <AutoCreateCollectionModal />
-                  </>
-                ) : null}
-                <Component {...pageProps} />
-                </UserDataProvider>
-              </ContextWrapper>
-            </ActionWrapper>
+            <GuestPopupProvider>
+              <ActionWrapper>
+                <ContextWrapper>
+                  <UserDataProvider>
+                  <AnalyticsTracker />
+                  {mounted ? (
+                    <>
+                      {isRouteLoading ? <RouteLoader /> : null}
+                      <AppLoaderComponent />
+                      <AppMessageModal />
+                      <ProductDetailsCopyModalComponent />
+                      <CollectionShareModalComponent />
+                      <EarnedRewardModal />
+                      <AiExtractionDataModal />
+                      <CustomProductModal />
+                      <AutoCreateCollectionModal />
+                    </>
+                  ) : null}
+                  <Component {...pageProps} />
+                  </UserDataProvider>
+                </ContextWrapper>
+              </ActionWrapper>
+            </GuestPopupProvider>
           </ReduxWrapper>
         </ThemeContextWrapper>
       </div>

@@ -8,18 +8,18 @@ import { useNavigate } from "../../helper/useNavigate";
 import cart_icon from "../../images/cart.svg";
 import { getTTid } from "../../helper/getTrackerInfo";
 import Cookies from "js-cookie";
-import { GuestPopUpShow } from "../Auth/redux/actions";
-import GuestUserPopUp from "../Auth/GuestUserPopUp";
 import { SIGN_IN_EXPIRE_DAYS } from "../../constants/codes";
 import { collectionAPIs } from "../../helper/serverAPIs";
 import { current_store_name, isGivaStore } from "../../constants/config";
 import { collectionQRCodeGenerator } from "../../helper/utils";
 import Modal from "../../components/modal/Modal";
 import { buildKioskAutoLoginUrls } from "../../helper/autoLogin";
+import { useGuestPopup } from "../../context/GuestPopupContext";
 
 const DeliveryDetails = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { openGuestPopup } = useGuestPopup();
   const [authUserId, cart_attributes, storeData, hasKioskAccess, kioskUser_id, kioskLogin] = useSelector((state) => [
     state.auth.user.data.user_id,
     state.store.data.cart_attributes,
@@ -30,7 +30,6 @@ const DeliveryDetails = () => {
   ]);
   const { collection, loading } = useSelector((state) => state.cart);
   // console.log("collection", storeData?.store_name   );
-  const [isPopupShow, setIsPopupShow] = useState(false);
   const [isCheckoutClaimQrModalOpen, setIsCheckoutClaimQrModalOpen] =
     useState(false);
   const [checkoutClaimQr, setCheckoutClaimQr] = useState({
@@ -266,8 +265,16 @@ const DeliveryDetails = () => {
 
     // If user is not authenticated and not already a guest, show popup
     if (!authUserId && !isUserLoginCookies) {
-      setIsPopupShow(true);
-      dispatch(GuestPopUpShow(true));
+      openGuestPopup({
+        action: "checkout",
+        storeName: storeData?.store_name || current_store_name,
+        guestUserId: guestTrackerId,
+        cookieExpireDays: SIGN_IN_EXPIRE_DAYS,
+        phoneValidator: validateGuestPhone,
+        phoneErrorMessage: "Please enter a valid 10-digit phone number",
+        refreshUserInfo: true,
+        onSuccess: handleGuestSuccess,
+      });
     } else if (shouldShowCheckoutClaimQr && ( hasKioskAccess && kioskUser_id || authUserId )) {
       setIsCheckoutClaimQrModalOpen(true);
     } else {
@@ -539,18 +546,6 @@ const DeliveryDetails = () => {
 
         </div>
       </div>
-
-      <GuestUserPopUp
-        isOpen={isPopupShow}
-        setIsOpen={setIsPopupShow}
-        storeName={storeData?.store_name || current_store_name}
-        guestUserId={guestTrackerId}
-        isUserLogin
-        cookieExpireDays={SIGN_IN_EXPIRE_DAYS}
-        phoneValidator={validateGuestPhone}
-        phoneErrorMessage="Please enter a valid 10-digit phone number"
-        onSuccess={handleGuestSuccess}
-      />
 
       <Modal
         headerText="Scan QR"

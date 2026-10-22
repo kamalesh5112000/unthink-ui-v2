@@ -37,7 +37,6 @@ import {
 	filterAvailableProductList,
 	isEmpty,
 	removeEmptyItems,
-	setCookie,
 	getTTid,
 } from "../../helper/utils";
 import {
@@ -45,22 +44,14 @@ import {
 	COLLECTION_GENERATED_BY_IMAGE_BASED,
 	COLLECTION_GENERATED_BY_SEARCH_BASED,
 	COLLECTION_TYPE_CUSTOM_PLIST,
-	COOKIE_TT_ID,
 	FETCH_COLLECTIONS_PRODUCT_LIMIT,
-	GUESTSKIP_EXPIRE_HOURS,
-	SIGN_IN_EXPIRE_DAYS,
 } from "../../constants/codes";
 import filterIcon from "../../images/filter_outline.svg";
 import Cookies from "js-cookie";
-import { authAPIs } from "../../helper/serverAPIs";
 import {
 	getUserCollections,
-	getUserInfo,
-	getUserInfoSuccess,
-	GuestPopUpShow,
 	getwishlistUserCollection,
 } from "../Auth/redux/actions";
-import GuestPopUp from "../Auth/GuestPopUp";
 import { addProductToWishlistCollection } from "../wishlistActions/addProductToWishlistCollection/redux/actions";
 import {
 	FaRegArrowAltCircleRight,
@@ -78,6 +69,7 @@ import SelectedProductsActionBar, {
 	SELECTED_PRODUCTS_ACTIONS,
 } from "../shared/SelectedProductsActionBar";
 import singleCollectionStyles from "../../components/singleCollection/collectionDetails.module.scss";
+import { useGuestPopup } from "../../context/GuestPopupContext";
 
 SwiperCore.use([FreeMode, Navigation]);
 
@@ -124,7 +116,6 @@ const AuraResponseProducts = ({
 		widgetHeaderRequest,
 		chatHistory,
 		selectedSearchOption,
-		isGuestPopUpShow,
 		showWishlistModal,
 		suggestionsTags,
 		showChatLoader,
@@ -137,12 +128,12 @@ const AuraResponseProducts = ({
 		state.chatV2.widgetHeaderRequest,
 		state.chatV2.chatHistory,
 		state.chatV2.activeSearchOption || {},
-		state.GuestPopUpReducer.isGuestPopUpShow,
 		state.appState.wishlist.showWishlistModal,
 		state.chatV2.suggestions?.selectedTag,
 		state.chatV2[CHAT_TYPES_KEYS[chatTypeKey].showChatLoader],
 	]);
   const {setUserData ,userData } = useUserData()
+	const { openGuestPopup } = useGuestPopup();
 const [notData,setNotData] = useState(null)
 
 	const [filterOptionsVisible, setFilterOptionsVisible] = useState(false);
@@ -159,10 +150,6 @@ const [notData,setNotData] = useState(null)
 		currentPages: {}, // Track page numbers per tag
 		hasMore: {}, // Track hasMore per tag
 	});
-	const [guestData, setGuestData] = useState({ email: "", phone: "" });
-	const [errors, setErrors] = useState({ email: "", phone: "" });
-	const [isPopupShow, setIsPopupShow] = useState(false);
-
 	const dispatch = useDispatch();
 	const { sendMessage } = useChat();
 	const guestActionRef = useRef(null);
@@ -651,11 +638,55 @@ const [notData,setNotData] = useState(null)
 			const isSkipPopUp = isSkip && guestActionRef.current === "share";
 
 			if ( isShare && !isSkipPopUp && !isGuestSubmit) {
-				dispatch(GuestPopUpShow(true));
+				const pendingGuestAction = guestActionRef.current;
+				openGuestPopup({
+					action: pendingGuestAction,
+					storeName: current_store_name,
+					refreshUserInfo: true,
+					onSuccess: ({ userId, response }) => {
+						if (response?.data?.data) {
+							setUserData(response.data.data);
+						}
+						onAddSelectedProductsToCollection(null, {
+							isShare: true,
+							isGuestSubmit: true,
+							userId,
+						});
+					},
+					onSkip: () => {
+						onAddSelectedProductsToCollection(null, {
+							isShare: true,
+							isSkip: true,
+						});
+					},
+				});
 				return;
 			}
 			else if ((isSave || isReusableSelectedProductsAction) && !isUserLogin && !isUserLoginCokkies && !isGuestSubmit) {
-				dispatch(GuestPopUpShow(true));
+				const pendingGuestAction = guestActionRef.current;
+				openGuestPopup({
+					action: pendingGuestAction,
+					storeName: current_store_name,
+					refreshUserInfo: true,
+					onSuccess: ({ userId, response }) => {
+						if (response?.data?.data) {
+							setUserData(response.data.data);
+						}
+						if (pendingGuestAction === "save") {
+							onAddSelectedProductsToCollection(null, {
+								isSave: true,
+								isGuestSubmit: true,
+								userId,
+							});
+							return;
+						}
+						onAddSelectedProductsToCollection(null, {
+							action: pendingGuestAction,
+							isGuestSubmit: true,
+							userId,
+						});
+					},
+				});
 				return;
 			}
 
@@ -778,6 +809,8 @@ const [notData,setNotData] = useState(null)
 			chatImageUrl,
 			dispatch,
 			handleResetSelectProduct,
+			openGuestPopup,
+			setUserData,
 			storeData?.event_id,
 			storeData?.store_name,
 			userData?.user_id,
@@ -893,116 +926,6 @@ setNotData(newOptionalFilters)
 			// setShowCustomFilterInput(isShowCustomFilterInput);
 		},
 		[]
-	);
-
-	const guestChange = useCallback(
-		(e) => {
-			const { name, value } = e.target;
-			setGuestData((data) => ({ ...data, [name]: value }));
-			if (name === "email" || name === "phone") {
-				setErrors((currentErrors) => ({
-					...currentErrors,
-					email: "",
-					phone: "",
-				}));
-			}
-		},
-		[]
-	);
-
-	const validateEmail = (email) => {
-		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		return emailRegex.test(email);
-	};
-
-	const handleGuestSkip = async () => {
-
-		if (guestActionRef.current === "share") {
-			onAddSelectedProductsToCollection(null,{ isShare: true, isSkip: true });
-		}
-		dispatch(GuestPopUpShow(false));
-	};
-
-
-
-	const handleGuestSubmit = useCallback(
-		async (e) => {
-			e.preventDefault();
-			const email = guestData.email?.trim();
-			const phone = guestData.phone?.trim();
-
-			if (!email && !phone) {
-				setErrors({ email: "Email or phone number is required", phone: "" });
-				return;
-			}
-
-			if (email && !validateEmail(email)) {
-				setErrors({ email: "Please enter a valid email address", phone: "" });
-				return;
-			}
-
-			const tid = Cookies.get("tid");
-			const store = current_store_name;
-
-			if (!Cookies.get("isGuestLoggedIn")) {
-				Cookies.set("isGuestLoggedIn", false, { expires: SIGN_IN_EXPIRE_DAYS });
-			}
-
-			if (email || phone) {
-				// console.log('Hewllo World',tid);
-				
-				try {
-					const res = await authAPIs.GuestRegisterAPICall({
-						emailId: email,
-						// user_id: tid,
-						store,
-						phone,
-					});
-
-					const { data } = res;
-					const user_id = data.data.user_id;
-// console.log('user_id',user_id);
-
-					if (res.data.status_code === 200) {
-						dispatch(GuestPopUpShow(false));
-						if(guestActionRef.current === "share"){ 
-							try {
-								let { data, status } = await authAPIs.getUserInfoAPICall({ user_id });
-
-								if (status === 200 && data?.status_code === 200 && data?.data?.user_id) {
-									// dispatch(getUserInfoSuccess(data.data));
-									setUserData(data?.data)
-								}
-							} catch (e) {
-								console.error(e);
-							}
-						}
-						else if (guestActionRef.current === "save" || ["cart", "wishlist"].includes(guestActionRef.current)) {
-							dispatch(GuestPopUpShow(false));
-
-							setCookie(COOKIE_TT_ID, user_id, SIGN_IN_EXPIRE_DAYS);
-							dispatch(getUserInfo());
-						}
-
-						// setCookie(COOKIE_TT_ID, user_id, SIGN_IN_EXPIRE_DAYS);
-						// dispatch(getUserInfo());
-						// Cookies.set("isGuestLoggedIn", true, {
-						// 	expires: SIGN_IN_EXPIRE_DAYS,
-						// });
-						if (guestActionRef.current === "save") {
-							onAddSelectedProductsToCollection(null, { isSave: true, isGuestSubmit: true, userId: user_id });
-						} else if (guestActionRef.current === "share") {
-							onAddSelectedProductsToCollection(null, { isShare: true, isGuestSubmit: true ,userId:data?.data?.user_id});
-						} else if (["cart", "wishlist"].includes(guestActionRef.current)) {
-							onAddSelectedProductsToCollection(null, { action: guestActionRef.current, isGuestSubmit: true, userId: user_id });
-						}
-					}
-				} catch (error) {
-					console.log(error);
-				}
-			}
-		},
-		[guestData.email, guestData.phone, onAddSelectedProductsToCollection]
 	);
 
 	useEffect(() => {
@@ -1403,19 +1326,6 @@ setNotData(newOptionalFilters)
 					</Modal>
 				)}
 			</div>
-			{isGuestPopUpShow ? (
-				<GuestPopUp
-					handleGuestSubmit={handleGuestSubmit}
-					errors={errors}
-					handleGuestSkip={handleGuestSkip}
-					guestChange={guestChange}
-					guestData={guestData}
-					setIsPopupShow={setIsPopupShow}
-				/>
-			) : (
-				""
-			)}
-
 			{isAuraChatPage && <WishListModal />}
 		</>
 	);

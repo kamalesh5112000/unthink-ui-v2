@@ -1,14 +1,13 @@
 import React, { useCallback, useState } from "react";
 import { notification } from "antd";
 import Cookies from "js-cookie";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import GuestPopUp from "./GuestPopUp";
 import { getUserInfo, GuestPopUpShow } from "./redux/actions";
-import { authAPIs, profileAPIs, SendSessionHCS20PointsApiCall } from "../../helper/serverAPIs";
+import { authAPIs } from "../../helper/serverAPIs";
 import { COOKIE_TT_ID, KIOSK_LOGIN_CHANGE_EVENT, SIGN_IN_EXPIRE_DAYS } from "../../constants/codes";
 import { KIOSK_LOGIN_STORAGE_KEY, setCookie } from "../../helper/utils";
 import { setKioskLogin } from "../../components/kiosk/redux/actions";
-import { generateDID } from "./utils/LoginUtils";
 
 const DEFAULT_GUEST_COOKIE_EXPIRE_DAYS = 7;
 
@@ -27,30 +26,19 @@ function GuestUserPopUp({
   isUserLogin,
 }) {
   const dispatch = useDispatch();
-  const isGuestPopUpShow = useSelector(
-    (state) => state.GuestPopUpReducer.isGuestPopUpShow,
-  );
   const [guestData, setGuestData] = useState({ email: "", phone: "" });
   const [errors, setErrors] = useState({ email: "", phone: "" });
-   const [  authUser, storeData,  ] = useSelector((state) => [
-          
-         state.auth.user.data,
-         state.store.data,
-          
-     ]);;
-  const userDID = authUser?.userDID;
-  const authUserId = authUser?.user_id;
   const setPopupOpen = useCallback(
-    (show) => {
+    (show, options = {}) => {
       setIsOpen?.(show);
-      if (!show) onClose?.();
+      if (!show && !options.skipOnClose) onClose?.();
     },
     [onClose, setIsOpen],
   );
 
-  const closePopup = useCallback(() => {
+  const closePopup = useCallback((options = {}) => {
     dispatch(GuestPopUpShow(false));
-    setPopupOpen(false);
+    setPopupOpen(false, options);
   }, [dispatch, setPopupOpen]);
 
   const validateEmail = useCallback((email) => {
@@ -76,7 +64,7 @@ function GuestUserPopUp({
   const handleGuestSkip = useCallback(
     (e) => {
       e?.preventDefault();
-      closePopup();
+      closePopup({ skipOnClose: true });
       onSkip?.();
     },
     [closePopup, onSkip],
@@ -158,7 +146,7 @@ function GuestUserPopUp({
           notification.success({
             message: "Login Successfully",
           });
-          closePopup();
+          closePopup({ skipOnClose: true });
           await onSuccess?.({
             userId,
             response: res,
@@ -189,12 +177,10 @@ function GuestUserPopUp({
       validateEmail,
       dispatch,
       isUserLogin,
-      authUserId,
-      userDID,
     ],
   );
 
-  if (!isOpen || !isGuestPopUpShow) return null;
+  if (!isOpen) return null;
 
   return (
     <GuestPopUp

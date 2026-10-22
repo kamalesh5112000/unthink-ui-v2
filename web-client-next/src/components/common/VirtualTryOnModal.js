@@ -10,8 +10,8 @@ import Modal from "../modal/Modal";
 import CameraCapture from "../shared/CameraCapture";
 import { profileAPIs, TryonSaveApiCall, TryOnVto } from "../../helper/serverAPIs";
 import { vtoIconState } from "../singleCollection/redux/actions";
-import { GuestPopUpShow } from "../../pageComponents/Auth/redux/actions";
 import camera from "../singleCollection/images/Card/camera.svg";
+import { useGuestPopup } from "../../context/GuestPopupContext";
 
 const getLoginUserId = (loginData) => {
   if (!loginData) return "";
@@ -29,8 +29,6 @@ const VirtualTryOnModal = ({
   login,
   hasKioskAccess,
   buildProductAutoLoginQr,
-  setIsPopupShow,
-  setGuestPopupAction,
   enableKioskGuestPopup,
   onGuestPopupOpen,
   onKioskTryonClick,
@@ -45,6 +43,7 @@ const VirtualTryOnModal = ({
   saveText = "Save",
 }) => {
   const dispatch = useDispatch();  
+  const { openGuestPopup } = useGuestPopup();
    
   const [ButtonClick, authUser, isUserLogin, kioskLoginFromStore] =
     useSelector((state) => [
@@ -248,15 +247,40 @@ const VirtualTryOnModal = ({
     }
   };
 
-  const openGuestPopup = (mfrCode) => {
-    setGuestPopupAction?.("vto");
-    setIsPopupShow?.(true);
+  const openVtoGuestPopup = (mfrCode) => {
     onGuestPopupOpen?.({
       type: "vto",
       mfrCode,
       product,
     });
-    dispatch?.(GuestPopUpShow(true));
+    openGuestPopup({
+      action: "vto",
+      storeName,
+      persistKioskLogin: true,
+      refreshUserInfo: !isUserLogin,
+      onSuccess: async ({ email, phone }) => {
+        setOnMfrCode?.(product);
+
+        if (hasKioskAccess && onKioskTryonClick) {
+          await onKioskTryonClick(product, { email, phone });
+          return;
+        }
+
+        if (buildProductAutoLoginQr) {
+          await buildProductAutoLoginQr({ mfrCode, email, phone, context: "vto" });
+          return;
+        }
+
+        if (onVtoClick) {
+          onVtoClick(mfrCode);
+          return;
+        }
+
+        if (mfrCode) {
+          dispatch?.(vtoIconState(mfrCode));
+        }
+      },
+    });
   };
 
   const handleClick = async (event) => {
@@ -266,7 +290,7 @@ const VirtualTryOnModal = ({
     if (setOnMfrCode || onVtoClick || onKioskTryonClick) {
       setOnMfrCode?.(product);
       if (shouldOpenGuestPopup) {
-        openGuestPopup(mfrCode);
+        openVtoGuestPopup(mfrCode);
         return;
       }
 
@@ -287,7 +311,7 @@ const VirtualTryOnModal = ({
     }
 
     if (shouldOpenGuestPopup) {
-      openGuestPopup(mfrCode);
+      openVtoGuestPopup(mfrCode);
       return;
     }
 
