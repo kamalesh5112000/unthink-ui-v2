@@ -2,268 +2,193 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useRouter } from "next/router";
 import { FiCamera, FiRefreshCw } from "react-icons/fi";
 
+import { authAPIs } from "../../../helper/serverAPIs";
 import ClaimPoints from "../../DeliveryDetails/ClaimPoints";
+import CheckoutClaimPoints from "../../DeliveryDetails/CheckoutClaimPoints";
+import { getRedeemCustomerName, parseRedeemQr } from "./redeemQr";
 import styles from "../StoreAssistantDashboard.module.scss";
 
 const SCANNER_ELEMENT_ID = "store-assistant-redeem-scanner";
-const BACK_CAMERA_LABEL_PATTERN = /back|rear|environment|facing back/i;
-
 const getRouteValue = (value) => (Array.isArray(value) ? value[0] : value);
 
 const getCameraErrorMessage = (error) => {
-  const errorName = error?.name || "";
-  const errorMessage = error?.message || "";
-
-  if (/notallowed|permission|denied/i.test(`${errorName} ${errorMessage}`)) {
+  const message = `${error?.name || ""} ${error?.message || error || ""}`;
+  if (/notallowed|permission|denied/i.test(message)) {
     return "Camera permission is blocked or unavailable. Allow camera access in browser settings, then tap Start Scanner again.";
   }
-
-  if (/notfound|overconstrained|notreadable/i.test(`${errorName} ${errorMessage}`)) {
-    return "Unable to find or start a usable camera. Check the device camera and tap Start Scanner again.";
+  if (/notfound|overconstrained|notreadable/i.test(message)) {
+    return "Unable to start a usable camera. Check that another app is not using it, then tap Start Scanner again.";
   }
-
   return "Unable to open camera. Please allow camera permission and tap Start Scanner again.";
-};
-
-const getRedeemPayloadFromText = (value) => {
-  const rawValue = String(value || "").trim();
-  if (!rawValue) return null;
-
-  try {
-    const parsedUrl = new URL(rawValue, window.location.origin);
-    const userId =
-      parsedUrl.searchParams.get("user_id") ||
-      parsedUrl.searchParams.get("userId") ||
-      parsedUrl.searchParams.get("customer_user_id");
-    const storeName =
-      parsedUrl.searchParams.get("store_name") ||
-      parsedUrl.searchParams.get("storeName");
-
-    if (userId) {
-      return { userId, storeName };
-    }
-
-    const pathParts = parsedUrl.pathname.split("/").filter(Boolean);
-    const redeemRouteIndex = pathParts.findIndex((part) =>
-      ["claim-points", "checkout-claim-badge"].includes(part)
-    );
-
-    if (redeemRouteIndex >= 0 && pathParts[redeemRouteIndex + 1]) {
-      return {
-        userId: decodeURIComponent(pathParts[redeemRouteIndex + 1]),
-        storeName: pathParts[redeemRouteIndex + 2]
-          ? decodeURIComponent(pathParts[redeemRouteIndex + 2])
-          : "",
-      };
-    }
-  } catch (error) {
-    // Treat non-URL text as a direct customer id below.
-  }
-
-  return { userId: rawValue, storeName: "" };
 };
 
 const StoreAssistantRedeem = () => {
   const router = useRouter();
-  const scannerRef = useRef(null);
+  // Serialize teardown/startup so switching cameras cannot leave two streams open.
+  const cameraCleanup = useRef(Promise.resolve());
+  const currentCameraId = useRef(null);
+  const scanHandled = useRef(false);
   const [scannerActive, setScannerActive] = useState(false);
-  const [scannerError, setScannerError] = useState("");
+  const [cameraBusy, setCameraBusy] = useState(false);
+  const [cameraId, setCameraId] = useState(null);
   const [cameras, setCameras] = useState([]);
-  const [activeCameraIndex, setActiveCameraIndex] = useState(0);
+  const [scannerError, setScannerError] = useState("");
+  const [customerResult, setCustomerResult] = useState(null);
 
+  const userId = getRouteValue(router.query.user_id);
+  const storeName = getRouteValue(router.query.store_name) || "";
+  const mode = router.query.mode === "checkout" ? "checkout" : "points";
   const scannedPayload = useMemo(() => {
-    const userId = getRouteValue(router.query.user_id);
-    const storeName = getRouteValue(router.query.store_name);
-
-    return userId ? { userId, storeName } : null;
-  }, [router.query.store_name, router.query.user_id]);
-
-  const applyRedeemPayload = useCallback((payload) => {
-    if (!payload?.userId) {
-      setScannerError("The QR code does not contain a valid customer id.");
-      return;
-    }
-
-    setScannerError("");
-    setScannerActive(false);
-    router.replace(
-      {
-        pathname: router.pathname,
-        query: {
-          ...router.query,
-          tab: "redeem",
-          user_id: payload.userId,
-          ...(payload.storeName ? { store_name: payload.storeName } : {}),
-        },
-      },
-      undefined,
-      { shallow: true }
-    );
-  }, [router]);
-
-  const getPreferredCameraIndex = useCallback((availableCameras) => {
-    const backCameraIndex = availableCameras.findIndex((camera) =>
-      BACK_CAMERA_LABEL_PATTERN.test(camera.label || "")
-    );
-
-    return backCameraIndex >= 0 ? backCameraIndex : 0;
-  }, []);
+    if (!userId) return null;
+    const params = new URLSearchParams({ tab: "redeem", user_id: userId, store_name: storeName, mode });
+    return parseRedeemQr(`/store-assistant?${params}`, "https://redeem.local");
+  }, [mode, storeName, userId]);
 
   useEffect(() => {
-    if (!scannerActive) return undefined;
-
+    if (!scannedPayload) return;
     let cancelled = false;
-    const qrboxSize =
-      typeof window === "undefined"
-        ? 240
-        : Math.min(280, Math.max(190, window.innerWidth - 72));
-
-    const stopScanner = async () => {
-      try {
-        if (scannerRef.current?.isScanning) {
-          await scannerRef.current.stop();
-        }
-        await scannerRef.current?.clear?.();
-      } catch (error) {
-        console.error("Unable to stop QR scanner:", error);
-      } finally {
-        scannerRef.current = null;
-      }
-    };
-
-    import("html5-qrcode")
-      .then(async ({ Html5Qrcode }) => {
-        if (cancelled) return;
-
-        const scanner = new Html5Qrcode(SCANNER_ELEMENT_ID, false);
-        scannerRef.current = scanner;
-
-        let availableCameras = [];
-        try {
-          availableCameras = await Html5Qrcode.getCameras();
-        } catch (error) {
-          console.error("Unable to list cameras:", error);
-        }
-
-        if (cancelled) {
-          await stopScanner();
-          return;
-        }
-
-        const nextCameras = Array.isArray(availableCameras) ? availableCameras : [];
-        const hasReadableCameraLabels = nextCameras.some((camera) => camera.label);
-        setCameras(nextCameras);
-
-        const preferredCameraIndex = getPreferredCameraIndex(nextCameras);
-        const nextCameraIndex = nextCameras[activeCameraIndex]
-          ? activeCameraIndex
-          : preferredCameraIndex;
-
-        if (nextCameraIndex !== activeCameraIndex) {
-          setActiveCameraIndex(nextCameraIndex);
-          await stopScanner();
-          return;
-        }
-
-        const shouldPreferEnvironmentConstraint =
-          !hasReadableCameraLabels && nextCameraIndex === 0;
-        const cameraConfig = shouldPreferEnvironmentConstraint
-          ? { facingMode: "environment" }
-          : nextCameras[nextCameraIndex]?.id || { facingMode: "environment" };
-
-        await scanner.start(
-          cameraConfig,
-          {
-            fps: 10,
-            qrbox: { width: qrboxSize, height: qrboxSize },
-            aspectRatio: 1,
-          },
-          (decodedText) => applyRedeemPayload(getRedeemPayloadFromText(decodedText)),
-          () => {}
-        );
-      })
-      .catch((error) => {
-        if (cancelled) return;
-
-        console.error("Unable to open QR scanner:", error);
-        stopScanner();
-        setScannerActive(false);
-        setScannerError(getCameraErrorMessage(error));
+    const requestedUserId = scannedPayload.userId;
+    setCustomerResult(null);
+    authAPIs.getUserInfoAPICall({ user_id: requestedUserId }).then((response) => {
+      if (cancelled) return;
+      const customer = response?.data?.data;
+      setCustomerResult({
+        userId: requestedUserId,
+        customer: String(customer?.user_id) === requestedUserId ? customer : null,
       });
+    }).catch(() => {
+      if (!cancelled) setCustomerResult({ userId: requestedUserId, customer: null });
+    });
+    return () => { cancelled = true; };
+  }, [scannedPayload]);
+
+  const applyScan = useCallback((decodedText) => {
+    if (scanHandled.current) return;
+    const payload = parseRedeemQr(decodedText, window.location.origin);
+    if (!payload) {
+      setScannerError("This QR does not contain customer details. Please scan the customer's My Points badge or checkout QR.");
+      return;
+    }
+    scanHandled.current = true;
+    setScannerError("");
+    setScannerActive(false);
+    router.replace({
+      pathname: router.pathname,
+      query: { tab: "redeem", mode: payload.mode, user_id: payload.userId, store_name: payload.storeName },
+    }, undefined, { shallow: true });
+  }, [router]);
+
+  useEffect(() => {
+    if (!scannerActive) return;
+    let cancelled = false;
+    let scanner;
+    const previousCleanup = cameraCleanup.current;
+    setCameraBusy(true);
+
+    const start = (async () => {
+      await previousCleanup;
+      const { Html5Qrcode, Html5QrcodeSupportedFormats } = await import("html5-qrcode");
+      if (cancelled) return;
+      scanner = new Html5Qrcode(SCANNER_ELEMENT_ID, {
+        formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
+        verbose: false,
+      });
+      await scanner.start(cameraId || { facingMode: "environment" }, {
+        fps: 10,
+        aspectRatio: 1,
+        qrbox: (width, height) => {
+          const size = Math.floor(Math.min(width, height) * 0.72);
+          return { width: size, height: size };
+        },
+      }, (text) => { if (!cancelled) applyScan(text); }, () => {});
+      if (cancelled) return;
+      currentCameraId.current = scanner.getRunningTrackSettings().deviceId || cameraId;
+      setCameraBusy(false);
+      // Permission is already granted by start(); enumeration does not prompt twice.
+      try {
+        const devices = await Html5Qrcode.getCameras();
+        if (!cancelled) setCameras(devices);
+      } catch {
+        // Scanning still works when a browser cannot enumerate camera devices.
+      }
+    })();
+    start.catch((error) => {
+      if (cancelled) return;
+      setScannerError(getCameraErrorMessage(error));
+      setCameraBusy(false);
+      setScannerActive(false);
+    });
 
     return () => {
       cancelled = true;
-      stopScanner();
+      cameraCleanup.current = start.catch(() => {}).then(async () => {
+        if (!scanner) return;
+        try {
+          if (scanner.isScanning) await scanner.stop();
+        } finally {
+          scanner.clear();
+        }
+      }).catch((error) => console.error("Unable to stop QR scanner:", error));
     };
-  }, [activeCameraIndex, applyRedeemPayload, getPreferredCameraIndex, scannerActive]);
+  }, [applyScan, cameraId, scannerActive]);
 
-  const handleStartScanner = () => {
+  const toggleScanner = () => {
     setScannerError("");
+    scanHandled.current = false;
+    if (!scannerActive) setCameraId(null);
     setScannerActive((active) => !active);
   };
-
-  const handleSwitchCamera = () => {
-    if (cameras.length <= 1) return;
+  const switchCamera = () => {
+    const index = cameras.findIndex((camera) => camera.id === currentCameraId.current);
     setScannerError("");
-    setActiveCameraIndex((index) => (index + 1) % cameras.length);
+    setCameraId(cameras[(index + 1) % cameras.length].id);
   };
-
   const clearCustomer = () => {
-    const nextQuery = { ...router.query, tab: "redeem" };
-    delete nextQuery.user_id;
-    delete nextQuery.store_name;
-
-    router.replace({ pathname: router.pathname, query: nextQuery }, undefined, {
-      shallow: true,
-    });
+    setCustomerResult(null);
+    router.replace({ pathname: router.pathname, query: { tab: "redeem" } }, undefined, { shallow: true });
   };
+  const lookupComplete = customerResult?.userId === scannedPayload?.userId && Boolean(customerResult);
+  const customer = lookupComplete ? customerResult.customer : null;
 
   return (
     <section className={styles.redeemPanel}>
       <div className={styles.redeemHeader}>
         <div>
           <p className={styles.eyebrow}>Points Redemption</p>
-          <h1>Scan customer badge</h1>
-          <p>Open the customer badge QR here before exchanging points for a real coupon.</p>
+          <h1>{scannedPayload ? (mode === "checkout" ? "Checkout redemption" : "Redeem customer points") : "Scan customer badge"}</h1>
+          <p>{scannedPayload ? "Review the customer details before redeeming." : "Scan a My Points badge or checkout QR to begin."}</p>
         </div>
-        {scannedPayload?.userId ? (
-          <button type="button" onClick={clearCustomer}>
-            <FiRefreshCw /> Scan another
-          </button>
-        ) : null}
+        {userId ? <button type="button" onClick={clearCustomer}><FiRefreshCw /> Scan another</button> : null}
       </div>
-
-      {!scannedPayload?.userId ? (
+      {!scannedPayload ? (
         <div className={styles.redeemScannerWrap}>
           <div className={styles.redeemScannerCard}>
-            <FiCamera />
-            <h2>Camera scanner</h2>
-            <p>Use the mobile or tablet camera to scan the customer badge QR.</p>
-            <div className={styles.redeemScannerActions}>
-              <button type="button" onClick={handleStartScanner}>
-                {scannerActive ? "Stop Scanner" : "Start Scanner"}
-              </button>
-              {scannerActive && cameras.length > 1 ? (
-                <button type="button" onClick={handleSwitchCamera}>
-                  Switch Camera
-                </button>
-              ) : null}
+            <div className={styles.redeemCameraPreview}>
+              <div id={SCANNER_ELEMENT_ID} className={styles.qrScanner} />
+              {!scannerActive && <div className={styles.redeemCameraPlaceholder}><FiCamera /><span>Position the customer QR inside the camera view</span></div>}
             </div>
-            {scannerError ? <small>{scannerError}</small> : null}
-            {scannerActive ? <div id={SCANNER_ELEMENT_ID} className={styles.qrScanner} /> : null}
+            <div className={styles.redeemScannerActions}>
+              <button type="button" onClick={toggleScanner} disabled={cameraBusy && scannerActive}>
+                {cameraBusy && scannerActive ? "Opening camera…" : scannerActive ? "Stop Scanner" : "Start Scanner"}
+              </button>
+              {scannerActive && cameras.length > 1 && <button type="button" onClick={switchCamera} disabled={cameraBusy}><FiRefreshCw /> Switch Camera</button>}
+            </div>
+            <div role="status" aria-live="polite">
+              {scannerError ? <small>{scannerError}</small> : <p>{userId ? "Invalid customer link. Please scan the customer QR again." : "The back camera opens by default. Allow camera access when asked."}</p>}
+            </div>
           </div>
         </div>
       ) : (
         <div className={styles.redeemFormWrap}>
           <div className={styles.redeemCustomerBar}>
-            <span>Customer ID</span>
-            <strong>{scannedPayload.userId}</strong>
-            {scannedPayload.storeName ? <small>{scannedPayload.storeName}</small> : null}
+            <span>Customer</span>
+            <strong>{!lookupComplete ? "Loading customer…" : customer ? getRedeemCustomerName(customer) : "Customer unavailable"}</strong>
           </div>
-          <ClaimPoints
-            customerUserId={scannedPayload.userId}
-            customerStoreName={scannedPayload.storeName}
-          />
+          {customer ? (mode === "checkout" ? (
+            <CheckoutClaimPoints key={`checkout:${userId}:${storeName}`} customerUserId={userId} customerStoreName={storeName} customerData={customer} />
+          ) : (
+            <ClaimPoints key={`points:${userId}:${storeName}`} customerUserId={userId} customerStoreName={storeName} customerData={customer} />
+          )) : lookupComplete ? <p role="alert" className="p-5">Unable to load this customer. Please scan their badge or checkout QR again.</p> : null}
         </div>
       )}
     </section>

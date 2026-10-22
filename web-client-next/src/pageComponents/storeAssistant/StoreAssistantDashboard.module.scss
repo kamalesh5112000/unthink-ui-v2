@@ -347,9 +347,9 @@
 }
 
 .redeemScannerCard {
-  width: min(100%, 620px);
-  min-height: 280px;
-  padding: 24px;
+  width: min(100%, 520px);
+  min-width: 0;
+  padding: 14px;
   border: 1px solid #e5e7eb;
   border-radius: 24px;
   background: #f8fafc;
@@ -370,7 +370,8 @@
   }
 
   p {
-    margin: 0 0 18px;
+    margin: 12px 0 0;
+    font-size: 14px;
     color: #667085;
     line-height: 1.5;
   }
@@ -398,23 +399,58 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  margin-top: 14px;
+
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex: 1 1 140px;
+    min-height: 48px;
+    touch-action: manipulation;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+  }
+}
+
+.redeemCameraPreview {
+  position: relative;
+  width: min(100%, 44vh);
+  margin: 0 auto;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #111827;
+}
+
+.redeemCameraPlaceholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  padding: 24px;
+  text-align: center;
+  color: #e5e7eb;
+  font-size: 14px;
+
+  svg { font-size: 36px; }
 }
 
 .qrScanner {
-  margin-top: 18px;
+  width: 100%;
   overflow: hidden;
-  border-radius: 18px;
-  background: #fff;
-
-  :global(#store-assistant-redeem-scanner__scan_region) {
-    min-height: 260px;
-  }
 
   :global(video) {
     width: 100% !important;
-    max-height: min(58vh, 520px);
-    border-radius: 14px;
-    object-fit: cover;
+    height: auto !important;
+    object-fit: contain;
   }
 }
 
@@ -423,6 +459,16 @@
   border: 1px solid #e5e7eb;
   border-radius: 24px;
   background: #fff;
+
+  input {
+    min-height: 48px;
+    font-size: 16px;
+  }
+
+  button {
+    min-height: 48px;
+    touch-action: manipulation;
+  }
 }
 
 .redeemCustomerBar {
@@ -444,6 +490,7 @@
 
   strong {
     font-size: 16px;
+    overflow-wrap: anywhere;
   }
 }
 
@@ -773,7 +820,7 @@
 
   .redeemScannerCard {
     min-height: 0;
-    padding: 18px;
+    padding: 12px;
 
     > svg {
       width: 36px;
@@ -787,7 +834,7 @@
     }
 
     p {
-      margin-bottom: 14px;
+      margin: 12px 0 0;
       font-size: 14px;
     }
   }
@@ -798,17 +845,6 @@
     }
   }
 
-  .qrScanner {
-    margin-top: 14px;
-
-    :global(#store-assistant-redeem-scanner__scan_region) {
-      min-height: 220px;
-    }
-
-    :global(video) {
-      max-height: 52vh;
-    }
-  }
 
   .redeemCustomerBar {
     display: block;

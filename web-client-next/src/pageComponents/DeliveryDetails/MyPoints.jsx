@@ -33,6 +33,7 @@ const MyPoints = () => {
 
     const params = new URLSearchParams({
       tab: "redeem",
+      mode: "points",
       user_id: authUserId,
       store_name: storeData.store_name,
     });

@@ -12,6 +12,7 @@ const ClaimPointContainer = () => {
       pathname: '/store-assistant',
       query: {
         tab: 'redeem',
+        mode: 'points',
         user_id: query.user_id,
         store_name: query.store_name,
       },

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Drawer, Modal, notification, Spin, Upload } from "antd";
+import { Checkbox, Drawer, Modal, notification, Spin, Upload } from "antd";
 import { PictureOutlined } from "@ant-design/icons";
-import { FiEdit2, FiEye, FiImage, FiRefreshCw, FiShoppingBag, FiStar, FiTrash2 } from "react-icons/fi";
+import { FiCheck, FiEdit2, FiEye, FiImage, FiRefreshCw, FiShoppingBag, FiStar, FiTrash2 } from "react-icons/fi";
 import {
   DndContext,
   PointerSensor,
@@ -16,6 +16,7 @@ import {
 } from "@dnd-kit/sortable";
 
 import LookBookCollectionCard from "./LookBookCollectionCard";
+import CustomerShareModal from "./CustomerShareModal";
 import { getCollectionNameToShow } from "../../../helper/utils";
 import { profileAPIs } from "../../../helper/serverAPIs";
 import {
@@ -36,6 +37,7 @@ const getProductName = (product) => product?.name || product?.product_name || pr
 const getProductPrice = (product) => product?.display_amount || product?.sale_price || product?.price || "";
 const getProductMfrCode = (product) => product?.mfr_code || "";
 const getProductCode = (product) => product?.mfr_code || product?.sku || product?.product_id || "";
+const getSelectionKey = (product) => String(getProductCode(product) || product?._id || "");
 const getLookBookProducts = (collection) => collection?.product_lists || collection?.product_list || [];
 const COLLECTION_MODES = {
   lookbooks: {
@@ -150,7 +152,13 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
   const [savingCollection, setSavingCollection] = useState(false);
   const [productActionId, setProductActionId] = useState("");
   const [hasUnsavedOrderChanges, setHasUnsavedOrderChanges] = useState(false);
+  const [selectMode, setSelectMode] = useState(false);
+  const [selectedProductKeys, setSelectedProductKeys] = useState([]);
+  const [shareContext, setShareContext] = useState(null);
   const selectedProducts = getLookBookProducts(selectedCollection);
+  const shareProducts = selectedProducts.filter((product) => selectedProductKeys.includes(getSelectionKey(product)));
+  const selectableKeys = [...new Set(selectedProducts.map(getSelectionKey).filter(Boolean))];
+  const selectedKeyCount = selectableKeys.filter((key) => selectedProductKeys.includes(key)).length;
   const selectedCollectionName = selectedCollection ? getCollectionNameToShow(selectedCollection) || config.collectionSingular : config.collectionSingular;
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -174,6 +182,32 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
   useEffect(() => {
     loadLookBooks();
   }, [loadLookBooks]);
+
+  useEffect(() => {
+    setSelectedCollection(null);
+    setShareContext(null);
+    setSelectedProductKeys([]);
+    setSelectMode(false);
+  }, [mode]);
+
+  useEffect(() => {
+    setSelectedProductKeys([]);
+    setSelectMode(false);
+    setShareContext(null);
+  }, [selectedCollection?._id]);
+
+  const toggleProductSelection = (key) => {
+    setSelectedProductKeys((current) => current.includes(key) ? current.filter((item) => item !== key) : [...current, key]);
+  };
+
+  const openShare = (type) => {
+    setShareContext({
+      type,
+      collectionId: selectedCollection?._id,
+      collectionName: selectedCollectionName,
+      products: type === "collection" ? [...selectedProducts] : [...shareProducts],
+    });
+  };
 
   useEffect(() => {
     setDrawerMode(null);
@@ -448,14 +482,21 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
         title={`${selectedCollectionName} products`}
         open={!!selectedCollection}
         footer={null}
-        width="min(1320px, calc(100vw - 64px))"
+        width="min(1320px, calc(100vw - 24px))"
+        className={styles.sharingProductsModal}
+        keyboard={!shareContext}
+        maskClosable={!shareContext}
         onCancel={() => setSelectedCollection(null)}
       >
         <div className={styles.productsModalHeader}>
           <p>{selectedProducts.length} {config.productCountLabel}</p>
+          <div className={styles.collectionShareActions}>
+          <button type="button" onClick={() => openShare("collection")} disabled={!selectedCollection?._id}>Share Collection</button>
+          {!selectMode && <button type="button" onClick={() => setSelectMode(true)} disabled={!selectableKeys.length}>Select Products</button>}
           <button type="button" onClick={onEditCollection} disabled={!selectedCollection?._id}>
             <FiEdit2 /> Edit Collection
           </button>
+          </div>
         </div>
         {selectedProducts.length ? (
           <div className={styles.productsGrid}>
@@ -466,9 +507,30 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
               const productMfrCode = getProductMfrCode(product);
               const deleting = productActionId === `delete-${productMfrCode}`;
               const starring = productActionId === `star-${productMfrCode}`;
+              const selectionKey = getSelectionKey(product);
+              const isSelected = selectedProductKeys.includes(selectionKey);
 
               return (
-                <div className={styles.productCard} key={productCode || product?._id || index}>
+                <div
+                  className={`${styles.productCard} ${selectMode ? styles.selectableProductCard : ""} ${selectMode && isSelected ? styles.selectedProductCard : ""}`}
+                  key={productCode || product?._id || index}
+                  role={selectMode ? "checkbox" : undefined}
+                  aria-checked={selectMode ? isSelected : undefined}
+                  aria-disabled={selectMode && !selectionKey ? true : undefined}
+                  aria-label={selectMode ? `Select ${getProductName(product)}` : undefined}
+                  tabIndex={selectMode && selectionKey ? 0 : undefined}
+                  onClick={selectMode && selectionKey ? () => toggleProductSelection(selectionKey) : undefined}
+                  onKeyDown={selectMode && selectionKey ? (event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      toggleProductSelection(selectionKey);
+                    }
+                  } : undefined}
+                >
+                  {selectMode && <div className={styles.productSelection} aria-hidden="true">
+                    <span className={styles.selectionIndicator}>{isSelected && <FiCheck />}</span>
+                    <span>{isSelected ? "Selected" : "Select product"}</span>
+                  </div>}
                   <div className={styles.productImageWrap}>
                     {productImage ? <img src={productImage} alt={getProductName(product)} loading="lazy" /> : <FiImage />}
                   </div>
@@ -477,7 +539,7 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
                     {productPrice ? <p>{productPrice}</p> : null}
                     {productCode ? <small>{productCode}</small> : null}
                   </div>
-                  <div className={styles.productActions}>
+                  {!selectMode && <div className={styles.productActions}>
                     <button type="button" onClick={() => onShowProduct(product)}>
                       <FiEye /> <span className={styles.productActionLabel}>Show</span>
                     </button>
@@ -492,7 +554,7 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
                     <button type="button" onClick={() => onDeleteProduct(product)} disabled={!productMfrCode || !!productActionId}>
                       <FiTrash2 /> <span className={styles.productActionLabel}>{deleting ? "Deleting..." : "Delete"}</span>
                     </button>
-                  </div>
+                  </div>}
                 </div>
               );
             })}
@@ -504,7 +566,18 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
             <p>{config.productsEmpty}</p>
           </div>
         )}
+        {selectMode && <div className={styles.productSelectionBar}>
+          <Checkbox checked={selectableKeys.length > 0 && selectedKeyCount === selectableKeys.length} indeterminate={selectedKeyCount > 0 && selectedKeyCount < selectableKeys.length} onChange={(event) => setSelectedProductKeys(event.target.checked ? selectableKeys : [])}>Select all</Checkbox>
+          <span role="status">{selectedKeyCount} selected</span>
+          <div className={styles.selectionBarActions}>
+            <button type="button" onClick={() => setSelectedProductKeys([])} disabled={!selectedKeyCount}>Clear</button>
+            <button type="button" onClick={() => { setSelectMode(false); setSelectedProductKeys([]); }}>Cancel</button>
+            <button type="button" className={styles.shareSelectedButton} onClick={() => openShare("products")} disabled={!selectedKeyCount}>Share Selected</button>
+          </div>
+        </div>}
       </Modal>
+
+      <CustomerShareModal key={`${mode}:${selectedCollection?._id || "none"}`} context={shareContext} onClose={() => setShareContext(null)} />
 
       <Drawer
         title={drawerTitle}

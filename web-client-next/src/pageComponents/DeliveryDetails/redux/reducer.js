@@ -139,6 +139,7 @@ export const cartReducer = (state = initialState, action) => {
 		case FETCH_EARNING_POINTS:
 			return {
 				...state,
+				earningPoints: null,
 				earningPointsLoading: true,
 				earningPointsError: null,
 			};
@@ -160,6 +161,7 @@ export const cartReducer = (state = initialState, action) => {
 		case CHECKOUT_UPDATE_POINTS:
 			return {
 				...state,
+				checkoutUpdatedPoints: null,
 				checkoutUpdatePointsLoading: true,
 				checkoutUpdatePointsError: null,
 				sessionHCS20PointsError: null,

@@ -250,6 +250,7 @@ const DeliveryDetails = () => {
   const getRedeemRoute = () => {
     const params = new URLSearchParams({
       tab: "redeem",
+      mode: "checkout",
       user_id: kioskUser_id || authUserId,
       store_name: storeData?.store_name || current_store_name,
     });

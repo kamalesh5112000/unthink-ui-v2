@@ -12,6 +12,7 @@ const CheckoutClaimBadge = () => {
       pathname: '/store-assistant',
       query: {
         tab: 'redeem',
+        mode: 'checkout',
         user_id: query.user_id,
         store_name: query.store_name,
       },
