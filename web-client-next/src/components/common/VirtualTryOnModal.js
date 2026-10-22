@@ -13,7 +13,11 @@ import { vtoIconState } from "../singleCollection/redux/actions";
 import { GuestPopUpShow } from "../../pageComponents/Auth/redux/actions";
 import camera from "../singleCollection/images/Card/camera.svg";
 
- 
+const getLoginUserId = (loginData) => {
+  if (!loginData) return "";
+  if (typeof loginData === "string") return loginData;
+  return loginData?.user_id || loginData?._id || "";
+};
 
 const VirtualTryOnModal = ({
   size,
@@ -42,12 +46,25 @@ const VirtualTryOnModal = ({
 }) => {
   const dispatch = useDispatch();  
    
-  const [ButtonClick ,authUser ] = useSelector((state) => [ 
+  const [ButtonClick, authUser, isUserLogin, kioskLoginFromStore] =
+    useSelector((state) => [
     state.VtoIconReducer.ButtonClick,
-    state.auth.user.data 
+    state.auth.user.data,
+    state.auth.user.isUserLogin,
+    state.kiosk.login,
   ]);
   const isMobile = typeof window !== "undefined" && window.innerWidth < 878;
   const isOpen = Boolean(storeData && ButtonClick === product?.mfr_code);
+  const hasAuthLogin = Boolean(isUserLogin || authUser?.user_id);
+  const hasKioskLogin = Boolean(
+    getLoginUserId(login) ||
+      getLoginUserId(kioskLoginFromStore) ||
+      kioskEmail ||
+      kioskUserName,
+  );
+  const shouldOpenGuestPopup = hasKioskAccess
+    ? !hasKioskLogin
+    : !hasAuthLogin && !hasKioskLogin;
   const modalSubText =
     subText || tryonConfig?.tryon_statement || storeData?.defult_tryon_statement;
   const productImage = product?.image;
@@ -231,22 +248,26 @@ const VirtualTryOnModal = ({
     }
   };
 
+  const openGuestPopup = (mfrCode) => {
+    setGuestPopupAction?.("vto");
+    setIsPopupShow?.(true);
+    onGuestPopupOpen?.({
+      type: "vto",
+      mfrCode,
+      product,
+    });
+    dispatch?.(GuestPopUpShow(true));
+  };
+
   const handleClick = async (event) => {
     event?.stopPropagation?.();
     const mfrCode = product?.mfr_code;
 
     if (setOnMfrCode || onVtoClick || onKioskTryonClick) {
       setOnMfrCode?.(product);
-      if (!login) {
-        if (hasKioskAccess && enableKioskGuestPopup) {
-          onGuestPopupOpen?.({
-            type: "vto",
-            mfrCode,
-            product,
-          });
-          onVtoClick?.();
-          return;
-        }
+      if (shouldOpenGuestPopup) {
+        openGuestPopup(mfrCode);
+        return;
       }
 
       if (
@@ -265,10 +286,8 @@ const VirtualTryOnModal = ({
       return;
     }
 
-    if (!login && hasKioskAccess) {
-      setIsPopupShow?.(true);
-      setGuestPopupAction?.("vto");
-      dispatch?.(GuestPopUpShow(true));
+    if (shouldOpenGuestPopup) {
+      openGuestPopup(mfrCode);
       return;
     }
 
