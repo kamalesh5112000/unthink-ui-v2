@@ -268,7 +268,6 @@ const DeliveryDetails = () => {
       openGuestPopup({
         action: "checkout",
         storeName: storeData?.store_name || current_store_name,
-        guestUserId: guestTrackerId,
         cookieExpireDays: SIGN_IN_EXPIRE_DAYS,
         phoneValidator: validateGuestPhone,
         phoneErrorMessage: "Please enter a valid 10-digit phone number",

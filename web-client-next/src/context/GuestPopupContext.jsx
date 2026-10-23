@@ -12,7 +12,6 @@ import { useDispatch, useSelector } from "react-redux";
 import GuestUserPopUp from "../pageComponents/Auth/GuestUserPopUp";
 import { GuestPopUpShow } from "../pageComponents/Auth/redux/actions";
 import { current_store_name } from "../constants/config";
-import { getTTid } from "../helper/getTrackerInfo";
 
 const GuestPopupContext = createContext({
   openGuestPopup: () => {},
@@ -209,7 +208,6 @@ export const GuestPopupProvider = ({ children }) => {
         isOpen={isGuestPopUpShow}
         setIsOpen={handlePopupOpenChange}
         storeName={popupOptions.storeName || storeName || current_store_name}
-        guestUserId={popupOptions.guestUserId || getTTid()}
         persistKioskLogin={popupOptions.persistKioskLogin}
         cookieExpireDays={popupOptions.cookieExpireDays}
         phoneValidator={popupOptions.phoneValidator}
