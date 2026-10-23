@@ -74,6 +74,7 @@ function* createWishlistSaga(action) {
 			collection_theme,
 			faq_enabled,
 			faq_count,
+			shareAutoLoginUser,
 		} = action.payload;
 
 		const payload = {
@@ -331,7 +332,11 @@ function* createWishlistSaga(action) {
 				// };
 
 				// yield put(updateWishlist(payload));
-				yield put(openCollectionShareModal(resData.data, authUser, true));
+				yield put(
+					openCollectionShareModal(resData.data, authUser, true, {
+						autoLoginUser: shareAutoLoginUser,
+					})
+				);
 			}
 
 			// if (action.payload.closeModalOnSuccess) yield put(closeWishlistModal());

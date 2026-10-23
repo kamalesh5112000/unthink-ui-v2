@@ -322,7 +322,8 @@ const ChatProducts = ({
 
   const shouldShowShopLookSplitLayout = useMemo(
     () =>
-      (isShopALookOptionActiveCustom ||
+      (isShopByThemeOptionActive ||
+        isShopALookOptionActiveCustom ||
         isCompleteTheLookOptionActive ||
         isProductSearchOptionActive) &&
       (widgetHeader ||
@@ -330,6 +331,7 @@ const ChatProducts = ({
         !isEmpty(chatProductsData) ||
         isSuggestionsWithProductsAvailable),
     [
+      isShopByThemeOptionActive,
       isShopALookOptionActiveCustom,
       isCompleteTheLookOptionActive,
       isProductSearchOptionActive,

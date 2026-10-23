@@ -8,6 +8,7 @@ import ChatContainer from "../../aura/ChatContainer";
 import StoreAssistantRealtimeFeed from "../realtimeFeed/StoreAssistantRealtimeFeed";
 import StoreAssistantUploadMedia from "../uploadMedia/StoreAssistantUploadMedia";
 import StoreAssistantLookBooks from "../lookBooks/StoreAssistantLookBooks";
+import StoreAssistantRedeem from "../redeem/StoreAssistantRedeem";
 import styles from "../StoreAssistantDashboard.module.scss";
 
 const PlaceholderPanel = ({ icon: Icon, title, description, children }) => (
@@ -56,6 +57,10 @@ const StoreAssistantOutlet = ({ activeTab, settings }) => {
 
   if (activeTab === "trending") {
     return <StoreAssistantLookBooks mode="trending" />;
+  }
+
+  if (activeTab === "redeem") {
+    return <StoreAssistantRedeem />;
   }
 
   if (activeTab === "customers") {

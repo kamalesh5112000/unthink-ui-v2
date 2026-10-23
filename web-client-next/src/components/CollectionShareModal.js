@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { message, Alert } from "antd";
 import {
 	CopyOutlined,
@@ -22,16 +22,19 @@ import { getTTid } from "../helper/getTrackerInfo";
 import Image from "next/image";
 import { useUserData } from "../context/UserDataContext";
 import { copyToClipboard } from "../helper/copyToClipboard";
+import { buildKioskAutoLoginUrls } from "../helper/autoLogin";
 
 const CollectionShareModal = ({
 	isOpen,
 	collectionDetails,
 	collectionOwner,
 	isAutoCreateCollection,
+	shareOptions = {},
 	onClose,
 }) => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
+	const [autoLoginShareUrls, setAutoLoginShareUrls] = useState(null);
 
 
 	const {userData } = useUserData()
@@ -57,6 +60,7 @@ const CollectionShareModal = ({
 			collectionDetails.status,
 			collectionDetails.hosted_stores,
 			collectionDetails?.collection_theme,
+			userData?.user_name,
 		]
 	);
 
@@ -65,15 +69,10 @@ const CollectionShareModal = ({
 
 
 	const collectionPageUrl = useMemo(
-		() => (window?.location.origin || "") + collectionRedirectPath || allCollectionsList.path,
-		[collectionRedirectPath, window]
-	);
- 
-
-	const qrCodeGeneratorURL = useMemo(
-		() => collectionQRCodeGenerator(collectionRedirectPath),
+		() => `${window?.location.origin || ""}${collectionRedirectPath || ""}`,
 		[collectionRedirectPath]
 	);
+
 
 	const platform =
 		navigator.userAgentData?.mobile !== undefined
@@ -89,15 +88,51 @@ const CollectionShareModal = ({
 
 	const userIdTid = userData?.user_id || getTTid()
 
-	const baseUrl = `${collectionPageUrl}?utm_source=whatsapp&utm_medium=messaging&utm_campaign=${collectionId}&utm_content=unthink_collection_share&unthink_source=unthink_collection_share&unthink_medium=whatsapp&unthink_campaign=${collectionId}&unthink_shared=${getTTid()}`;
-
 	const copybaseUrl = `${collectionPageUrl}?utm_source=unthink_collection_share&utm_medium=${platform}&utm_campaign=${collectionId}&utm_content=unthink_collection_share&unthink_source=unthink_collection_share&unthink_medium=${platform}&unthink_campaign=${collectionId}&unthink_shared=${userIdTid}`;
+const shareUrl = `${autoLoginShareUrls?.shareUrl}?utm_source=unthink_collection_share&utm_medium=${platform}&utm_campaign=${collectionId}&utm_content=unthink_collection_share&unthink_source=unthink_collection_share&unthink_medium=${platform}&unthink_campaign=${collectionId}&unthink_shared=${userIdTid}`;
+	const qrCodeGeneratorURL =
+		autoLoginShareUrls?.qrUrl || collectionQRCodeGenerator(shareUrl);
+
+	useEffect(() => {
+		let isMounted = true;
+		const autoLoginUser = shareOptions?.autoLoginUser;
+
+		if (!autoLoginUser || !collectionRedirectPath) {
+			setAutoLoginShareUrls(null);
+			return () => {
+				isMounted = false;
+			};
+		}
+
+		const buildShareAutoLoginUrl = async () => {
+			const pagePath = collectionRedirectPath.replace(/^\/+/, "");
+			const urls = await buildKioskAutoLoginUrls({
+				targetPath: copybaseUrl,
+				pageParam: `?page=${pagePath}`,
+				errorLabel: "collection share auto-login",
+				userId: autoLoginUser.user_id,
+				email: autoLoginUser.emailId || autoLoginUser.email,
+				phone: autoLoginUser.phone,
+				requireUserId: true,
+			});
+
+			if (isMounted && urls?.isAutoLogin) {
+				setAutoLoginShareUrls(urls);
+			}
+		};
+
+		buildShareAutoLoginUrl();
+
+		return () => {
+			isMounted = false;
+		};
+	}, [collectionRedirectPath, copybaseUrl, shareOptions?.autoLoginUser]);
 
 	const socialMediaUrls = {
-		whatsapp: `https://wa.me/?text=${encodeURIComponent(baseUrl)}`,
-		twitter: `https://x.com/intent/tweet?url=${encodeURIComponent(baseUrl.replace(/whatsapp/g, 'twitter'))}`,
-		facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(baseUrl.replace(/whatsapp/g, 'facebook'))}`,
-		linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(baseUrl.replace(/whatsapp/g, 'linkedin'))}`
+		whatsapp: `https://wa.me/?text=${encodeURIComponent(shareUrl)}`,
+		twitter: `https://x.com/intent/tweet?url=${encodeURIComponent(shareUrl)}`,
+		facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
+		linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`
 	};
 
 
@@ -109,7 +144,7 @@ const CollectionShareModal = ({
 		onClose();
 		dispatch(setShowChatModal(false));
 		navigate(collectionRedirectPath);
-	}, [collectionRedirectPath]);
+	}, [collectionRedirectPath, dispatch, navigate, onClose]);
 
 	return (
 		<div>
@@ -179,6 +214,7 @@ const CollectionShareModal = ({
 										src={xIcon}
 										width={28}
 										height={28}
+										alt="X"
 										className={styles.twitterIcon}
 									/>
 								</a>
@@ -196,17 +232,18 @@ const CollectionShareModal = ({
 									<img
 										className={styles.qrCodeImage}
 										src={qrCodeGeneratorURL}
+										alt="Collection share QR code"
 									/>
 								</div>
 							) : null}
 						</div>
 
 						<div className={styles.urlBox}>
-							{copybaseUrl}{" "}
+							{shareUrl}{" "}
 							<CopyOutlined
 								className={styles.copyIconLarge}
 								onClick={async () => {
-									await copyToClipboard(copybaseUrl);
+									await copyToClipboard(shareUrl);
 									message.success("Copied", 1);
 								}}
 							/>

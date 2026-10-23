@@ -378,6 +378,131 @@
   padding: 4px;
 }
 
+.sharingProductsModal {
+  top: 20px;
+
+  .productsGrid {
+    max-height: min(600px, 52vh);
+    overscroll-behavior: contain;
+  }
+
+  .productsModalHeader {
+    flex-wrap: wrap;
+
+    button { min-height: 44px; }
+  }
+}
+
+.collectionShareActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.productSelection {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 48px;
+  padding: 10px;
+  font-weight: 600;
+  background: #fff;
+  gap: 8px;
+}
+
+.selectableProductCard {
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+
+  &:focus-visible {
+    outline: 3px solid #4f46e5;
+    outline-offset: 2px;
+  }
+
+  &[aria-disabled="true"] { cursor: not-allowed; opacity: 0.6; }
+}
+
+.selectionIndicator {
+  display: inline-flex;
+  flex: 0 0 20px;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  border: 1px solid #94a3b8;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.selectedProductCard {
+  border-color: #4f46e5 !important;
+  box-shadow: 0 0 0 1px #4f46e5;
+
+  .selectionIndicator {
+    border-color: #4f46e5;
+    background: #4f46e5;
+    color: #fff;
+  }
+}
+
+.productSelectionBar {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 12px 0 max(4px, env(safe-area-inset-bottom));
+  border-top: 1px solid #e5e7eb;
+  background: #fff;
+
+  > span { font-weight: 700; }
+
+  :global(.ant-checkbox-wrapper) {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+.selectionBarActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-left: auto;
+
+  button {
+    min-height: 48px;
+    padding: 10px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    background: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    touch-action: manipulation;
+
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
+  }
+
+  .shareSelectedButton { background: #111827; color: #fff; }
+}
+
+@media (max-width: 720px) {
+  .selectionBarActions {
+    width: 100%;
+    margin-left: 0;
+
+    button { flex: 1 1 auto; padding: 10px; }
+  }
+
+  .collectionShareActions {
+    width: 100%;
+    button { flex: 1 1 auto; justify-content: center; }
+  }
+}
+
 .productsModalHeader {
   display: flex;
   align-items: center;

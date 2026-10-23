@@ -8,9 +8,8 @@ import {
 import { current_store_name } from "../../constants/config";
 import { useRouter } from "next/router";
 import { IoCartOutline } from "react-icons/io5";
-import { getUserInfo } from "../Auth/redux/actions";
 import { DEFAULT_NFT_INSTANCE_ID } from "../../constants/kioskCodes";
-
+import { authAPIs } from "../../helper/serverAPIs";
 
 
 const getPointValue = (source, keys, fallback = 0) => {
@@ -35,6 +34,9 @@ const ClaimPoints = ({
   // userDID,
   // claimImageUrl,
   checkoutPage = false,
+  customerUserId,
+  customerStoreName,
+  customerData,
 }) => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -42,10 +44,15 @@ const ClaimPoints = ({
   const [voucherCode, setVoucherCode] = useState(null);
   const [storeName, setStoreName] = useState(null);
   const [storeAssistanceId, setStoreAssistanceId] = useState(null);
+  const [pointsRequested, setPointsRequested] = useState(false);
+  const [redemptionStarted, setRedemptionStarted] = useState(false);
   const [confirmedPoints, setConfirmedPoints] = useState(0); 
   const [redeemPointsError, setRedeemPointsError] = useState("");
   const [pendingRedeemPoints, setPendingRedeemPoints] = useState(null);
+  const [customerUser, setCustomerUser] = useState(null);
+  const [customerUserLoading, setCustomerUserLoading] = useState(false);
   const routeUserId = getRouteValue(router.query.user_id);
+  const routeStoreName = getRouteValue(router.query.store_name);
   // console.log('redeemPoints',redeemPoints);
 
 const [
@@ -70,22 +77,54 @@ const [
     state.cart?.earningPointsLoading,
     state.store.data,
   ]);
+  const checkoutUserId = customerUserId || routeUserId || authUser?.user_id || authUser?._id;
+  const checkoutStoreName = customerStoreName || routeStoreName || storeData?.store_name || current_store_name;
+
   useEffect(() => {
-    if (!routeUserId) {
+    if (!checkoutUserId || customerData !== undefined) {
       return;
     }
 
-    dispatch(getUserInfo({ user_id: routeUserId }));
-  }, [dispatch, routeUserId]);
+    let isActive = true;
+    setCustomerUserLoading(true);
+
+    authAPIs
+      .getUserInfoAPICall({ user_id: checkoutUserId })
+      .then((response) => {
+        if (!isActive) return;
+
+        const userData = response?.data?.data;
+        setCustomerUser(userData?.user_id ? userData : null);
+      })
+      .catch((error) => {
+        if (!isActive) return;
+
+        console.error("Error fetching redeem customer:", error.response?.data || error);
+        setCustomerUser(null);
+      })
+      .finally(() => {
+        if (!isActive) return;
+
+        setCustomerUserLoading(false);
+      });
+
+    return () => {
+      isActive = false;
+    };
+  }, [checkoutUserId, customerData]);
 
 
   const pointsLoading = checkoutPage
     ? checkoutUpdatePointsLoading
     : earningPointsLoading;
-  const userDID = authUser?.userDID;
-  const checkoutStoreName = storeData?.store_name || current_store_name;
-   const checkoutUserId = routeUserId || authUser?.user_id  
-  const pointsData = checkoutPage
+  const isCustomerLookupRequired = Boolean(customerUserId || routeUserId);
+  const redeemCustomer = customerData || customerUser;
+  const isRedeemCustomerReady = !isCustomerLookupRequired || (!customerUserLoading && Boolean(redeemCustomer));
+  const userDID = redeemCustomer?.userDID || (!customerUserId && !routeUserId ? authUser?.userDID : undefined);
+  const staffName = authUser?.full_name || authUser?.name ||
+    [authUser?.first_name, authUser?.last_name].filter(Boolean).join(" ") || authUser?.user_name || "";
+  const staffId = authUser?.user_id || authUser?._id || "";
+  const pointsData = !pointsRequested ? null : checkoutPage
     ? checkoutUpdatedPoints?.events?.[0] ||
       checkoutUpdatedPoints?.event ||
       checkoutUpdatedPoints
@@ -118,7 +157,7 @@ const [
     Math.max(totalClaimPoints - appliedPoints, 0)
   );
   const claimedPointsData = claimStorePointsResponse?.data ?? claimStorePointsResponse;
-  const claimedAvailableBalance = claimStorePointsResponse
+  const claimedAvailableBalance = redemptionStarted && claimStorePointsResponse
     ? getPointValue(
         claimedPointsData,
         ["available_balance", "remaining_balance", "remainingBalance", "remaining_points"],
@@ -161,6 +200,7 @@ const [
   }
 
   const handleCalculatePoints = () => {
+    if (!isRedeemCustomerReady) return;
     if (!checkoutUserId || !checkoutStoreName) {
       console.error("Missing checkout points payload:", {
         user_id: checkoutUserId,
@@ -169,6 +209,8 @@ const [
       return;
     }
 
+    setPointsRequested(true);
+    setRedemptionStarted(false);
     if (!checkoutPage) {
       dispatch(
         fetchEarningPoints({
@@ -219,6 +261,7 @@ const [
     }
 
     const validPoints = pendingRedeemPoints;
+    setRedemptionStarted(true);
 
     setRedeemPointsError("");
     setRedeemPoints('');
@@ -242,8 +285,8 @@ const [
           points_exchanged: validPoints,
           image_url: claimImageUrl,
           voucher_code:voucherCode,
-          store_assistant_name:storeName,
-          store_assistant_id:storeAssistanceId,
+          store_assistant_name:storeName ?? staffName,
+          store_assistant_id:storeAssistanceId ?? staffId,
         },
         eventId:storeData?.event_id,
         ischeckoutPage: checkoutPage,
@@ -255,7 +298,7 @@ const [
   return (
     <div className="p-5 ">
 
-    <div className={`flex w-full flex-col items-center gap-4 md:grid ${!checkoutPage ? "md:grid-cols-2" : "md:grid-cols-1"}`}>
+    <div className={`flex w-full flex-col items-center gap-4 xl:grid ${!checkoutPage ? "xl:grid-cols-2" : "xl:grid-cols-1"}`}>
       { !checkoutPage &&
 
       <div className="flex w-full flex-col items-center">
@@ -265,7 +308,7 @@ const [
       </div>
 
       <div className="">
-        <img className="max-w-[300px] lg:max-w-[400px]" src="https://cdn.unthink.ai/img/unthink_ai/Screenshot%202026-07-27%20at%2012.40.53PM_zfiviby.webp" />
+        <img alt="Points redemption voucher" className="w-full max-w-[220px] xl:max-w-[320px]" src="https://cdn.unthink.ai/img/unthink_ai/Screenshot%202026-07-27%20at%2012.40.53PM_zfiviby.webp" />
       </div>
       </div>
 
@@ -274,19 +317,24 @@ const [
         <button
           type="button"
           onClick={handleCalculatePoints}
-          disabled={pointsLoading}
+          disabled={pointsLoading || !isRedeemCustomerReady}
           className="w-full bg-secondary py-1 text-center text-[16px] uppercase hover:bg-brand disabled:cursor-not-allowed disabled:opacity-70"
         >
           {pointsLoading
             ? checkoutPage ? "CALCULATING POINTS" : "FETCHING POINTS"
             : checkoutPage ? "CALCULATE POINTS" : "FETCH POINTS"}
         </button>
-        {pointsLoading && (
+          {pointsLoading && (
           <div className="px-3 py-2 leading-6">
             <p>{checkoutPage ? "Calculating points at checkout...." : "Fetching points...."}</p>
             <p>Reading rules..</p>
             <p>Checking for points per product........</p>
           </div>
+        )}
+        {customerUserLoading && (
+          <p className="px-3 py-2 text-center text-sm text-gray-500">
+            Loading customer details...
+          </p>
         )}
 
         <div className="mt-3 border-t-2 border-black pt-3 text-center">
@@ -301,7 +349,7 @@ const [
             htmlFor="redeem-points"
             className="mb-1 block text-center text-base font-semibold"
           >
-            [Enter points to redeem]
+            Enter points to redeem
           </label>
           <input
             id="redeem-points"
@@ -314,42 +362,39 @@ const [
             disabled={!hasCalculatedPoints}
             className="h-9 w-full border border-kiosk-secondary focus:border focus:border-black bg-white px-2 text-[11px] outline-none disabled:cursor-not-allowed  "
           />
-          <div className="mt-3 flex items-center  gap-2">
-          <div className="flex-1">
+          <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
+          <div className="min-w-0">
 
           <label
             htmlFor="store-name"
             className="mb-1 block text-center text-base font-semibold"
           >
-            [Store Staff Name ]
+            Store Staff Name
           </label>
           <input
             id="store-name"
             type="text"
             placeholder="Enter Store Staff Name"
-            value={storeName}
+            value={storeName ?? staffName}
             onChange={handleStoreNameChange}
-            disabled={!hasCalculatedPoints}
             className="h-9 w-full border disabled:cursor-not-allowed border-kiosk-secondary focus:border focus:border-black bg-white px-2 text-[11px] outline-none"
           />
           </div>
-          <p className="mt-3 p-1">or</p>
-          <div className="flex-1">
+          <div className="min-w-0">
 
  
             <label
             htmlFor="store-assistance-id"
             className="mb-1 block text-center text-base font-semibold"
           > 
-            [Store Staff  Id ]
+            Store Staff  Id 
           </label>
           <input
             id="store-assistance-id"
             type="text"
             placeholder="Enter Store Staff Id"
-            value={storeAssistanceId}
+            value={storeAssistanceId ?? staffId}
             onChange={handleStoreAssistanceIdChange}
-            disabled={!hasCalculatedPoints}
             className="h-9 w-full border disabled:cursor-not-allowed border-kiosk-secondary focus:border focus:border-black bg-white px-2 text-[11px] outline-none"
           /> 
           </div>
@@ -357,10 +402,10 @@ const [
           </div>
         
           <label
-            htmlFor="Voucer COde"
+            htmlFor="voucher-code"
             className="mb-1 block text-center text-base font-semibold"
           >
-            [Enter voucher code]
+            Enter voucher code
           </label>
           <input
             id="voucher-code"
@@ -383,6 +428,7 @@ const [
             onClick={handleConfirmRedemption}
             disabled={
               !hasCalculatedPoints ||
+              !isRedeemCustomerReady ||
               Boolean(redeemPointsError) ||
               redeemSessionHCS20PointsLoading || !redeemPoints
             }

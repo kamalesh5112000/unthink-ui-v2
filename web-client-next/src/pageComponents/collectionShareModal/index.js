@@ -18,11 +18,13 @@ const CollectionShareModalComponent = () => {
 		collectionDetails,
 		collectionOwner,
 		isAutoCreateCollection,
+		shareOptions,
 	] = useSelector((state) => [
 		state.collectionShareModal.isModalOpen,
 		state.collectionShareModal.collectionDetails,
 		state.collectionShareModal.collectionOwner,
 		state.collectionShareModal.isAutoCreateCollection,
+		state.collectionShareModal.shareOptions,
 	]);
 const {setUserData  } = useUserData()
 	// load modal on DOM only when required
@@ -45,6 +47,7 @@ const {setUserData  } = useUserData()
 					collectionDetails={collectionDetails}
 					collectionOwner={collectionOwner}
 					isAutoCreateCollection={isAutoCreateCollection}
+					shareOptions={shareOptions}
 					onClose={handleCollectionShareModalClose}
 				/>
 			)}
