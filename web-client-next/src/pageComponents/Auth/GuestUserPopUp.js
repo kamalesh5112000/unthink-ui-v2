@@ -15,7 +15,6 @@ function GuestUserPopUp({
   isOpen,
   setIsOpen,
   storeName,
-  guestUserId,
   onSuccess,
   onSkip,
   onClose,
@@ -104,10 +103,6 @@ function GuestUserPopUp({
           phone,
         };
 
-        if (guestUserId) {
-          guestRegisterPayload.user_id = guestUserId;
-        }
-
         const res = await authAPIs.GuestRegisterAPICall(guestRegisterPayload);
         const userId = res?.data?.data?.user_id;
         const User_ID = res?.data?.data?._id;
@@ -168,7 +163,6 @@ function GuestUserPopUp({
       cookieExpireDays,
       guestData.email,
       guestData.phone,
-      guestUserId,
       onSuccess,
       persistKioskLogin,
       phoneErrorMessage,
