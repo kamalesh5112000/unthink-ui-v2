@@ -7,9 +7,9 @@ import {
 } from "./redux/action";
 import { current_store_name } from "../../constants/config";
 import { useRouter } from "next/router";
-import { IoCartOutline } from "react-icons/io5";
+import { IoCartOutline, IoCloudUploadOutline } from "react-icons/io5";
 import { DEFAULT_NFT_INSTANCE_ID } from "../../constants/kioskCodes";
-import { authAPIs } from "../../helper/serverAPIs";
+import { authAPIs, profileAPIs } from "../../helper/serverAPIs";
 
 
 const getPointValue = (source, keys, fallback = 0) => {
@@ -24,6 +24,11 @@ const getPointValue = (source, keys, fallback = 0) => {
 
 const DEFAULT_CLAIM_IMAGE_URL = "https://example.com/nft/platnium.png";
 const getRouteValue = (value) => (Array.isArray(value) ? value[0] : value);
+const getUploadedImageUrl = (response) => {
+  const item = response?.data?.data?.[0] || response?.data?.[0] || response?.data;
+  return item?.other_dimensions?.["340X340"]?.[0]?.url || item?.url || "";
+};
+
 const ClaimPoints = ({
   // checkoutUpdatedPoints,
   // checkoutUpdatePointsLoading,
@@ -43,6 +48,8 @@ const ClaimPoints = ({
   const [redeemPoints, setRedeemPoints] = useState(null);
   const [voucherCode, setVoucherCode] = useState("");
   const [voucherImageUrl, setVoucherImageUrl] = useState("");
+  const [voucherImageUploading, setVoucherImageUploading] = useState(false);
+  const [voucherImageUploadError, setVoucherImageUploadError] = useState("");
   const [storeName, setStoreName] = useState(null);
   const [storeAssistanceId, setStoreAssistanceId] = useState(null);
   const [pointsRequested, setPointsRequested] = useState(false);
@@ -198,13 +205,43 @@ const [
       setVoucherImageUrl("");
     }
   };
-  const handleVoucherImageUrlChange = (event) => {
-    const nextVoucherImageUrl = event.target.value;
-    setVoucherImageUrl(nextVoucherImageUrl);
+  const handleVoucherImageUpload = async (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
 
-    if (nextVoucherImageUrl) {
-      setVoucherCode("");
+    if (!file) {
+      return;
     }
+
+    if (!file.type?.startsWith("image/")) {
+      setVoucherImageUploadError("Please upload an image file.");
+      return;
+    }
+
+    setVoucherImageUploading(true);
+    setVoucherImageUploadError("");
+
+    try {
+      const response = await profileAPIs.uploadImage({ file });
+      const uploadedUrl = getUploadedImageUrl(response);
+
+      if (!uploadedUrl) {
+        throw new Error("Voucher image upload did not return a URL.");
+      }
+
+      setVoucherImageUrl(uploadedUrl);
+      setVoucherCode("");
+    } catch (error) {
+      console.error("Error uploading voucher image:", error.response?.data || error);
+      setVoucherImageUrl("");
+      setVoucherImageUploadError("Failed to upload voucher image. Please try again.");
+    } finally {
+      setVoucherImageUploading(false);
+    }
+  };
+  const handleRemoveVoucherImage = () => {
+    setVoucherImageUrl("");
+    setVoucherImageUploadError("");
   };
   const handleStoreNameChange = (event) => {
     setStoreName(event.target.value);
@@ -422,7 +459,7 @@ const [
             htmlFor="voucher-code"
             className="mb-1 mt-3 block text-center text-base font-semibold"
           >
-            Enter voucher code or voucher image URL
+            Enter voucher code or upload voucher image
           </label>
           <input
             id="voucher-code"
@@ -436,15 +473,51 @@ const [
           <p className="my-2 text-center text-xs font-semibold text-gray-500">
             OR
           </p>
+          <label
+            htmlFor="voucher-image-upload"
+            className={`flex h-9 w-full items-center justify-center gap-2 border border-kiosk-secondary bg-white px-2 text-[11px] font-semibold uppercase ${
+              !hasCalculatedPoints || Boolean(voucherCode) || voucherImageUploading
+                ? "cursor-not-allowed opacity-60"
+                : "cursor-pointer hover:border-black"
+            }`}
+          >
+            <IoCloudUploadOutline className="text-base" />
+            {voucherImageUploading
+              ? "Uploading voucher image"
+              : voucherImageUrl
+                ? "Change voucher image"
+                : "Upload voucher image"}
+          </label>
           <input
-            id="voucher-image-url"
-            type="url"
-            placeholder="Enter Voucher Image URL"
-            value={voucherImageUrl}
-            onChange={handleVoucherImageUrlChange}
-            disabled={!hasCalculatedPoints || Boolean(voucherCode)}
-            className="h-9 w-full border disabled:cursor-not-allowed border-kiosk-secondary focus:border focus:border-black bg-white px-2 text-[11px] outline-none"
+            id="voucher-image-upload"
+            type="file"
+            accept="image/*"
+            onChange={handleVoucherImageUpload}
+            disabled={!hasCalculatedPoints || Boolean(voucherCode) || voucherImageUploading}
+            className="sr-only"
           />
+          {voucherImageUrl && (
+            <div className="mt-2 flex items-center gap-2 text-left">
+              <img
+                alt="Uploaded voucher"
+                src={voucherImageUrl}
+                className="h-12 w-12 border border-kiosk-secondary object-cover"
+              />
+              <button
+                type="button"
+                onClick={handleRemoveVoucherImage}
+                disabled={voucherImageUploading}
+                className="h-8 border border-[#222] bg-white px-3 text-[11px] font-semibold uppercase text-[#222] hover:bg-[#f4f4f4] disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                Remove
+              </button>
+            </div>
+          )}
+          {voucherImageUploadError && (
+            <p className="mt-1 text-[10px] leading-4 text-red-600">
+              {voucherImageUploadError}
+            </p>
+          )}
             
        
           {/* {redeemPointsError && (
@@ -459,7 +532,9 @@ const [
               !hasCalculatedPoints ||
               !isRedeemCustomerReady ||
               Boolean(redeemPointsError) ||
-              redeemSessionHCS20PointsLoading || !redeemPoints
+              redeemSessionHCS20PointsLoading ||
+              voucherImageUploading ||
+              !redeemPoints
             }
             className="mt-2 w-full bg-secondary py-1 text-center text-[16px] uppercase hover:bg-brand disabled:cursor-not-allowed disabled:opacity-60"
           >
