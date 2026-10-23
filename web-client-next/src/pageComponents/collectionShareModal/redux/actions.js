@@ -6,12 +6,14 @@ import {
 export const openCollectionShareModal = (
 	collection,
 	collectionOwner = {},
-	isAutoCreateCollection = false
+	isAutoCreateCollection = false,
+	shareOptions = {}
 ) => ({
 	type: OPEN_COLLECTION_SHARE_MODAL,
 	collection,
 	collectionOwner,
 	isAutoCreateCollection,
+	shareOptions,
 });
 
 export const closeCollectionShareModal = () => ({

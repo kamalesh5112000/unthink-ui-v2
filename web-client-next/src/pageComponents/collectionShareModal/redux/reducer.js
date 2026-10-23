@@ -8,6 +8,7 @@ const initialState = {
 	collectionDetails: {},
 	collectionOwner: {},
 	isAutoCreateCollection: false,
+	shareOptions: {},
 };
 
 const productDetailsCopyModalReducer = (state = initialState, action = {}) => {
@@ -18,12 +19,14 @@ const productDetailsCopyModalReducer = (state = initialState, action = {}) => {
 			newState.collectionDetails = action.collection;
 			newState.collectionOwner = action.collectionOwner;
 			newState.isAutoCreateCollection = action.isAutoCreateCollection; //  collection created on share click of AURA response
+			newState.shareOptions = action.shareOptions || {};
 			return newState;
 		case CLOSE_COLLECTION_SHARE_MODAL:
 			newState.isModalOpen = false;
 			newState.collectionDetails = {};
 			newState.collectionOwner = {};
 			newState.isAutoCreateCollection = false;
+			newState.shareOptions = {};
 			return newState;
 
 		default:

@@ -637,6 +637,7 @@ const [notData,setNotData] = useState(null)
 					isShare: true,
 					isGuestSubmit: true,
 					userId,
+					autoLoginUser: registeredUser,
 				});
 			} else if (guestActionRef.current === "save") {
 				addSelectedProductsToCollectionRef.current?.(null, {
@@ -657,7 +658,7 @@ const [notData,setNotData] = useState(null)
 
 	const onAddSelectedProductsToCollection = useCallback(
 		(e =null,options ={}) => {
-			const { action = "", isSave = false, isShare = false, isSkip = false, isGuestSubmit = false,userId = null, product: productToAdd = null, skipWishlistStateAfterGuest = false } = options;
+			const { action = "", isSave = false, isShare = false, isSkip = false, isGuestSubmit = false,userId = null, autoLoginUser = null, product: productToAdd = null, skipWishlistStateAfterGuest = false } = options;
 
 			if (e?.preventDefault) {
 				e?.preventDefault();
@@ -726,6 +727,7 @@ const [notData,setNotData] = useState(null)
 				cover_image: widgetImage || chatImageUrl || "",
 				image_url: widgetImage || chatImageUrl || "",
 				product_lists: SelectedProductsData || [],
+				shareAutoLoginUser: isShare ? autoLoginUser : null,
 				generated_by: widgetImage
 					? COLLECTION_GENERATED_BY_IMAGE_BASED
 					: COLLECTION_GENERATED_BY_SEARCH_BASED,

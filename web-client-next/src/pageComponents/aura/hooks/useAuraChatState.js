@@ -212,7 +212,8 @@ export const useAuraChatState = ({
 
   const isShowShopLookSplitLayout = useMemo(
     () =>
-      (isShopALookOptionActive ||
+      (isShopByThemeOptionActive ||
+        isShopALookOptionActive ||
         isCompleteTheLookOptionActive ||
         isProductSearchOptionActive) &&
       (widgetHeader ||
@@ -221,6 +222,7 @@ export const useAuraChatState = ({
         !isEmpty(chatProductsData) ||
         isSuggestionsWithProductsAvailable),
     [
+      isShopByThemeOptionActive,
       isShopALookOptionActive,
       isCompleteTheLookOptionActive,
       isProductSearchOptionActive,
