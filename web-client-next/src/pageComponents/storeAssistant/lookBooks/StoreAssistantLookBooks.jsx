@@ -17,6 +17,7 @@ import {
 
 import LookBookCollectionCard from "./LookBookCollectionCard";
 import CustomerShareModal from "./CustomerShareModal";
+import CollectionShareModal from "../../../components/CollectionShareModal";
 import { getCollectionNameToShow } from "../../../helper/utils";
 import { profileAPIs } from "../../../helper/serverAPIs";
 import {
@@ -155,6 +156,7 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
   const [selectMode, setSelectMode] = useState(false);
   const [selectedProductKeys, setSelectedProductKeys] = useState([]);
   const [shareContext, setShareContext] = useState(null);
+  const [shareContact, setShareContact] = useState(null);
   const selectedProducts = getLookBookProducts(selectedCollection);
   const shareProducts = selectedProducts.filter((product) => selectedProductKeys.includes(getSelectionKey(product)));
   const selectableKeys = [...new Set(selectedProducts.map(getSelectionKey).filter(Boolean))];
@@ -186,6 +188,7 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
   useEffect(() => {
     setSelectedCollection(null);
     setShareContext(null);
+    setShareContact(null);
     setSelectedProductKeys([]);
     setSelectMode(false);
   }, [mode]);
@@ -194,6 +197,7 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
     setSelectedProductKeys([]);
     setSelectMode(false);
     setShareContext(null);
+    setShareContact(null);
   }, [selectedCollection?._id]);
 
   const toggleProductSelection = (key) => {
@@ -201,12 +205,22 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
   };
 
   const openShare = (type) => {
+    setShareContact(null);
     setShareContext({
       type,
       collectionId: selectedCollection?._id,
       collectionName: selectedCollectionName,
       products: type === "collection" ? [...selectedProducts] : [...shareProducts],
     });
+  };
+
+  const closeShare = () => {
+    setShareContext(null);
+    setShareContact(null);
+  };
+
+  const onCustomerShareSubmit = (contacts) => {
+    setShareContact(contacts);
   };
 
   useEffect(() => {
@@ -577,7 +591,38 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
         </div>}
       </Modal>
 
-      <CustomerShareModal key={`${mode}:${selectedCollection?._id || "none"}`} context={shareContext} onClose={() => setShareContext(null)} />
+      <CustomerShareModal
+        key={`${mode}:${selectedCollection?._id || "none"}`}
+        context={shareContext && !shareContact ? shareContext : null}
+        onClose={closeShare}
+        onSubmit={onCustomerShareSubmit}
+      />
+      {shareContext && shareContact && selectedCollection ? (
+        <CollectionShareModal
+          isOpen
+          collectionDetails={selectedCollection}
+          collectionOwner={{
+            user_id: selectedCollection?.user_id,
+            user_name: selectedCollection?.user_name,
+          }}
+          shareOptions={{
+            title:
+              shareContext.type === "products"
+                ? `Share selected products from ${selectedCollectionName}`
+                : selectedCollectionName,
+            description:
+              shareContext.type === "products"
+                ? "Share these selected products with your customer."
+                : "Share this collection with your customer.",
+            autoLoginUser: shareContact,
+            hideViewCollection: true,
+            hideTrackingParams: true,
+            requireAutoLoginUserId: false,
+          }}
+          onClose={closeShare}
+          modalZIndex={1200}
+        />
+      ) : null}
 
       <Drawer
         title={drawerTitle}
