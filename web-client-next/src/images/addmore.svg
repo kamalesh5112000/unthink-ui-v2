@@ -1,8 +1,8 @@
 <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
 <rect x="38.2732" y="0.237475" width="50.1516" height="50.1516" rx="17.0758" transform="rotate(48.8211 38.2732 0.237475)" fill="white"/>
-<rect x="38.2732" y="0.237475" width="50.1516" height="50.1516" rx="17.0758" transform="rotate(48.8211 38.2732 0.237475)" stroke="#7C74EC" stroke-width="0.336588"/>
+<rect x="38.2732" y="0.237475" width="50.1516" height="50.1516" rx="17.0758" transform="rotate(48.8211 38.2732 0.237475)" stroke="var(--color-brand)" stroke-width="0.336588"/>
 <g clip-path="url(#clip0_1300_18931)">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M47.3038 35.8266L39.7168 27.1536L40.6179 26.3653L49.4032 36.4081L38.626 45.8358L37.8376 44.9346L46.894 37.0122L25.3059 36.3679L25.3416 35.1712L47.3038 35.8266Z" fill="#7C74EC" stroke="#7C74EC" stroke-width="1.32647"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M47.3038 35.8266L39.7168 27.1536L40.6179 26.3653L49.4032 36.4081L38.626 45.8358L37.8376 44.9346L46.894 37.0122L25.3059 36.3679L25.3416 35.1712L47.3038 35.8266Z" fill="var(--color-brand)" stroke="var(--color-brand)" stroke-width="1.32647"/>
 </g>
 <defs>
 <clipPath id="clip0_1300_18931">

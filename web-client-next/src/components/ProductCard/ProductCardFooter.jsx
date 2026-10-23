@@ -49,6 +49,16 @@ const ProductCardFooter = ({
   const discountPer = getProductDiscountPercentage(product);
   const isOutOfStock = isProductOutOfStock(product);
   const hasProductPrice = (product?.price ?? product?.listprice) != null;
+  const productActionBaseClass =
+    size === "small"
+      ? ""
+      : " md:px-1.5 md:py-3 md:text-base";
+
+  const addToCartClassName = `box-border flex items-center justify-center gap-2 rounded-xl px-px py-1.5 text-sm font-semibold text-white transition-all duration-300 ease-in-out ${productActionBaseClass} ${
+    isOutOfStock
+      ? "bg-secondary product-out-of-stock-button"
+      : "cursor-pointer gradient hover:bg-none hover:bg-brand"
+  } ${!hasProductPrice ? "hidden" : ""}`;
 
   useEffect(() => {
     const el = containerRef.current;
@@ -113,7 +123,7 @@ const ProductCardFooter = ({
       <div className="mt-0 flex min-h-7 items-center justify-between gap-2 md:mt-2 md:min-h-8">
         <div className={isOutOfStock || product?.custom_product === false ? "hidden" : ""}>
           <span
-            className={`text-red ${
+            className={`text-danger ${
               size === "small"
                 ? "text-sm font-bold"
                 : "pr-1 text-sm font-extrabold lg:text-xl"
@@ -131,13 +141,13 @@ const ProductCardFooter = ({
             product?.listprice > product?.price &&
             discountPer > 0 && (
               <>
-                <span className="mt-px text-xs text-slate line-through md:text-sm">
-                  <span className="text-slate">
+                <span className="mt-px text-xs text-slate-400 line-through md:text-sm">
+                  <span className="text-[#90a1b9]">
                     {currencySymbol}
                     {product?.listprice}
                   </span>
                 </span>
-                <span className="absolute left-4 top-5 rounded-3xl bg-red px-2 py-1 text-xs font-bold text-white">
+                <span className="absolute left-4 top-5 rounded-3xl bg-danger px-2 py-1 text-[10px] font-bold text-white">
                   {(discountPer && `${discountPer}% OFF`) || null}
                 </span>
               </>
@@ -158,9 +168,7 @@ const ProductCardFooter = ({
                 className={`${
                   size === "small"
                     ? "box-border flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-brand px-1.5 py-2 text-xs font-semibold text-white transition-all duration-300 ease-in-out hover:bg-secondary"
-                    : hasKioskAccess
-                      ? "button-kiosk-card group box-border flex cursor-pointer items-center justify-center gap-2 rounded-xl px-px py-1.5 text-sm font-medium text-black hover:bg-kiosk-primary hover:text-white"
-                      : "box-border flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-brand px-px py-1.5 text-sm font-semibold text-white transition-all duration-300 ease-in-out hover:!bg-secondary md:px-1.5 md:py-3 md:text-base"
+                    : "box-border flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-brand px-px py-1.5 text-sm font-semibold text-white transition-all duration-300 ease-in-out hover:!bg-secondary md:px-1.5 md:py-3 md:text-base"
                 } ${
                   !hasProductPrice
                     ? "!cursor-not-allowed !bg-tertiary !text-neutral-600"
@@ -184,26 +192,12 @@ const ProductCardFooter = ({
                 cartSourceCollection={cartSourceCollection}
                 eventId={storeData?.event_id}
                 isOutOfStock={isOutOfStock}
-                className={`${
-                  isOutOfStock
-                    ? size === "small"
-                      ? "box-border flex items-center justify-center gap-2 rounded-xl bg-brand px-1.5 py-2 text-xs font-semibold text-white transition-all duration-300 ease-in-out hover:bg-secondary"
-                      : hasKioskAccess
-                        ? "button-kiosk-card group box-border flex items-center justify-center gap-2 rounded-xl px-px py-1.5 text-sm font-medium text-black hover:bg-kiosk-primary hover:text-white"
-                        : "box-border flex items-center justify-center gap-2 rounded-xl bg-brand px-px py-1.5 text-sm font-semibold text-white transition-all duration-300 ease-in-out hover:!bg-secondary md:px-1.5 md:py-3 md:text-base"
-                    : size === "small"
-                      ? "box-border flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-brand px-1.5 py-2 text-xs font-semibold text-white transition-all duration-300 ease-in-out hover:bg-secondary"
-                      : hasKioskAccess
-                        ? "button-kiosk-card group box-border flex cursor-pointer items-center justify-center gap-2 rounded-xl px-px py-1.5 text-sm font-medium text-black hover:bg-kiosk-primary hover:text-white"
-                        : "box-border flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-brand px-px py-1.5 text-sm font-semibold text-white transition-all duration-300 ease-in-out hover:!bg-secondary md:px-1.5 md:py-3 md:text-base"
-                } ${isOutOfStock ? "bg-secondary product-out-of-stock-button" : ""} ${!hasProductPrice ? "hidden" : ""}`}
-                disabled={!hasProductPrice}
+                className={addToCartClassName}
+                disabled={isOutOfStock || !hasProductPrice}
                 iconClassName={
                   showWishlistModal || size === "small"
                     ? "h-6 w-6"
-                    : hasKioskAccess
-                      ? 'h-4 w-4 md:h-5 md:w-5 filter brightness-0 group-hover:invert'
-                      : "h-4 w-4 md:h-5 md:w-5"
+                    : "h-4 w-4 md:h-5 md:w-5"
                 }
                 showIcon
               />

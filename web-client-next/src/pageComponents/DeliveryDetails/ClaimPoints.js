@@ -260,7 +260,7 @@ const [
 
       <div className="flex w-full flex-col items-center">
       <div className="mb-7 flex items-center gap-2">
-    <IoCartOutline className="text-xl text-kiosk-primary font-semibold md:text-2xl" />
+    <IoCartOutline className="text-xl text-brand font-semibold md:text-2xl" />
     <p className="text-xl font-semibold md:text-2xl " >Get Voucher At the Counter</p>
       </div>
 
@@ -275,7 +275,7 @@ const [
           type="button"
           onClick={handleCalculatePoints}
           disabled={pointsLoading}
-          className="w-full bg-kiosk-secondary py-1 text-center text-[16px] uppercase hover:bg-kiosk-primary disabled:cursor-not-allowed disabled:opacity-70"
+          className="w-full bg-secondary py-1 text-center text-[16px] uppercase hover:bg-brand disabled:cursor-not-allowed disabled:opacity-70"
         >
           {pointsLoading
             ? checkoutPage ? "CALCULATING POINTS" : "FETCHING POINTS"
@@ -386,7 +386,7 @@ const [
               Boolean(redeemPointsError) ||
               redeemSessionHCS20PointsLoading || !redeemPoints
             }
-            className="mt-2 w-full bg-kiosk-secondary py-1 text-center text-[16px] uppercase hover:bg-kiosk-primary disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-2 w-full bg-secondary py-1 text-center text-[16px] uppercase hover:bg-brand disabled:cursor-not-allowed disabled:opacity-60"
           >
             {redeemSessionHCS20PointsLoading
               ? "REDEEMING POINTS"
@@ -455,7 +455,7 @@ const [
                 type="button"
                 onClick={handleConfirmRedeemPoints}
                 disabled={redeemSessionHCS20PointsLoading}
-                className="h-9 flex-1 bg-kiosk-secondary text-[13px] font-semibold uppercase text-black hover:bg-kiosk-primary disabled:cursor-not-allowed disabled:opacity-60"
+                className="h-9 flex-1 bg-secondary text-[13px] font-semibold uppercase text-black hover:bg-brand disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {redeemSessionHCS20PointsLoading
                   ? "Confirming"

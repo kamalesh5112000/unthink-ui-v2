@@ -38,7 +38,7 @@ const ProductInformation = ({ productDetails, storeData }) => {
         ?.length > 5 && (
         <button
           onClick={() => setShowAllFields(!showAllFields)}
-          className=" text-start text-[#7c74ec] font-semibold text-sm md:text-base hover:text-[#6b63d5] transition"
+          className=" text-start text-brand font-semibold text-sm md:text-base hover:text-secondary transition"
         >
           {showAllFields ? "Show Less" : "Show More"}
         </button>

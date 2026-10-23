@@ -76,7 +76,7 @@ const ProductCardHeaderTop = ({
         width="100%"
         className={`h-44 w-full object-contain ${
           size === "small"
-            ? "rounded-2xl bg-gray-light backdrop-blur-md lg:h-44"
+            ? "rounded-2xl bg-gray-200 backdrop-blur-md lg:h-44"
             : "rounded-xl shadow-md lg:h-60"
         }`}
       loading={isPriority ? "eager" : "lazy"}

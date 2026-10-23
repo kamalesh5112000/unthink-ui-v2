@@ -50,12 +50,12 @@
     padding-bottom: 0.5rem;
     padding-left: 2rem;
     padding-right: 2rem;
-    color: #4f46e5;
+    color: var(--color-secondary) ;
     border-radius: 0.5rem;
 }
 
 .saveButton {
-    background-color: #4f46e5;
+    background-color: var(--color-secondary) ;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
     padding-left: 2rem;

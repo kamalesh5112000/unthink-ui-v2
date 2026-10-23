@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 
-import ChatContainer from "../src/pageComponents/storePage/ChatContainer";
+import ChatContainer from "../src/pageComponents/aura/ChatContainer";
 import { setShowChatModal } from "../src/hooks/chat/redux/actions";
 import { aura_header_theme, current_store_name, is_store_instance } from "../src/constants/config";
 import { STORE_USER_NAME_BUDGETTRAVEL } from "../src/constants/codes";

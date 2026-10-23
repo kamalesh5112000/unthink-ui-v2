@@ -63,7 +63,7 @@ const CollectionProductList = ({ collection, enableClickTracking = false }) => {
 					{/* <h1 className='text-xl md:text-xl font-semibold capitalize'>Tags</h1> */}
 					<div className='flex flex-wrap'>
 						{collection.blog_filter.map((tag) => (
-							<div className='rounded-full shadow mx-2 my-3 w-max bg-lightgray-102'>
+							<div className='rounded-full shadow mx-2 my-3 w-max bg-gray-100'>
 								<h3 className='m-0 px-2 sm:px-4 py-1 font-normal text-xs md:text-sm text-black-103'>
 									{tag}
 								</h3>

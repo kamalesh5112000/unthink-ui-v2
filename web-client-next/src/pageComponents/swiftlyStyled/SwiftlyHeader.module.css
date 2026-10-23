@@ -6,12 +6,20 @@
     display: none;
     align-items: center;
     justify-content: center;
+    gap: 8px;
     height: 30px;
     font-size: 13px;
     letter-spacing: 1px;
     text-align: center;
     padding-left: 12px;
     padding-right: 12px;
+}
+
+.announcementBar::before,
+.announcementBar::after {
+    content: "♥";
+    line-height: 1;
+    font-size: 18px !important;
 }
 
 @media (min-width: 1024px) {

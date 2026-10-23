@@ -17,8 +17,8 @@ import menuIcon from "../../images/menu_icon_filled.svg";
 // import header_darktheme_toggle from "../../images/chat/header_darktheme_toggle.svg";
 // import header_lightTheme_toggle from "../../images/chat/header_lighttheme_toggle.svg";
 import avatarImg from "../../images/avatar-black.svg";
-import ChatContainer from "./ChatContainer";
-import MobileChat from "./MobileChat";
+import ChatContainer from "../aura/ChatContainer";
+import MobileChat from "../aura/components/mobile/MobileChat";
 import { setShowChatModal } from "../../hooks/chat/redux/actions";
 import { openWishlistModal } from "../wishlist/redux/actions";
 import { openMenuItem } from "../categories/redux/actions";
@@ -187,12 +187,14 @@ const Header = ({
   };
 
   useEffect(() => {
-    if (showChatModal || showWishlistModal) {
+    if (!isAuraChatPage && (showChatModal || showWishlistModal)) {
       makeBodyOverflowHidden();
     } else {
       makeBodyOverflowUnset();
     }
-  }, [showChatModal, showWishlistModal]);
+
+    return () => makeBodyOverflowUnset();
+  }, [isAuraChatPage, showChatModal, showWishlistModal]);
 
   const onWishlistClick = () => {
     dispatch(openWishlistModal());

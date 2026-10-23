@@ -103,7 +103,7 @@ const AutoCreateCollectionModal = ({
 						Name of your collection
 					</label>
 					<input
-						className='text-left placeholder-gray-101 outline-none px-3 h-10 bg-slate-100 rounded-xl w-full'
+						className='text-left placeholder-gray-101 outline-none px-3 h-10 bg-white rounded-xl w-full'
 						placeholder='Enter collection name'
 						type='text'
 						name='collection_name'
@@ -120,12 +120,12 @@ const AutoCreateCollectionModal = ({
 					<label className='text-base text-black-100 font-semibold block mt-4 mb-0.75'>
 						Say something about this. (Optional)
 					</label>
-					<div className='bg-slate-100 rounded-xl'>
+					<div className='bg-white rounded-xl'>
 						<textarea
-							className='text-left placeholder-gray-101 bg-slate-100 outline-none px-3 pt-3 rounded-xl w-full resize-none overflow-hidden'
+							className='text-left placeholder-gray-101 bg-white outline-none px-3 pt-3 rounded-xl w-full resize-none overflow-hidden'
 							placeholder='Type two lines here...'
 							name='description'
-							rows={5}
+							rows={5} 
 							value={updatedData.description}
 							onChange={handleInputChange}
 						/>
@@ -139,7 +139,7 @@ const AutoCreateCollectionModal = ({
 				<div className='text-right mt-4'>
 					<button
 						type='submit'
-						className='rounded-xl text-indigo-100 font-bold text-xs md:text-sm py-2 px-4.5 bg-indigo-600'>
+						className='rounded-xl  text-white font-bold text-xs md:text-sm py-2 px-4.5 bg-secondary'>
 						{isShareCollectionEnable ? "Continue" : "Save"}
 					</button>
 				</div>

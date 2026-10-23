@@ -68,6 +68,18 @@ const getDefaultRecommendation = () => ({
 	allProductList: [],
 });
 
+const normalizeTag = (tag) => (Array.isArray(tag) ? tag[0] : tag) || "";
+
+const areSameTags = (currentTags = [], nextTags = []) => {
+	if (currentTags.length !== nextTags.length) return false;
+	return currentTags.every((tag, index) => tag === nextTags[index]);
+};
+
+const doProductKeysMatchTags = (products = {}, tags = []) => {
+	const productKeys = Object.keys(products);
+	return productKeys.length > 0 && productKeys.every((tag) => tags.includes(tag));
+};
+
 // export const getDefaultFilters = () => ({
 // 	brand: [],
 // 	price: null,
@@ -319,7 +331,18 @@ const chatReducerV2 = (state = initialState, action) => {
 				// AI_filters = {},
 				title = "",
 			} = payload ?? {};
-			newState.suggestions = getDefaultSuggestions();
+			const currentTags = newState.suggestions.suggestions.tags || [];
+			const isSameSuggestionSet = areSameTags(currentTags, tags);
+			const hasProductsForNextTags = doProductKeysMatchTags(
+				newState.suggestions.products,
+				tags,
+			);
+
+			if (!isSameSuggestionSet && !hasProductsForNextTags) {
+				newState.suggestions.products = {};
+				newState.suggestions.allProductList = [];
+				newState.suggestions.selectedTag = "";
+			}
 			newState.suggestions.suggestions.tags = tags;
 			newState.suggestions.suggestions.tag_map = tag_map;
 			// newState.suggestions.suggestions.AI_filters = AI_filters;
@@ -328,10 +351,13 @@ const chatReducerV2 = (state = initialState, action) => {
 			return newState;
 		}
 		case SET_MORE_PRODUCTS: {
-			const { tag = "", data = {} } = payload ?? {};
+			const { data = {} } = payload ?? {};
+			const tag = normalizeTag(payload?.tag);
 
 			if (tag) {
-				newState.moreProducts.allProductList.push(...data.product_lists);
+				newState.moreProducts.allProductList.push(
+					...(data.product_lists || [])
+				);
 
 				const allUniqueProducts = [
 					...new Map(
@@ -394,10 +420,13 @@ const chatReducerV2 = (state = initialState, action) => {
 		}
 
 		case SET_RECOMMENDATION_PRODUCTS: {
-			const { tag = "", data = {} } = payload ?? {};
+			const { data = {} } = payload ?? {};
+			const tag = normalizeTag(payload?.tag);
 
 			if (tag) {
-				newState.recommendations.allProductList.push(...data.product_lists);
+				newState.recommendations.allProductList.push(
+					...(data.product_lists || [])
+				);
 
 				const allUniqueProducts = [
 					...new Map(
@@ -460,10 +489,13 @@ const chatReducerV2 = (state = initialState, action) => {
 		}
 
 		case SET_SUGGESTIONS_PRODUCTS: {
-			const { tag = "", data = {} } = payload ?? {};
+			const { data = {} } = payload ?? {};
+			const tag = normalizeTag(payload?.tag);
 
 			if (tag) {
-				newState.suggestions.allProductList.push(...data.product_lists);
+				newState.suggestions.allProductList.push(
+					...(data.product_lists || [])
+				);
 
 				const allUniqueProducts = [
 					...new Map(

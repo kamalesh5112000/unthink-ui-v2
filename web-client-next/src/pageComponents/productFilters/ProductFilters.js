@@ -45,7 +45,7 @@ export const ProductFilters = ({
 							<div className='flex items-center'>
 								<label className='text-slate-200 block mr-1'>Optional</label>
 								<Checkbox
-									className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[#9690F0] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[#9690F0] hover:[&_.ant-checkbox-inner]:border-[#9690F0]'
+									className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[var(--color-secondary)] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[var(--color-secondary)] hover:[&_.ant-checkbox-inner]:border-[var(--color-secondary)]'
 									onChange={() => handleFiltersOptionalChange("gender")}
 									checked={productFilters?.optional_filters?.includes(
 										"gender"
@@ -55,7 +55,7 @@ export const ProductFilters = ({
 						<Select
 							mode='multiple'
 							name='gender'
-							className='w-full text-base product-filters-select-input [&:hover_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_rgba(150,144,240,0.2)]'
+							className='w-full text-base product-filters-select-input [&:hover_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_color-mix(in_srgb,var(--color-secondary)_20%,transparent)]'
 							placeholder='Select gender'
 							value={productFilters?.gender || []}
 							size='large'
@@ -90,7 +90,7 @@ export const ProductFilters = ({
 						<Select
 							mode='multiple'
 							name='age_group'
-							className='w-full text-base product-filters-select-input [&:hover_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_rgba(150,144,240,0.2)]'
+							className='w-full text-base product-filters-select-input [&:hover_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_color-mix(in_srgb,var(--color-secondary)_20%,transparent)]'
 							placeholder='Select age group'
 							value={productFilters?.age_group || []}
 							size='large'
@@ -115,7 +115,7 @@ export const ProductFilters = ({
 							<div className='flex items-center'>
 								<label className='text-slate-200 block mr-1'>Optional</label>
 								<Checkbox
-									className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[#9690F0] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[#9690F0] hover:[&_.ant-checkbox-inner]:border-[#9690F0]'
+									className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[var(--color-secondary)] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[var(--color-secondary)] hover:[&_.ant-checkbox-inner]:border-[var(--color-secondary)]'
 									onChange={() => handleFiltersOptionalChange("discount")}
 									checked={productFilters?.optional_filters?.includes(
 										"discount"
@@ -124,7 +124,7 @@ export const ProductFilters = ({
 						</div>
 						<Select
 							mode='multiple'
-							className='w-full text-base product-filters-select-input [&:hover_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_rgba(150,144,240,0.2)]'
+							className='w-full text-base product-filters-select-input [&:hover_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_color-mix(in_srgb,var(--color-secondary)_20%,transparent)]'
 							placeholder='Select discount'
 							value={productFilters?.discount || []}
 							size='large'
@@ -151,7 +151,7 @@ export const ProductFilters = ({
 							<div className='flex items-center'>
 								<label className='text-slate-200 block mr-1'>Optional</label>
 								<Checkbox
-									className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[#9690F0] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[#9690F0] hover:[&_.ant-checkbox-inner]:border-[#9690F0]'
+									className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[var(--color-secondary)] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[var(--color-secondary)] hover:[&_.ant-checkbox-inner]:border-[var(--color-secondary)]'
 									onChange={() => handleFiltersOptionalChange("brand")}
 									checked={productFilters?.optional_filters?.includes(
 										"brand"
@@ -160,7 +160,7 @@ export const ProductFilters = ({
 						</div>
 						<Select
 							mode='multiple'
-							className='w-full text-base product-filters-select-input [&:hover_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_rgba(150,144,240,0.2)]'
+							className='w-full text-base product-filters-select-input [&:hover_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_color-mix(in_srgb,var(--color-secondary)_20%,transparent)]'
 							placeholder='Select seller brands'
 							onChange={(values) =>
 								handleFiltersInputChange(
@@ -186,7 +186,7 @@ export const ProductFilters = ({
 							<div className='flex items-center'>
 								<label className='text-slate-200 block mr-1'>Optional</label>
 								<Checkbox
-									className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[#9690F0] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[#9690F0] hover:[&_.ant-checkbox-inner]:border-[#9690F0]'
+									className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[var(--color-secondary)] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[var(--color-secondary)] hover:[&_.ant-checkbox-inner]:border-[var(--color-secondary)]'
 									onChange={() => handleFiltersOptionalChange("color")}
 									checked={productFilters?.optional_filters?.includes(
 										"color"
@@ -195,7 +195,7 @@ export const ProductFilters = ({
 						</div>
 						<Select
 							mode='tags'
-							className='w-full text-base product-filters-select-input [&:hover_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_rgba(150,144,240,0.2)]'
+							className='w-full text-base product-filters-select-input [&:hover_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_color-mix(in_srgb,var(--color-secondary)_20%,transparent)]'
 							placeholder='Enter color'
 							value={productFilters?.color || []}
 							size='large'
@@ -220,7 +220,7 @@ export const ProductFilters = ({
 							<div className='flex items-center'>
 								<label className='text-slate-200 block mr-1'>Optional</label>
 								<Checkbox
-									className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[#9690F0] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[#9690F0] hover:[&_.ant-checkbox-inner]:border-[#9690F0]'
+									className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[var(--color-secondary)] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[var(--color-secondary)] hover:[&_.ant-checkbox-inner]:border-[var(--color-secondary)]'
 									onChange={() => handleFiltersOptionalChange("occasion")}
 									checked={productFilters?.optional_filters?.includes(
 										"occasion"
@@ -229,7 +229,7 @@ export const ProductFilters = ({
 						</div>
 						<Select
 							mode='tags'
-							className='w-full text-base product-filters-select-input [&:hover_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_rgba(150,144,240,0.2)]'
+							className='w-full text-base product-filters-select-input [&:hover_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_color-mix(in_srgb,var(--color-secondary)_20%,transparent)]'
 							placeholder='Enter occasion'
 							value={productFilters?.occasion || []}
 							size='large'
@@ -258,7 +258,7 @@ export const ProductFilters = ({
 							<div className='flex items-center'>
 								<label className='text-slate-200 block mr-1'>Optional</label>
 								<Checkbox
-									className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[#9690F0] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[#9690F0] hover:[&_.ant-checkbox-inner]:border-[#9690F0]'
+									className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[var(--color-secondary)] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[var(--color-secondary)] hover:[&_.ant-checkbox-inner]:border-[var(--color-secondary)]'
 									onChange={() => handleFiltersOptionalChange("custom_filter")}
 									checked={productFilters?.optional_filters?.includes(
 										"custom_filter"
@@ -290,7 +290,7 @@ export const ProductFilters = ({
 							<div className='flex items-center'>
 								<label className='text-slate-200 block mr-1'>Optional</label>
 								<Checkbox
-									className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[#9690F0] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[#9690F0] hover:[&_.ant-checkbox-inner]:border-[#9690F0]'
+									className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[var(--color-secondary)] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[var(--color-secondary)] hover:[&_.ant-checkbox-inner]:border-[var(--color-secondary)]'
 									onChange={() => handleFiltersOptionalChange("price")}
 									checked={productFilters?.optional_filters?.includes(
 										"price"
@@ -328,7 +328,7 @@ export const ProductFilters = ({
 							<div className='flex items-center'>
 								<label className='text-slate-200 block mr-1'>Optional</label>
 								<Checkbox
-									className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[#9690F0] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[#9690F0] hover:[&_.ant-checkbox-inner]:border-[#9690F0]'
+									className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[var(--color-secondary)] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[var(--color-secondary)] hover:[&_.ant-checkbox-inner]:border-[var(--color-secondary)]'
 									onChange={() => handleFiltersOptionalChange("material")}
 									checked={productFilters?.optional_filters?.includes(
 										"material"
@@ -337,7 +337,7 @@ export const ProductFilters = ({
 						</div>
 						<Select
 							mode='tags'
-							className='w-full text-base product-filters-select-input [&:hover_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_rgba(150,144,240,0.2)]'
+							className='w-full text-base product-filters-select-input [&:hover_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_color-mix(in_srgb,var(--color-secondary)_20%,transparent)]'
 							placeholder={`Enter material`}
 							value={productFilters?.material || []}
 							size='large'
@@ -359,7 +359,7 @@ export const ProductFilters = ({
 							<div className='flex items-center'>
 								<label className='text-slate-200 block mr-1'>Optional</label>
 								<Checkbox
-									className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[#9690F0] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[#9690F0] hover:[&_.ant-checkbox-inner]:border-[#9690F0]'
+									className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[var(--color-secondary)] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[var(--color-secondary)] hover:[&_.ant-checkbox-inner]:border-[var(--color-secondary)]'
 									onChange={() => handleFiltersOptionalChange("pattern")}
 									checked={productFilters?.optional_filters?.includes(
 										"pattern"
@@ -369,7 +369,7 @@ export const ProductFilters = ({
 						<Select
 							mode='multiple'
 							name='pattern'
-							className='w-full text-base product-filters-select-input [&:hover_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_rgba(150,144,240,0.2)]'
+							className='w-full text-base product-filters-select-input [&:hover_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_color-mix(in_srgb,var(--color-secondary)_20%,transparent)]'
 							placeholder='Select pattern'
 							value={productFilters?.pattern || []}
 							size='large'
@@ -393,7 +393,7 @@ export const ProductFilters = ({
 							<div className='flex items-center'>
 								<label className='text-slate-200 block mr-1'>Optional</label>
 								<Checkbox
-									className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[#9690F0] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[#9690F0] hover:[&_.ant-checkbox-inner]:border-[#9690F0]'
+									className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[var(--color-secondary)] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[var(--color-secondary)] hover:[&_.ant-checkbox-inner]:border-[var(--color-secondary)]'
 									onChange={() => handleFiltersOptionalChange("style")}
 									checked={productFilters?.optional_filters?.includes(
 										"style"
@@ -402,7 +402,7 @@ export const ProductFilters = ({
 						</div>
 						<Select
 							mode='tags'
-							className='w-full text-base product-filters-select-input [&:hover_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_rgba(150,144,240,0.2)]'
+							className='w-full text-base product-filters-select-input [&:hover_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_color-mix(in_srgb,var(--color-secondary)_20%,transparent)]'
 							placeholder='Enter style'
 							onChange={(values) =>
 								handleFiltersInputChange(
@@ -429,7 +429,7 @@ export const ProductFilters = ({
 							<div className='flex items-center'>
 								<label className='text-slate-200 block mr-1'>Optional</label>
 								<Checkbox
-									className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[#9690F0] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[#9690F0] hover:[&_.ant-checkbox-inner]:border-[#9690F0]'
+									className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[var(--color-secondary)] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[var(--color-secondary)] hover:[&_.ant-checkbox-inner]:border-[var(--color-secondary)]'
 									onChange={() => handleFiltersOptionalChange("product_brand")}
 									checked={productFilters?.optional_filters?.includes(
 										"product_brand"
@@ -438,7 +438,7 @@ export const ProductFilters = ({
 						</div>
 						<Select
 							mode='multiple'
-							className='w-full text-base product-filters-select-input [&:hover_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_rgba(150,144,240,0.2)]'
+							className='w-full text-base product-filters-select-input [&:hover_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_color-mix(in_srgb,var(--color-secondary)_20%,transparent)]'
 							placeholder='Select product brand'
 							onChange={(values) =>
 								handleFiltersInputChange(

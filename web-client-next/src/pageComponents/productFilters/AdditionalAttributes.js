@@ -116,7 +116,7 @@ const AdditionalAttributes = ({
 							open={false}
 							suffixIcon={null}
 							showSearch
-							className={`w-full product-filters-select-input ${fontSizeTheme} [&:hover_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_rgba(150,144,240,0.2)]`}
+							className={`w-full product-filters-select-input ${fontSizeTheme} [&:hover_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_color-mix(in_srgb,var(--color-secondary)_20%,transparent)]`}
 							placeholder={`Enter ${hashtagAttr.key}`}
 							value={savedCustomFilter}
 							size={selectBoxSize}
@@ -149,7 +149,7 @@ const AdditionalAttributes = ({
 													Mandatory
 												</label>
 												<Checkbox
-													className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[#9690F0] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[#9690F0] hover:[&_.ant-checkbox-inner]:border-[#9690F0]'
+													className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[var(--color-secondary)] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[var(--color-secondary)] hover:[&_.ant-checkbox-inner]:border-[var(--color-secondary)]'
 													onChange={(e) =>
 														handleFiltersOptionalChange(
 															attr.key,
@@ -164,7 +164,7 @@ const AdditionalAttributes = ({
 									</div>
 									<Select
 										name={attr.key}
-										className={`w-full product-filters-select-single-input ${fontSizeTheme} [&:hover_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_rgba(150,144,240,0.2)]`}
+										className={`w-full product-filters-select-single-input ${fontSizeTheme} [&:hover_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_color-mix(in_srgb,var(--color-secondary)_20%,transparent)]`}
 										placeholder={`Select ${attr.key}`}
 										value={(attributesData && attributesData[attr.key]) ?? []}
 										size={selectBoxSize}
@@ -193,7 +193,7 @@ const AdditionalAttributes = ({
 													Mandatory
 												</label>
 												<Checkbox
-													className='text-slate-200   hover:[&_.ant-checkbox-inner]:border-[#9690F0]'
+													className='text-slate-200   hover:[&_.ant-checkbox-inner]:border-[var(--color-secondary)]'
 													onChange={(e) =>
 														handleFiltersOptionalChange(
 															attr.key,
@@ -209,7 +209,7 @@ const AdditionalAttributes = ({
 									<Select
 										mode='multiple'
 										name={attr.key}
-										className={`w-full product-filters-select-input ${fontSizeTheme} [&:hover_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_rgba(150,144,240,0.2)]`}
+										className={`w-full product-filters-select-input ${fontSizeTheme} [&:hover_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_color-mix(in_srgb,var(--color-secondary)_20%,transparent)]`}
 										placeholder={`Select ${attr.key}`}
 										value={(attributesData && attributesData[attr.key]) ?? []}
 										size={selectBoxSize}
@@ -239,7 +239,7 @@ const AdditionalAttributes = ({
 													Mandatory
 												</label>
 												<Checkbox
-													className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[#9690F0] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[#9690F0] hover:[&_.ant-checkbox-inner]:border-[#9690F0]'
+													className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[var(--color-secondary)] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[var(--color-secondary)] hover:[&_.ant-checkbox-inner]:border-[var(--color-secondary)]'
 													onChange={(e) =>
 														handleFiltersOptionalChange(
 															attr.key,
@@ -259,7 +259,7 @@ const AdditionalAttributes = ({
 										open={false}
 										suffixIcon={null}
 										showSearch
-										className={`w-full product-filters-select-input ${fontSizeTheme} [&:hover_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!border-[#9690F0] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_rgba(150,144,240,0.2)]`}
+										className={`w-full product-filters-select-input ${fontSizeTheme} [&:hover_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!border-[var(--color-secondary)] [&.ant-select-focused_.ant-select-selector]:!shadow-[0_0_0_2px_color-mix(in_srgb,var(--color-secondary)_20%,transparent)]`}
 										placeholder={`Enter ${attr.key}`}
 										value={
 											(attributesData && attributesData[attr.key]) ?? []
@@ -293,7 +293,7 @@ const AdditionalAttributes = ({
 													Mandatory
 												</label>
 												<Checkbox
-													className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[#9690F0] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[#9690F0] hover:[&_.ant-checkbox-inner]:border-[#9690F0]'
+													className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[var(--color-secondary)] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[var(--color-secondary)] hover:[&_.ant-checkbox-inner]:border-[var(--color-secondary)]'
 													onChange={(e) =>
 														handleFiltersOptionalChange(
 															attr.key,
@@ -307,7 +307,7 @@ const AdditionalAttributes = ({
 										) : null}
 									</div>
 									<input
-										className='text-left placeholder-gray-101 outline-none px-3 h-8 rounded-xl bg-white w-full hover:border-[#9690F0] focus:border-[#9690F0] focus:shadow-[0_0_0_2px_rgba(150,144,240,0.2)] border border-transparent'
+										className='text-left placeholder-gray-101 outline-none px-3 h-8 rounded-xl bg-white w-full hover:border-[var(--color-secondary)] focus:border-[var(--color-secondary)] focus:shadow-[0_0_0_2px_color-mix(in_srgb,var(--color-secondary)_20%,transparent)] border border-transparent'
 										placeholder={`Enter ${attr.key}`}
 										name={attr.key}
 										type='text'
@@ -331,7 +331,7 @@ const AdditionalAttributes = ({
 												Mandatory
 											</label>
 											<Checkbox
-												className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[#9690F0] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[#9690F0] hover:[&_.ant-checkbox-inner]:border-[#9690F0]'
+												className='text-slate-200 [&_.ant-checkbox-checked_.ant-checkbox-inner]:bg-[var(--color-secondary)] [&_.ant-checkbox-checked_.ant-checkbox-inner]:border-[var(--color-secondary)] hover:[&_.ant-checkbox-inner]:border-[var(--color-secondary)]'
 												onChange={(e) =>
 													handleFiltersOptionalChange(
 														"price",
@@ -346,7 +346,7 @@ const AdditionalAttributes = ({
 									<div className='flex flex-row'>
 										<Input
 											type='text'
-											className='outline-none px-3 h-8 rounded-xl w-full text-sm hover:border-[#9690F0] focus:border-[#9690F0] focus:shadow-[0_0_0_2px_rgba(150,144,240,0.2)]'
+											className='outline-none px-3 h-8 rounded-xl w-full text-sm hover:border-[var(--color-secondary)] focus:border-[var(--color-secondary)] focus:shadow-[0_0_0_2px_color-mix(in_srgb,var(--color-secondary)_20%,transparent)]'
 											placeholder='Minimum'
 											value={attributesData?.price?.min || ""}
 											onChange={(e) => handlePriceChange("min", e.target.value)}
@@ -358,7 +358,7 @@ const AdditionalAttributes = ({
 										</span>
 										<Input
 											type='text'
-											className='outline-none px-3 h-8 rounded-xl w-full text-sm hover:border-[#9690F0] focus:border-[#9690F0] focus:shadow-[0_0_0_2px_rgba(150,144,240,0.2)]'
+											className='outline-none px-3 h-8 rounded-xl w-full text-sm hover:border-[var(--color-secondary)] focus:border-[var(--color-secondary)] focus:shadow-[0_0_0_2px_color-mix(in_srgb,var(--color-secondary)_20%,transparent)]'
 											placeholder='Maximum'
 											value={attributesData?.price?.max || ""}
 											onChange={(e) => handlePriceChange("max", e.target.value)}

@@ -101,12 +101,12 @@ const HeroSection = ({ storeData, collectiondata }) => {
               light={isPlaying ? false : thumbnailImage || false}
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-lightgray-102">
+            <div className="w-full h-full flex items-center justify-center bg-gray-100">
               <p className="text-black-103">No video available</p>
             </div>
           )
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-lightgray-102">
+          <div className="w-full h-full flex items-center justify-center bg-gray-100">
             <p className="text-black-103">Loading...</p>
           </div>
         )}

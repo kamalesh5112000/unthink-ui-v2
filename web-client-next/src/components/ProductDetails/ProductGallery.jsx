@@ -17,8 +17,6 @@ const ProductGallery = ({
   kioskLogin,
   hasKioskAccess,
   buildProductAutoLoginQr,
-  setIsPopupShow,
-  setGuestPopupAction,
   authUser,
   pdploader,
 }) => {
@@ -81,8 +79,6 @@ const ProductGallery = ({
                 login={kioskLogin}
                 hasKioskAccess={hasKioskAccess}
                 buildProductAutoLoginQr={buildProductAutoLoginQr}
-                setIsPopupShow={setIsPopupShow}
-                setGuestPopupAction={setGuestPopupAction}
                 storeData={storeData}
                 saveUserId={kioskLogin?.user_id || authUser?.user_id || null}
                 kioskEmail={kioskLogin?.email || null}
@@ -120,8 +116,8 @@ const ProductGallery = ({
                     width={50}
                     className={`w-[110px] h-[120px] rounded-xl border transition ${
                       additionalimg === img
-                        ? "border-[#7c74ec] border-2  "
-                        : "border-[#e8e2ff] hover:border-[#b8a9ff]"
+                        ? "border-brand border-2  "
+                        : "border-[#e8e2ff] hover:border-secondary  "
                     }`}
                     onClick={() => setAdditionalImg(img)}
                     alt="product"

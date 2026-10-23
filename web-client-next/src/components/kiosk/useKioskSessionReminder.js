@@ -132,7 +132,7 @@ export function KioskSessionPopup({ onStay, onLogout }) {
           </button>
           <button
             onClick={onLogout}
-            className="mt-3 w-full max-w-[260px] bg-alert text-white text-base font-medium py-2.5 px-4 rounded-full shadow-sm"
+            className="mt-3 w-full max-w-[260px] bg-danger text-white text-base font-medium py-2.5 px-4 rounded-full shadow-sm"
           >
             Logout
           </button>

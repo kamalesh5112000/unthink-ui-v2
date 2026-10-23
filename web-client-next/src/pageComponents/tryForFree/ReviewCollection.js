@@ -3513,17 +3513,17 @@ const isNewCollection = router.query.isNewCollection === "true";
 										className='mx-3'
 										trackStyle={[
 											{
-												backgroundColor: "#4F46E5",
+												backgroundColor: "var(--color-secondary) ",
 											},
 										]}
 										handleStyle={[
 											{
-												backgroundColor: "#4F46E5",
-												borderColor: "#4F46E5",
+												backgroundColor: "var(--color-secondary) ",
+												borderColor: "var(--color-secondary) ",
 											},
 											{
-												backgroundColor: "#4F46E5",
-												borderColor: "#4F46E5",
+												backgroundColor: "var(--color-secondary) ",
+												borderColor: "var(--color-secondary) ",
 											},
 										]}
 									/>
@@ -4071,17 +4071,17 @@ const isNewCollection = router.query.isNewCollection === "true";
 																className='mx-3'
 																trackStyle={[
 																	{
-																		backgroundColor: "#4F46E5",
+																		backgroundColor: "var(--color-secondary) ",
 																	},
 																]}
 																handleStyle={[
 																	{
-																		backgroundColor: "#4F46E5",
-																		borderColor: "#4F46E5",
+																		backgroundColor: "var(--color-secondary) ",
+																		borderColor: "var(--color-secondary) ",
 																	},
 																	{
-																		backgroundColor: "#4F46E5",
-																		borderColor: "#4F46E5",
+																		backgroundColor: "var(--color-secondary) ",
+																		borderColor: "var(--color-secondary) ",
 																	},
 																]}
 															/>
@@ -4300,7 +4300,7 @@ const isNewCollection = router.query.isNewCollection === "true";
 																		className={`flex items-center rounded-md shadow my-2 mr-2 px-2 py-0.75 sm:px-4 w-max ${
 																			selectedTags.includes(tag)
 																				? "bg-slate-400"
-																				: "bg-lightgray-102"
+																				: "bg-gray-100"
 																		}`}
 																		onClick={() => handleTagClick({ tag })}
 																		role='button'>
@@ -4338,7 +4338,7 @@ const isNewCollection = router.query.isNewCollection === "true";
 																		key='All'
 																		className={`rounded-md shadow my-2 mr-2 px-2 py-0.75 sm:px-4 w-max ${
 																			selectedTags.length
-																				? "bg-lightgray-102"
+																				? "bg-gray-100"
 																				: "bg-slate-400"
 																		}`}
 																		onClick={() =>
@@ -4368,7 +4368,7 @@ const isNewCollection = router.query.isNewCollection === "true";
 															className='flex justify-center items-center cursor-pointer'
 															title={`Click to edit ${TAGS_TITLE}, You can update the ${TAGS_TITLE} and fetch the products`}>
 															<PlusOutlined
-																className='text-base text-lightgray-102 flex justify-center items-center stroke-current stroke-13'
+																className='text-base text-gray-100 flex justify-center items-center stroke-current stroke-13'
 																onClick={handleEditTagsBtnClick}
 															/>
 														</div>

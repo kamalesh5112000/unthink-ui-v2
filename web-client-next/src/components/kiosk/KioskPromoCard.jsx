@@ -37,7 +37,7 @@ const KioskPromoCard = ({
             </div>
           </div>
 
-          <div className="flex h-[180px] w-[180px] shrink-0 items-center justify-center border-[3px] border-kiosk-primary bg-white">
+          <div className="flex h-[180px] w-[180px] shrink-0 items-center justify-center border-[3px] border-brand bg-white">
             <img
               src={qrSrc}
               alt="GIVA AI Assistant QR"

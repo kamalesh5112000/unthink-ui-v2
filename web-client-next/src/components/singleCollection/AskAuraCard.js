@@ -4,15 +4,18 @@ import styles from "./AskAuraCard.module.css";
 
 import { setShowChatModal } from "../../hooks/chat/redux/actions";
 import { getCurrentTheme } from "../../helper/utils";
+import { useRouter } from "next/router";
 
 // import auraImageRound from "../../images/chat/aura-image-round.png";
 
 const AskAuraCard = ({ size = "medium" }) => {
+	const router = useRouter()
 	const dispatch = useDispatch();
 
 	const handleTileClick = useCallback(() => {
 		// perform chat click on header // open chat on header
-		dispatch(setShowChatModal(true));
+		router.push('/search')
+		
 	}, []);
 
 	return (

@@ -1,19 +1,19 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useCallback } from "react";
+import { useDispatch } from "react-redux";
 import { notification } from "antd";
 import { FaHeart, FaRegHeart } from "react-icons/fa6";
 import { current_store_name } from "../../../constants/config";
 import { WISHLIST_TITLE } from "../../../constants/codes";
 import {
   getwishlistUserCollection,
-  GuestPopUpShow,
 } from "../../Auth/redux/actions";
 import { addProductToWishlistCollection } from "../../wishlistActions/addProductToWishlistCollection/redux/actions";
 import { removeFromWishlist } from "../../wishlistActions/removeFromWishlist/redux/actions";
 import { getTTid } from "../../../helper/getTrackerInfo";
+import { useGuestPopup } from "../../../context/GuestPopupContext";
 
 const DEFAULT_BUTTON_CLASS =
-  "box-border flex h-8 w-8 items-center justify-center rounded-full bg-white p-0 shadow-[0px_2px_12px_rgba(0,0,0,0.1)] min-[1000px]:transition-all min-[1000px]:duration-200 min-[1000px]:ease-in-out min-[1000px]:hover:bg-hover-light min-[1000px]:hover:shadow-[0px_4px_16px_rgba(0,0,0,0.15)] max-[1024px]:p-1";
+  "box-border flex h-8 w-8 items-center justify-center rounded-full bg-white p-0 shadow-[0px_2px_12px_rgba(0,0,0,0.1)] min-[1000px]:transition-all min-[1000px]:duration-200 min-[1000px]:ease-in-out min-[1000px]:hover:bg-gray-100 min-[1000px]:hover:shadow-[0px_4px_16px_rgba(0,0,0,0.15)] max-[1024px]:p-1";
 
 const WishlistHeartButton = ({
   isActive = false,
@@ -34,18 +34,13 @@ const WishlistHeartButton = ({
   store = current_store_name,
   containerClassName = "",
   buttonClassName = DEFAULT_BUTTON_CLASS,
-  activeIconClassName = "text-red",
+  activeIconClassName = "text-danger",
   inactiveIconClassName = "",
   title = "Add to wishlist",
   userLogin,
 }) => {
   const dispatch = useDispatch();
-  const [pendingWishlistAction, setPendingWishlistAction] = useState(false);
-  const pendingWishlistCallbackRef = useRef(null);
-  const isGuestPopUpShow = useSelector(
-    (state) => state.GuestPopUpReducer.isGuestPopUpShow,
-  );
-  console.log('userLogin',userLogin) 
+  const { openGuestPopup } = useGuestPopup();
   const callHandpickedAPI = useCallback(
     async (wishlistUserId) => {
       if (!wishlistUserId) {
@@ -120,18 +115,6 @@ const WishlistHeartButton = ({
     ],
   );
 
-  useEffect(() => {
-    if (!pendingWishlistAction || isGuestPopUpShow) return;
-
-    const kioskLogin = getKioskLogin?.();
-    setPendingWishlistAction(false);
-
-    if (kioskLogin?.user_id) {
-      pendingWishlistCallbackRef.current?.(kioskLogin.user_id);
-      pendingWishlistCallbackRef.current = null;
-    }
-  }, [getKioskLogin, isGuestPopUpShow, pendingWishlistAction]);
-
   const addToWishlistClick = useCallback(
     async (event) => {
       event.preventDefault();
@@ -141,9 +124,13 @@ const WishlistHeartButton = ({
       const kioskLogin = getKioskLogin?.();
 
       if ((hasKioskAccess || enableKioskGuestPopup) && !kioskLogin) {
-        pendingWishlistCallbackRef.current = callHandpickedAPI;
-        setPendingWishlistAction(true);
-        dispatch(GuestPopUpShow(true));
+        openGuestPopup({
+          action: "wishlist",
+          storeName: storeData?.store_name || store,
+          persistKioskLogin: true,
+          refreshUserInfo: !userLogin,
+          onSuccess: ({ userId }) => callHandpickedAPI(userId),
+        });
         return;
       }
 
@@ -157,7 +144,11 @@ const WishlistHeartButton = ({
       getKioskLogin,
       hasKioskAccess,
       onGuestPopupOpen,
+      openGuestPopup,
+      store,
+      storeData?.store_name,
       userId,
+      userLogin,
     ],
   );
 
@@ -168,7 +159,13 @@ const WishlistHeartButton = ({
 
       if (!onAddSelectedProductsToCollection) {
         onGuestPopupOpen?.("");
-        dispatch(GuestPopUpShow(true));
+        openGuestPopup({
+          action: "wishlist",
+          storeName: storeData?.store_name || store,
+          persistKioskLogin: hasKioskAccess || enableKioskGuestPopup,
+          refreshUserInfo: !userLogin,
+          onSuccess: ({ userId }) => callHandpickedAPI(userId),
+        });
         return;
       }
 
@@ -204,11 +201,17 @@ const WishlistHeartButton = ({
       authUserId,
       callHandpickedAPI,
       dispatch,
+      enableKioskGuestPopup,
       getKioskLogin,
+      hasKioskAccess,
       onAddSelectedProductsToCollection,
       onGuestPopupOpen,
+      openGuestPopup,
       product,
       source,
+      store,
+      storeData?.store_name,
+      userLogin,
     ],
   );
 

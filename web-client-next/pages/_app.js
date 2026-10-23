@@ -3,12 +3,11 @@ import Head from 'next/head';
 import Script from 'next/script';
 import dynamic from 'next/dynamic';
 import Router from 'next/router';
-import '../src/style/antd.css'
 // Ant Design base styles (required for Grid/Row/Col gutters and component alignment)
-import "antd/dist/reset.css";
 
 // Import Tailwind CSS first (must be before SCSS that uses @layer)
 import "../src/style/global.css";
+import '../src/style/antd.css'
 // Then import SCSS utilities that extend Tailwind
 import "../src/style/index.module.scss";
 import "../src/pageComponents/swiftlyStyled/pageContents/mainContent.scss";
@@ -21,6 +20,7 @@ import ReduxWrapper from "../src/state/reduxWrapper";
 import ActionWrapper from "../src/state/actionWrapper";
 import ContextWrapper from "../src/context/contextWrapper";
 import { ThemeContextWrapper } from "../src/context/themeContext";
+import { GuestPopupProvider } from "../src/context/GuestPopupContext";
 
 const ProductDetailsCopyModalComponent = dynamic(() => import("../src/pageComponents/productDetailsCopyModal"), { ssr: false });
 const CollectionShareModalComponent = dynamic(() => import("../src/pageComponents/collectionShareModal"), { ssr: false });
@@ -134,27 +134,29 @@ function MyApp({ Component, pageProps }) {
       <div style={fontStyle} suppressHydrationWarning>
         <ThemeContextWrapper>
           <ReduxWrapper>
-            <ActionWrapper>
-              <ContextWrapper>
-                <UserDataProvider>
-                <AnalyticsTracker />
-                {mounted ? (
-                  <>
-                    {isRouteLoading ? <RouteLoader /> : null}
-                    <AppLoaderComponent />
-                    <AppMessageModal />
-                    <ProductDetailsCopyModalComponent />
-                    <CollectionShareModalComponent />
-                    <EarnedRewardModal />
-                    <AiExtractionDataModal />
-                    <CustomProductModal />
-                    <AutoCreateCollectionModal />
-                  </>
-                ) : null}
-                <Component {...pageProps} />
-                </UserDataProvider>
-              </ContextWrapper>
-            </ActionWrapper>
+            <GuestPopupProvider>
+              <ActionWrapper>
+                <ContextWrapper>
+                  <UserDataProvider>
+                  <AnalyticsTracker />
+                  {mounted ? (
+                    <>
+                      {isRouteLoading ? <RouteLoader /> : null}
+                      <AppLoaderComponent />
+                      <AppMessageModal />
+                      <ProductDetailsCopyModalComponent />
+                      <CollectionShareModalComponent />
+                      <EarnedRewardModal />
+                      <AiExtractionDataModal />
+                      <CustomProductModal />
+                      <AutoCreateCollectionModal />
+                    </>
+                  ) : null}
+                  <Component {...pageProps} />
+                  </UserDataProvider>
+                </ContextWrapper>
+              </ActionWrapper>
+            </GuestPopupProvider>
           </ReduxWrapper>
         </ThemeContextWrapper>
       </div>

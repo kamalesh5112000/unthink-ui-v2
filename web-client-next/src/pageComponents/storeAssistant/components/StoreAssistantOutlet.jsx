@@ -4,7 +4,7 @@ import { FiActivity, FiBarChart2, FiUsers } from "react-icons/fi";
 
 import { aura_header_theme } from "../../../constants/config";
 import { resetAuraSearchResponse } from "../../../hooks/chat/redux/actions";
-import ChatContainer from "../../storePage/ChatContainer";
+import ChatContainer from "../../aura/ChatContainer";
 import StoreAssistantRealtimeFeed from "../realtimeFeed/StoreAssistantRealtimeFeed";
 import StoreAssistantUploadMedia from "../uploadMedia/StoreAssistantUploadMedia";
 import StoreAssistantLookBooks from "../lookBooks/StoreAssistantLookBooks";

@@ -5,7 +5,6 @@ import React, {
   useCallback,
 } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { notification } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { openProductModal } from "../../pageComponents/customProductModal/redux/actions";
@@ -37,9 +36,7 @@ import {
 import { BsBookmarkPlusFill } from "react-icons/bs";
 import {
   getwishlistUserCollection,
-  GuestPopUpShow,
 } from "../../pageComponents/Auth/redux/actions";
-import GuestUserPopUp from "../../pageComponents/Auth/GuestUserPopUp";
 import { addProductToWishlistCollection } from "../../pageComponents/wishlistActions/addProductToWishlistCollection/redux/actions";
 import useKioskSessionReminder, {
   KioskSessionPopup,
@@ -51,10 +48,12 @@ import ProductActions from "./ProductActions";
 import ProductBrandDetails from "./ProductBrandDetails";
 import ProductOverview from "./ProductOverview";
 import ProductInformation from "./ProductInformation";
+import { useGuestPopup } from "../../context/GuestPopupContext";
 
 const ProductDetails = ({ params, ...props }) => {
   const router = useRouter();
   const dispatch = useDispatch();
+  const { openGuestPopup } = useGuestPopup();
   const mfr_code = params?.mfr_code || router?.query?.mfr_code;
   const [
     sellerDetails,
@@ -137,29 +136,10 @@ const ProductDetails = ({ params, ...props }) => {
   const { showSessionPopup, handleStayLoggedIn, handleLogout } =
     useKioskSessionReminder({ time: 500 * 1000 });
 
-  const [isPopupShow, setIsPopupShow] = useState(false);
-  const [guestPopupAction, setGuestPopupAction] = useState(null);
-
-  const onAddSelectedProductsToCollection = useCallback(
-    (options = {}) => {
-      const {
-        isGuestSubmit = false,
-        userId = null,
-      } = options;
-
-      const kioskLoginUserId = kioskLogin?.user_id;
-
-      if (
-        !isGuestSubmit &&
-        (!isUserLogin || (hasKioskAccess && !kioskLoginUserId))
-      ) {
-        setIsPopupShow(true);
-        setGuestPopupAction("save");
-        dispatch(GuestPopUpShow(true));
-        return;
-      }
-
+  const addProductToWishlistForUser = useCallback(
+    (userId = null) => {
       if (productDetails?.mfr_code) {
+        const kioskLoginUserId = kioskLogin?.user_id;
         const login_userID = userId || kioskLoginUserId || authUserId;
         dispatch(
           addProductToWishlistCollection({
@@ -184,13 +164,43 @@ const ProductDetails = ({ params, ...props }) => {
       }
     },
     [
-      isUserLogin,
-      dispatch,
-      hasKioskAccess,
       authUserId,
+      dispatch,
       kioskLogin?.user_id,
-      storeData,
       productDetails,
+      storeData,
+    ],
+  );
+
+  const onAddSelectedProductsToCollection = useCallback(
+    (options = {}) => {
+      const { isGuestSubmit = false, userId = null } = options;
+      const kioskLoginUserId = kioskLogin?.user_id;
+
+      if (
+        !isGuestSubmit &&
+        (!isUserLogin || (hasKioskAccess && !kioskLoginUserId))
+      ) {
+        openGuestPopup({
+          action: "save",
+          storeName: storeData?.store_name,
+          persistKioskLogin: true,
+          refreshUserInfo: !isUserLogin,
+          onSuccess: ({ userId: loggedInUserId }) =>
+            addProductToWishlistForUser(loggedInUserId),
+        });
+        return;
+      }
+
+      addProductToWishlistForUser(userId);
+    },
+    [
+      isUserLogin,
+      hasKioskAccess,
+      kioskLogin?.user_id,
+      openGuestPopup,
+      storeData?.store_name,
+      addProductToWishlistForUser,
     ],
   );
 
@@ -233,9 +243,24 @@ const ProductDetails = ({ params, ...props }) => {
     const kioskLoginUserId = kioskLogin?.user_id;
     if (!kioskLoginUserId && hasKioskAccess) {
       setShowShareProductDetails(false);
-      setGuestPopupAction("share");
-      setIsPopupShow(true);
-      dispatch(GuestPopUpShow(true));
+      openGuestPopup({
+        action: "share",
+        storeName: storeData?.store_name,
+        persistKioskLogin: true,
+        refreshUserInfo: !isUserLogin,
+        onSuccess: async ({ userId, email, phone }) => {
+          const didBuildShareLink = await openProductAutoLoginQr({
+            context: "product",
+            userId,
+            email,
+            phone,
+            requireUserId: true,
+            autoLoginOnly: true,
+          });
+          setShareContext("product");
+          if (!didBuildShareLink) setShowShareProductDetails(true);
+        },
+      });
       return;
     }
 
@@ -250,7 +275,14 @@ const ProductDetails = ({ params, ...props }) => {
 
     setShareContext("product");
     setShowShareProductDetails((show) => !show);
-  }, [openProductAutoLoginQr, dispatch, kioskLogin?.user_id, hasKioskAccess]);
+  }, [
+    openProductAutoLoginQr,
+    kioskLogin?.user_id,
+    hasKioskAccess,
+    openGuestPopup,
+    storeData?.store_name,
+    isUserLogin,
+  ]);
 
   const buildVtoAutoLoginQr = useCallback(
     (options) => openProductAutoLoginQr({ ...options, context: "vto" }),
@@ -363,8 +395,6 @@ const ProductDetails = ({ params, ...props }) => {
                 kioskLogin={kioskLogin}
                 hasKioskAccess={hasKioskAccess}
                 buildProductAutoLoginQr={buildVtoAutoLoginQr}
-                setIsPopupShow={setIsPopupShow}
-                setGuestPopupAction={setGuestPopupAction}
                 authUser={authUser}
                 pdploader={pdploader}
               />
@@ -411,61 +441,6 @@ const ProductDetails = ({ params, ...props }) => {
           </div>
         </div>
       </div>
-      <GuestUserPopUp
-        isOpen={isPopupShow}
-        setIsOpen={setIsPopupShow}
-        storeName={storeData?.store_name}
-        isUserLogin ={ !isUserLogin ? true : false}
-        persistKioskLogin
-        onSuccess={async ({ userId, email, phone }) => {
-          try {
-            if (guestPopupAction === "share") {
-              const didBuildShareLink = await openProductAutoLoginQr({
-                context: "product",
-                userId,
-                email,
-                phone,
-                requireUserId: true,
-                autoLoginOnly: true,
-              });
-              setShareContext("product");
-              if (!didBuildShareLink) setShowShareProductDetails(true);
-            } else if (guestPopupAction === "vto") {
-              const mfrCode = productDetails?.mfr_code;
-              if (mfrCode) {
-                await openProductAutoLoginQr({
-                  mfrCode,
-                  email,
-                  phone,
-                  context: "vto",
-                });
-              }
-            } else {
-              onAddSelectedProductsToCollection({
-                isGuestSubmit: true,
-                userId,
-              });
-            }
-          } catch (err) {
-            console.error("Guest onSuccess flow failed", err);
-            if (guestPopupAction === "share") setShowShareProductDetails(true);
-            if (guestPopupAction === "vto") {
-              const mfrCode = productDetails?.mfr_code;
-              if (mfrCode) {
-                await openProductAutoLoginQr({
-                  mfrCode,
-                  email,
-                  phone,
-                  context: "vto",
-                });
-              }
-            }
-          } finally {
-            setGuestPopupAction(null);
-          }
-        }}
-        onSkip={() => setGuestPopupAction(null)}
-      />
       <Modal
         headerText="Scan to open collection"
         isOpen={qrModalOpen}
@@ -494,8 +469,8 @@ const ProductDetails = ({ params, ...props }) => {
                 rel="noreferrer"
                 className={
                   hasKioskAccess
-                    ? "text-kiosk-primary hover:underline"
-                    : "text-indigo-600 hover:underline"
+                    ? "text-brand hover:underline"
+                    : "text-secondary hover:underline"
                 }
               >
                 {qrTargetUrl}
