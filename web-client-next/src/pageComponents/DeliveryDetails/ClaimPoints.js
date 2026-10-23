@@ -41,7 +41,8 @@ const ClaimPoints = ({
   const dispatch = useDispatch();
   const router = useRouter();
   const [redeemPoints, setRedeemPoints] = useState(null);
-  const [voucherCode, setVoucherCode] = useState(null);
+  const [voucherCode, setVoucherCode] = useState("");
+  const [voucherImageUrl, setVoucherImageUrl] = useState("");
   const [storeName, setStoreName] = useState(null);
   const [storeAssistanceId, setStoreAssistanceId] = useState(null);
   const [pointsRequested, setPointsRequested] = useState(false);
@@ -192,6 +193,9 @@ const [
   const handleVoucherCodeChange = (event) => {
     setVoucherCode(event.target.value);
   };
+  const handleVoucherImageUrlChange = (event) => {
+    setVoucherImageUrl(event.target.value);
+  };
   const handleStoreNameChange = (event) => {
     setStoreName(event.target.value);
   }
@@ -261,6 +265,8 @@ const [
     }
 
     const validPoints = pendingRedeemPoints;
+    const trimmedVoucherCode = voucherCode.trim();
+    const trimmedVoucherImageUrl = voucherImageUrl.trim();
     setRedemptionStarted(true);
 
     setRedeemPointsError("");
@@ -284,7 +290,8 @@ const [
           nft_instance_id: DEFAULT_NFT_INSTANCE_ID,
           points_exchanged: validPoints,
           image_url: claimImageUrl,
-          voucher_code:voucherCode,
+          ...(trimmedVoucherCode && { voucher_code: trimmedVoucherCode }),
+          ...(trimmedVoucherImageUrl && { voucher_image_url: trimmedVoucherImageUrl }),
           store_assistant_name:storeName ?? staffName,
           store_assistant_id:storeAssistanceId ?? staffId,
         },
@@ -403,9 +410,9 @@ const [
         
           <label
             htmlFor="voucher-code"
-            className="mb-1 block text-center text-base font-semibold"
+            className="mb-1 mt-3 block text-center text-base font-semibold"
           >
-            Enter voucher code
+            Enter voucher code or voucher image URL
           </label>
           <input
             id="voucher-code"
@@ -413,6 +420,18 @@ const [
             placeholder="Enter Voucher Code"
             value={voucherCode}
             onChange={handleVoucherCodeChange}
+            disabled={!hasCalculatedPoints}
+            className="h-9 w-full border disabled:cursor-not-allowed border-kiosk-secondary focus:border focus:border-black bg-white px-2 text-[11px] outline-none"
+          />
+          <p className="my-2 text-center text-xs font-semibold text-gray-500">
+            OR
+          </p>
+          <input
+            id="voucher-image-url"
+            type="url"
+            placeholder="Enter Voucher Image URL"
+            value={voucherImageUrl}
+            onChange={handleVoucherImageUrlChange}
             disabled={!hasCalculatedPoints}
             className="h-9 w-full border disabled:cursor-not-allowed border-kiosk-secondary focus:border focus:border-black bg-white px-2 text-[11px] outline-none"
           />
