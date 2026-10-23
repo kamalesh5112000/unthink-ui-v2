@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import GuestPopUp from "../../Auth/GuestPopUp";
 
 // Contact capture only: reuse the kiosk popup without its registration wrapper.
-const CustomerShareModal = ({ context, onClose }) => {
+const CustomerShareModal = ({ context, onClose, onSubmit }) => {
   const [contacts, setContacts] = useState({ email: "", phone: "" });
   const [errors, setErrors] = useState({ email: "", phone: "" });
 
@@ -27,7 +27,7 @@ const CustomerShareModal = ({ context, onClose }) => {
     setErrors(nextErrors);
     if (nextErrors.email || nextErrors.phone) return;
     setContacts({ email, phone });
-    onClose();
+    onSubmit?.({ email, phone });
   };
 
   if (!context || typeof document === "undefined") return null;

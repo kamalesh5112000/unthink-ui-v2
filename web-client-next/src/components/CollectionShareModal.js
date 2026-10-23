@@ -26,11 +26,12 @@ import { buildKioskAutoLoginUrls } from "../helper/autoLogin";
 
 const CollectionShareModal = ({
 	isOpen,
-	collectionDetails,
-	collectionOwner,
+	collectionDetails = {},
+	collectionOwner = {},
 	isAutoCreateCollection,
 	shareOptions = {},
 	onClose,
+	modalZIndex,
 }) => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -67,6 +68,21 @@ const CollectionShareModal = ({
 
  
 
+	const shareTitle =
+		shareOptions?.title || collectionDetails.collection_name;
+	const shareDescription =
+		shareOptions?.description ||
+		"Share your collection with your friends and followers!";
+	const hideViewCollection = !!shareOptions?.hideViewCollection;
+	const hidePublishAlert = !!shareOptions?.hidePublishAlert;
+	const hideTrackingParams = !!shareOptions?.hideTrackingParams;
+	const requireAutoLoginUserId =
+		shareOptions?.requireAutoLoginUserId !== undefined
+			? shareOptions.requireAutoLoginUserId
+			: true;
+	const overrideShareUrl = shareOptions?.shareUrl;
+	const overrideQrUrl = shareOptions?.qrUrl;
+
 
 	const collectionPageUrl = useMemo(
 		() => `${window?.location.origin || ""}${collectionRedirectPath || ""}`,
@@ -83,15 +99,20 @@ const CollectionShareModal = ({
 				? "mobile"
 				: "web";
 
-	const collectionId = collectionDetails?.collection_id;
+	const collectionId =
+		collectionDetails?.collection_id || collectionDetails?._id;
 
 
 	const userIdTid = userData?.user_id || getTTid()
 
 	const copybaseUrl = `${collectionPageUrl}?utm_source=unthink_collection_share&utm_medium=${platform}&utm_campaign=${collectionId}&utm_content=unthink_collection_share&unthink_source=unthink_collection_share&unthink_medium=${platform}&unthink_campaign=${collectionId}&unthink_shared=${userIdTid}`;
-const shareUrl = `${autoLoginShareUrls?.shareUrl}?utm_source=unthink_collection_share&utm_medium=${platform}&utm_campaign=${collectionId}&utm_content=unthink_collection_share&unthink_source=unthink_collection_share&unthink_medium=${platform}&unthink_campaign=${collectionId}&unthink_shared=${userIdTid}`;
+	const shareBaseUrl = autoLoginShareUrls?.shareUrl || collectionPageUrl;
+	const shareTrackingParams = `?utm_source=unthink_collection_share&utm_medium=${platform}&utm_campaign=${collectionId}&utm_content=unthink_collection_share&unthink_source=unthink_collection_share&unthink_medium=${platform}&unthink_campaign=${collectionId}&unthink_shared=${userIdTid}`;
+	const shareUrl =
+		overrideShareUrl ||
+		`${shareBaseUrl}${hideTrackingParams ? "" : shareTrackingParams}`;
 	const qrCodeGeneratorURL =
-		autoLoginShareUrls?.qrUrl || collectionQRCodeGenerator(shareUrl);
+		overrideQrUrl || autoLoginShareUrls?.qrUrl || collectionQRCodeGenerator(shareUrl);
 
 	useEffect(() => {
 		let isMounted = true;
@@ -107,13 +128,13 @@ const shareUrl = `${autoLoginShareUrls?.shareUrl}?utm_source=unthink_collection_
 		const buildShareAutoLoginUrl = async () => {
 			const pagePath = collectionRedirectPath.replace(/^\/+/, "");
 			const urls = await buildKioskAutoLoginUrls({
-				targetPath: copybaseUrl,
+				targetPath: hideTrackingParams ? collectionPageUrl : copybaseUrl,
 				pageParam: `?page=${pagePath}`,
 				errorLabel: "collection share auto-login",
 				userId: autoLoginUser.user_id,
 				email: autoLoginUser.emailId || autoLoginUser.email,
 				phone: autoLoginUser.phone,
-				requireUserId: true,
+				requireUserId: requireAutoLoginUserId,
 			});
 
 			if (isMounted && urls?.isAutoLogin) {
@@ -126,7 +147,14 @@ const shareUrl = `${autoLoginShareUrls?.shareUrl}?utm_source=unthink_collection_
 		return () => {
 			isMounted = false;
 		};
-	}, [collectionRedirectPath, copybaseUrl, shareOptions?.autoLoginUser]);
+	}, [
+		collectionPageUrl,
+		collectionRedirectPath,
+		copybaseUrl,
+		hideTrackingParams,
+		requireAutoLoginUserId,
+		shareOptions?.autoLoginUser,
+	]);
 
 	const socialMediaUrls = {
 		whatsapp: `https://wa.me/?text=${encodeURIComponent(shareUrl)}`,
@@ -154,11 +182,12 @@ const shareUrl = `${autoLoginShareUrls?.shareUrl}?utm_source=unthink_collection_
 				onClose={onClose}
 				maskClosable={false}
 				size='sm'
+				zIndex={modalZIndex}
 			// okButtonProps={{ className: "hidden" }}
 			>
 				<div>
 					<h1 className={styles.collectionTitle}>
-						{collectionDetails.collection_name}
+						{shareTitle}
 					</h1>
 				</div>
 				{/* {isAutoCreateCollection ? (
@@ -173,15 +202,17 @@ const shareUrl = `${autoLoginShareUrls?.shareUrl}?utm_source=unthink_collection_
 				<div className={styles.shareSection}>
 					<div className={styles.shareHeader}>
 						<p>
-							<b>Share your collection with your friends and followers!</b>
+							<b>{shareDescription}</b>
 						</p>
-						<button
-							className={styles.viewCollectionBtn}
-							onClick={handlePreviewCollectionPage}>
-							View Collection
-						</button>
+						{!hideViewCollection && (
+							<button
+								className={styles.viewCollectionBtn}
+								onClick={handlePreviewCollectionPage}>
+								View Collection
+							</button>
+						)}
 					</div>
-					{collectionDetails.status !== PUBLISHED && (
+					{!hidePublishAlert && collectionDetails.status !== PUBLISHED && (
 						<Alert
 							message='Before sharing the collection page, Please make sure that the collection is published.'
 							type='info'

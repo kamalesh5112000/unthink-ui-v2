@@ -25,6 +25,7 @@ const Modal = ({
 	headerTextSpacingClassName = styles.headerTextSpacingDefault,
 	headerTextClassName = styles.headerTextDefault,
 	closeClassName = styles.textSizeXl1_5,
+	zIndex = 50,
 }) => {
 
 	const [showChatModal, showWishlistModal] = useSelector((state) => [
@@ -76,7 +77,7 @@ const Modal = ({
 
 	if (isOpen) {
 		const modalNode = (
-			<div style={{zIndex:50}}
+			<div style={{ zIndex }}
 				// unthinkNextGenModalClass class added to handle body overflow scroll bar
 				className={`${unthinkNextGenModalClass} ${styles.modalOverlay} ${zIndexClassName}`}
 				onClick={() => maskClosable && onClose && onClose()}>
