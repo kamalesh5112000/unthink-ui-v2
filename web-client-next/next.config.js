@@ -102,5 +102,19 @@ const nextConfig = {
 
   // Enable standalone output for Docker builds
   output: 'standalone',
+
+  async headers() {
+    return [
+      {
+        source: '/kiosk-version.json',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          },
+        ],
+      },
+    ];
+  },
 };
 module.exports = nextConfig;

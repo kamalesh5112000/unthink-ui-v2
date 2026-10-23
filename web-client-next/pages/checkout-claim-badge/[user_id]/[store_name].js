@@ -1,11 +1,26 @@
-import React from 'react'
-import CheckoutClaimPoints from '../../../src/pageComponents/DeliveryDetails/CheckoutClaimPoints'
+import React, { useEffect } from 'react'
+import { useRouter } from 'next/router'
 
 const CheckoutClaimBadge = () => {
+  const router = useRouter()
+  const { isReady, query, replace } = router
+
+  useEffect(() => {
+    if (!isReady) return
+
+    replace({
+      pathname: '/store-assistant',
+      query: {
+        tab: 'redeem',
+        mode: 'checkout',
+        user_id: query.user_id,
+        store_name: query.store_name,
+      },
+    })
+  }, [isReady, query.store_name, query.user_id, replace])
+
   return (
-    <div>
-      <CheckoutClaimPoints />
-    </div>
+    <div />
   )
 }
 

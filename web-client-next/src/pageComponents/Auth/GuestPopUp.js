@@ -12,7 +12,10 @@ function GuestPopUp({
     handleGuestSkip,
     guestChange,
     guestData,
-    setIsPopupShow
+    setIsPopupShow,
+    onClose,
+    showSkip,
+    overlayStyle,
 }) {
 
     const dispatch = useDispatch()
@@ -21,6 +24,10 @@ function GuestPopUp({
       ]);
 
     const handClose = () => {
+        if (onClose) {
+            onClose()
+            return
+        }
         dispatch(GuestPopUpShow(false))
         setIsPopupShow(false)
     }
@@ -29,7 +36,7 @@ function GuestPopUp({
     const emailError = hasPhoneWithoutEmail ? "" : errors.email
 
     return (
-        <form onSubmit={handleGuestSubmit} className={popupStyles['popup-overlay']}>
+        <form onSubmit={handleGuestSubmit} className={popupStyles['popup-overlay']} style={overlayStyle}>
             <div className={popupStyles['popup-content']}>
                 <div className={styles.guestHeader}>
                     <h2 className={styles.guestTitle}>
@@ -72,7 +79,7 @@ function GuestPopUp({
                         >
                             Ok
                         </button>
-                        {storeData?.share_settings?.is_skip_enabled &&
+                        {(showSkip ?? storeData?.share_settings?.is_skip_enabled) &&
                         <button
                             className={styles.guestButton}
                             onClick={handleGuestSkip}
