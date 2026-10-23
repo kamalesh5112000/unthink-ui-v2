@@ -191,10 +191,20 @@ const [
     setRedeemPointsError("");
   };
   const handleVoucherCodeChange = (event) => {
-    setVoucherCode(event.target.value);
+    const nextVoucherCode = event.target.value;
+    setVoucherCode(nextVoucherCode);
+
+    if (nextVoucherCode) {
+      setVoucherImageUrl("");
+    }
   };
   const handleVoucherImageUrlChange = (event) => {
-    setVoucherImageUrl(event.target.value);
+    const nextVoucherImageUrl = event.target.value;
+    setVoucherImageUrl(nextVoucherImageUrl);
+
+    if (nextVoucherImageUrl) {
+      setVoucherCode("");
+    }
   };
   const handleStoreNameChange = (event) => {
     setStoreName(event.target.value);
@@ -420,7 +430,7 @@ const [
             placeholder="Enter Voucher Code"
             value={voucherCode}
             onChange={handleVoucherCodeChange}
-            disabled={!hasCalculatedPoints}
+            disabled={!hasCalculatedPoints || Boolean(voucherImageUrl)}
             className="h-9 w-full border disabled:cursor-not-allowed border-kiosk-secondary focus:border focus:border-black bg-white px-2 text-[11px] outline-none"
           />
           <p className="my-2 text-center text-xs font-semibold text-gray-500">
@@ -432,7 +442,7 @@ const [
             placeholder="Enter Voucher Image URL"
             value={voucherImageUrl}
             onChange={handleVoucherImageUrlChange}
-            disabled={!hasCalculatedPoints}
+            disabled={!hasCalculatedPoints || Boolean(voucherCode)}
             className="h-9 w-full border disabled:cursor-not-allowed border-kiosk-secondary focus:border focus:border-black bg-white px-2 text-[11px] outline-none"
           />
             
