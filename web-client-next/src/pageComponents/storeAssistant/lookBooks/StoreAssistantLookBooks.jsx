@@ -1,7 +1,16 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Checkbox, Drawer, Modal, notification, Spin, Upload } from "antd";
 import { PictureOutlined } from "@ant-design/icons";
-import { FiCheck, FiEdit2, FiEye, FiImage, FiRefreshCw, FiShoppingBag, FiStar, FiTrash2 } from "react-icons/fi";
+import {
+  FiCheck,
+  FiEdit2,
+  FiEye,
+  FiImage,
+  FiRefreshCw,
+  FiShoppingBag,
+  FiStar,
+  FiTrash2,
+} from "react-icons/fi";
 import {
   DndContext,
   PointerSensor,
@@ -33,23 +42,39 @@ import styles from "./StoreAssistantLookBooks.module.scss";
 
 const { Dragger } = Upload;
 
-const getProductImage = (product) => product?.image || product?.image_url || product?.img_url || product?.thumbnail || "";
-const getProductName = (product) => product?.name || product?.product_name || product?.title || "Untitled product";
-const getProductPrice = (product) => product?.display_amount || product?.sale_price || product?.price || "";
+const getProductImage = (product) =>
+  product?.image ||
+  product?.image_url ||
+  product?.img_url ||
+  product?.thumbnail ||
+  "";
+const getProductName = (product) =>
+  product?.name ||
+  product?.product_name ||
+  product?.title ||
+  "Untitled product";
+const getProductPrice = (product) =>
+  product?.display_amount || product?.sale_price || product?.price || "";
 const getProductMfrCode = (product) => product?.mfr_code || "";
-const getProductCode = (product) => product?.mfr_code || product?.sku || product?.product_id || "";
-const getSelectionKey = (product) => String(getProductCode(product) || product?._id || "");
-const getLookBookProducts = (collection) => collection?.product_lists || collection?.product_list || [];
+const getProductCode = (product) =>
+  product?.mfr_code || product?.sku || product?.product_id || "";
+const getSelectionKey = (product) =>
+  String(getProductCode(product) || product?._id || "");
+const getLookBookProducts = (collection) =>
+  collection?.product_lists || collection?.product_list || [];
 const COLLECTION_MODES = {
   lookbooks: {
     title: "LookBooks",
     previewTitle: "Kiosk Look Books preview",
     kioskTabTitle: "Look Books tab",
-    description: "Showcasing controls whether a published lookbook appears in the kiosk Look Books tab.",
+    description:
+      "Showcasing controls whether a published lookbook appears in the kiosk Look Books tab.",
     emptyTitle: "No published lookbooks found",
-    emptyDescription: "Published admin and influencer lookbook collections will appear here.",
+    emptyDescription:
+      "Published admin and influencer lookbook collections will appear here.",
     previewEmpty: "Showcase lookbooks to see the kiosk preview here.",
-    productsEmpty: "This lookbook does not have products in the fetched dashboard data.",
+    productsEmpty:
+      "This lookbook does not have products in the fetched dashboard data.",
     productCountLabel: "products in this lookbook",
     updatedMessage: "Lookbook updated",
     deleteProductMessage: "Product deleted from lookbook",
@@ -62,11 +87,14 @@ const COLLECTION_MODES = {
     title: "Trending",
     previewTitle: "Kiosk Trending preview",
     kioskTabTitle: "#Trending tab",
-    description: "Showcasing controls whether a published trending collection appears in the kiosk #Trending tab.",
+    description:
+      "Showcasing controls whether a published trending collection appears in the kiosk #Trending tab.",
     emptyTitle: "No published trending collections found",
     emptyDescription: "Published trending collections will appear here.",
-    previewEmpty: "Showcase trending collections to see the kiosk preview here.",
-    productsEmpty: "This trending collection does not have products in the fetched dashboard data.",
+    previewEmpty:
+      "Showcase trending collections to see the kiosk preview here.",
+    productsEmpty:
+      "This trending collection does not have products in the fetched dashboard data.",
     productCountLabel: "products in this trending collection",
     updatedMessage: "Trending collection updated",
     deleteProductMessage: "Product deleted from trending collection",
@@ -79,7 +107,9 @@ const COLLECTION_MODES = {
 const updateLookBookProducts = (collection, updater) => {
   if (!collection) return collection;
 
-  const productKey = collection.product_lists ? "product_lists" : "product_list";
+  const productKey = collection.product_lists
+    ? "product_lists"
+    : "product_list";
   return {
     ...collection,
     [productKey]: updater(getLookBookProducts(collection)),
@@ -87,9 +117,12 @@ const updateLookBookProducts = (collection, updater) => {
 };
 
 const LookBookKioskPreview = ({ collections = [], config }) => {
-  const visibleLookBooks = collections.filter((collection) => collection?.starred && collection?.cover_image && collection?.path);
+  const visibleLookBooks = collections.filter(
+    (collection) =>
+      collection?.starred && collection?.cover_image && collection?.path,
+  );
   const desktopColumns = [0, 1, 2, 3].map((columnIndex) =>
-    visibleLookBooks.filter((_, index) => index % 4 === columnIndex)
+    visibleLookBooks.filter((_, index) => index % 4 === columnIndex),
   );
   const tileStyles = [styles.tallPreviewTile, styles.shortPreviewTile];
 
@@ -108,8 +141,14 @@ const LookBookKioskPreview = ({ collections = [], config }) => {
           <div className={styles.mobilePreviewGrid}>
             {visibleLookBooks.map((lookBook) => (
               <div className={styles.previewTile} key={lookBook._id}>
-                <img src={lookBook.cover_image} alt={getCollectionNameToShow(lookBook)} loading="lazy" />
-                <div>{getCollectionNameToShow(lookBook) || "Untitled collection"}</div>
+                <img
+                  src={lookBook.cover_image}
+                  alt={getCollectionNameToShow(lookBook)}
+                  loading="lazy"
+                />
+                <div>
+                  {getCollectionNameToShow(lookBook) || "Untitled collection"}
+                </div>
               </div>
             ))}
           </div>
@@ -121,8 +160,15 @@ const LookBookKioskPreview = ({ collections = [], config }) => {
                     className={`${styles.previewTile} ${tileStyles[(columnIndex + lookBookIndex) % tileStyles.length]}`}
                     key={lookBook._id}
                   >
-                    <img src={lookBook.cover_image} alt={getCollectionNameToShow(lookBook)} loading="lazy" />
-                    <div>{getCollectionNameToShow(lookBook) || "Untitled collection"}</div>
+                    <img
+                      src={lookBook.cover_image}
+                      alt={getCollectionNameToShow(lookBook)}
+                      loading="lazy"
+                    />
+                    <div>
+                      {getCollectionNameToShow(lookBook) ||
+                        "Untitled collection"}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -158,14 +204,22 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
   const [shareContext, setShareContext] = useState(null);
   const [shareContact, setShareContact] = useState(null);
   const selectedProducts = getLookBookProducts(selectedCollection);
-  const shareProducts = selectedProducts.filter((product) => selectedProductKeys.includes(getSelectionKey(product)));
-  const selectableKeys = [...new Set(selectedProducts.map(getSelectionKey).filter(Boolean))];
-  const selectedKeyCount = selectableKeys.filter((key) => selectedProductKeys.includes(key)).length;
-  const selectedCollectionName = selectedCollection ? getCollectionNameToShow(selectedCollection) || config.collectionSingular : config.collectionSingular;
+  const shareProducts = selectedProducts.filter((product) =>
+    selectedProductKeys.includes(getSelectionKey(product)),
+  );
+  const selectableKeys = [
+    ...new Set(selectedProducts.map(getSelectionKey).filter(Boolean)),
+  ];
+  const selectedKeyCount = selectableKeys.filter((key) =>
+    selectedProductKeys.includes(key),
+  ).length;
+  const selectedCollectionName = selectedCollection
+    ? getCollectionNameToShow(selectedCollection) || config.collectionSingular
+    : config.collectionSingular;
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 8 },
-    })
+    }),
   );
 
   const loadLookBooks = useCallback(async () => {
@@ -201,7 +255,11 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
   }, [selectedCollection?._id]);
 
   const toggleProductSelection = (key) => {
-    setSelectedProductKeys((current) => current.includes(key) ? current.filter((item) => item !== key) : [...current, key]);
+    setSelectedProductKeys((current) =>
+      current.includes(key)
+        ? current.filter((item) => item !== key)
+        : [...current, key],
+    );
   };
 
   const openShare = (type) => {
@@ -210,7 +268,8 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
       type,
       collectionId: selectedCollection?._id,
       collectionName: selectedCollectionName,
-      products: type === "collection" ? [...selectedProducts] : [...shareProducts],
+      products:
+        type === "collection" ? [...selectedProducts] : [...shareProducts],
     });
   };
 
@@ -226,7 +285,11 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
   useEffect(() => {
     setDrawerMode(null);
     setDrawerProduct(null);
-    setEditCollectionName(selectedCollection ? getCollectionNameToShow(selectedCollection) || "" : "");
+    setEditCollectionName(
+      selectedCollection
+        ? getCollectionNameToShow(selectedCollection) || ""
+        : "",
+    );
     setEditDescription(selectedCollection?.description || "");
     setEditCoverImage(selectedCollection?.cover_image || "");
   }, [selectedCollection]);
@@ -242,8 +305,10 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
       const updatedCollection = await updateLookBookKioskVisibility(collection);
       setCollections((currentCollections) =>
         currentCollections.map((item) =>
-          item._id === updatedCollection._id ? { ...item, starred: updatedCollection.starred } : item
-        )
+          item._id === updatedCollection._id
+            ? { ...item, starred: updatedCollection.starred }
+            : item,
+        ),
       );
       notification.success({
         message: updatedCollection.starred
@@ -264,9 +329,14 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
     try {
       await reorderLookBookCollections(collections);
       setHasUnsavedOrderChanges(false);
-      notification.success({ message: `${config.collectionSingular} order updated` });
+      notification.success({
+        message: `${config.collectionSingular} order updated`,
+      });
     } catch (error) {
-      notification.error({ message: error.message || `Failed to reorder ${config.title.toLowerCase()}` });
+      notification.error({
+        message:
+          error.message || `Failed to reorder ${config.title.toLowerCase()}`,
+      });
     } finally {
       setReordering(false);
     }
@@ -275,8 +345,12 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
   const onDragEnd = ({ active, over }) => {
     if (!over || active.id === over.id || reordering) return;
 
-    const oldIndex = collections.findIndex((collection) => collection._id === active.id);
-    const newIndex = collections.findIndex((collection) => collection._id === over.id);
+    const oldIndex = collections.findIndex(
+      (collection) => collection._id === active.id,
+    );
+    const newIndex = collections.findIndex(
+      (collection) => collection._id === over.id,
+    );
     if (oldIndex === -1 || newIndex === -1) return;
 
     const nextCollections = arrayMove(collections, oldIndex, newIndex);
@@ -287,11 +361,13 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
   const replaceCollection = (collectionId, updater) => {
     setCollections((currentCollections) =>
       currentCollections.map((collection) =>
-        collection._id === collectionId ? updater(collection) : collection
-      )
+        collection._id === collectionId ? updater(collection) : collection,
+      ),
     );
     setSelectedCollection((currentCollection) =>
-      currentCollection?._id === collectionId ? updater(currentCollection) : currentCollection
+      currentCollection?._id === collectionId
+        ? updater(currentCollection)
+        : currentCollection,
     );
   };
 
@@ -367,13 +443,19 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
     try {
       await removeLookBookProduct({ collectionId, mfrCode });
       replaceCollection(collectionId, (collection) =>
-        updateLookBookProducts(collection, (products) => products.filter((item) => getProductMfrCode(item) !== mfrCode))
+        updateLookBookProducts(collection, (products) =>
+          products.filter((item) => getProductMfrCode(item) !== mfrCode),
+        ),
       );
-      setDrawerProduct((currentProduct) => (getProductMfrCode(currentProduct) === mfrCode ? null : currentProduct));
+      setDrawerProduct((currentProduct) =>
+        getProductMfrCode(currentProduct) === mfrCode ? null : currentProduct,
+      );
       if (getProductMfrCode(drawerProduct) === mfrCode) closeDrawer();
       notification.success({ message: config.deleteProductMessage });
     } catch (error) {
-      notification.error({ message: error.message || "Failed to delete product" });
+      notification.error({
+        message: error.message || "Failed to delete product",
+      });
     } finally {
       setProductActionId("");
     }
@@ -401,28 +483,48 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
       await updateLookBookProductStar({ collectionId, product, starred });
       replaceCollection(collectionId, (collection) =>
         updateLookBookProducts(collection, (products) => {
-          const updatedProducts = products.map((item) => (getProductMfrCode(item) === mfrCode ? { ...item, starred } : item));
+          const updatedProducts = products.map((item) =>
+            getProductMfrCode(item) === mfrCode ? { ...item, starred } : item,
+          );
           if (!starred) return updatedProducts;
 
-          const starredProduct = updatedProducts.find((item) => getProductMfrCode(item) === mfrCode);
-          return [starredProduct, ...updatedProducts.filter((item) => getProductMfrCode(item) !== mfrCode)].filter(Boolean);
-        })
+          const starredProduct = updatedProducts.find(
+            (item) => getProductMfrCode(item) === mfrCode,
+          );
+          return [
+            starredProduct,
+            ...updatedProducts.filter(
+              (item) => getProductMfrCode(item) !== mfrCode,
+            ),
+          ].filter(Boolean);
+        }),
       );
       setDrawerProduct((currentProduct) =>
-        getProductMfrCode(currentProduct) === mfrCode ? { ...currentProduct, starred } : currentProduct
+        getProductMfrCode(currentProduct) === mfrCode
+          ? { ...currentProduct, starred }
+          : currentProduct,
       );
-      notification.success({ message: starred ? "Product showcased on top" : "Product removed from top showcase" });
+      notification.success({
+        message: starred
+          ? "Product showcased on top"
+          : "Product removed from top showcase",
+      });
     } catch (error) {
-      notification.error({ message: error.message || "Failed to update product" });
+      notification.error({
+        message: error.message || "Failed to update product",
+      });
     } finally {
       setProductActionId("");
     }
   };
 
-  const drawerTitle = {
-    collectionEdit: "Edit Collection",
-    productView: drawerProduct ? getProductName(drawerProduct) : "Product Details",
-  }[drawerMode] || "Details";
+  const drawerTitle =
+    {
+      collectionEdit: "Edit Collection",
+      productView: drawerProduct
+        ? getProductName(drawerProduct)
+        : "Product Details",
+    }[drawerMode] || "Details";
 
   return (
     <section className={styles.lookBooksShell}>
@@ -434,14 +536,27 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
         </div>
         <div className={styles.headerActions}>
           {hasUnsavedOrderChanges ? (
-            <button type="button" className={styles.saveOrderButton} onClick={onSaveOrder} disabled={reordering}>
+            <button
+              type="button"
+              className={styles.saveOrderButton}
+              onClick={onSaveOrder}
+              disabled={reordering}
+            >
               {reordering ? "Saving..." : "Save Order"}
             </button>
           ) : null}
-          <button type="button" onClick={() => setShowPreview(true)} disabled={loading}>
+          <button
+            type="button"
+            onClick={() => setShowPreview(true)}
+            disabled={loading}
+          >
             <FiEye /> Preview
           </button>
-          <button type="button" onClick={loadLookBooks} disabled={loading || reordering}>
+          <button
+            type="button"
+            onClick={loadLookBooks}
+            disabled={loading || reordering}
+          >
             <FiRefreshCw /> Refresh
           </button>
         </div>
@@ -449,7 +564,8 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
 
       {hasUnsavedOrderChanges ? (
         <div className={styles.unsavedOrderNotice}>
-          You have unsaved order changes. Preview before saving to confirm how it will look in kiosk.
+          You have unsaved order changes. Preview before saving to confirm how
+          it will look in kiosk.
         </div>
       ) : null}
 
@@ -459,8 +575,15 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
           <p>Loading {config.title.toLowerCase()}...</p>
         </div>
       ) : collections.length ? (
-        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
-          <SortableContext items={collections.map((collection) => collection._id)} strategy={rectSortingStrategy}>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={onDragEnd}
+        >
+          <SortableContext
+            items={collections.map((collection) => collection._id)}
+            strategy={rectSortingStrategy}
+          >
             <div className={styles.grid}>
               {collections.map((collection) => (
                 <LookBookCollectionCard
@@ -503,13 +626,33 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
         onCancel={() => setSelectedCollection(null)}
       >
         <div className={styles.productsModalHeader}>
-          <p>{selectedProducts.length} {config.productCountLabel}</p>
+          <p>
+            {selectedProducts.length} {config.productCountLabel}
+          </p>
           <div className={styles.collectionShareActions}>
-          <button type="button" onClick={() => openShare("collection")} disabled={!selectedCollection?._id}>Share Collection</button>
-          {!selectMode && <button type="button" onClick={() => setSelectMode(true)} disabled={!selectableKeys.length}>Select Products</button>}
-          <button type="button" onClick={onEditCollection} disabled={!selectedCollection?._id}>
-            <FiEdit2 /> Edit Collection
-          </button>
+            <button
+              type="button"
+              onClick={() => openShare("collection")}
+              disabled={!selectedCollection?._id}
+            >
+              Share Collection
+            </button>
+            {/* {!selectMode && (
+              <button
+                type="button"
+                onClick={() => setSelectMode(true)}
+                disabled={!selectableKeys.length}
+              >
+                Select Products
+              </button>
+            )} */}
+            <button
+              type="button"
+              onClick={onEditCollection}
+              disabled={!selectedCollection?._id}
+            >
+              <FiEdit2 /> Edit Collection
+            </button>
           </div>
         </div>
         {selectedProducts.length ? (
@@ -531,44 +674,88 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
                   role={selectMode ? "checkbox" : undefined}
                   aria-checked={selectMode ? isSelected : undefined}
                   aria-disabled={selectMode && !selectionKey ? true : undefined}
-                  aria-label={selectMode ? `Select ${getProductName(product)}` : undefined}
+                  aria-label={
+                    selectMode ? `Select ${getProductName(product)}` : undefined
+                  }
                   tabIndex={selectMode && selectionKey ? 0 : undefined}
-                  onClick={selectMode && selectionKey ? () => toggleProductSelection(selectionKey) : undefined}
-                  onKeyDown={selectMode && selectionKey ? (event) => {
-                    if (event.key === "Enter" || event.key === " ") {
-                      event.preventDefault();
-                      toggleProductSelection(selectionKey);
-                    }
-                  } : undefined}
+                  onClick={
+                    selectMode && selectionKey
+                      ? () => toggleProductSelection(selectionKey)
+                      : undefined
+                  }
+                  onKeyDown={
+                    selectMode && selectionKey
+                      ? (event) => {
+                          if (event.key === "Enter" || event.key === " ") {
+                            event.preventDefault();
+                            toggleProductSelection(selectionKey);
+                          }
+                        }
+                      : undefined
+                  }
                 >
-                  {selectMode && <div className={styles.productSelection} aria-hidden="true">
-                    <span className={styles.selectionIndicator}>{isSelected && <FiCheck />}</span>
-                    <span>{isSelected ? "Selected" : "Select product"}</span>
-                  </div>}
+                  {selectMode && (
+                    <div className={styles.productSelection} aria-hidden="true">
+                      <span className={styles.selectionIndicator}>
+                        {isSelected && <FiCheck />}
+                      </span>
+                      <span>{isSelected ? "Selected" : "Select product"}</span>
+                    </div>
+                  )}
                   <div className={styles.productImageWrap}>
-                    {productImage ? <img src={productImage} alt={getProductName(product)} loading="lazy" /> : <FiImage />}
+                    {productImage ? (
+                      <img
+                        src={productImage}
+                        alt={getProductName(product)}
+                        loading="lazy"
+                      />
+                    ) : (
+                      <FiImage />
+                    )}
                   </div>
                   <div className={styles.productInfo}>
                     <h4>{getProductName(product)}</h4>
                     {productPrice ? <p>{productPrice}</p> : null}
                     {productCode ? <small>{productCode}</small> : null}
                   </div>
-                  {!selectMode && <div className={styles.productActions}>
-                    <button type="button" onClick={() => onShowProduct(product)}>
-                      <FiEye /> <span className={styles.productActionLabel}>Show</span>
-                    </button>
-                    <button
-                      type="button"
-                      className={product?.starred ? styles.starredProductButton : ""}
-                      onClick={() => onToggleProductStar(product)}
-                      disabled={!productMfrCode || !!productActionId}
-                    >
-                      <FiStar /> <span className={styles.productActionLabel}>{starring ? "Saving..." : product?.starred ? "Unstar" : "Star"}</span>
-                    </button>
-                    <button type="button" onClick={() => onDeleteProduct(product)} disabled={!productMfrCode || !!productActionId}>
-                      <FiTrash2 /> <span className={styles.productActionLabel}>{deleting ? "Deleting..." : "Delete"}</span>
-                    </button>
-                  </div>}
+                  {!selectMode && (
+                    <div className={styles.productActions}>
+                      <button
+                        type="button"
+                        onClick={() => onShowProduct(product)}
+                      >
+                        <FiEye />{" "}
+                        <span className={styles.productActionLabel}>Show</span>
+                      </button>
+                      <button
+                        type="button"
+                        className={
+                          product?.starred ? styles.starredProductButton : ""
+                        }
+                        onClick={() => onToggleProductStar(product)}
+                        disabled={!productMfrCode || !!productActionId}
+                      >
+                        <FiStar />{" "}
+                        <span className={styles.productActionLabel}>
+                          {starring
+                            ? "Saving..."
+                            : product?.starred
+                              ? "Unstar"
+                              : "Star"}
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => onDeleteProduct(product)}
+                        disabled={!productMfrCode || !!productActionId}
+                      >
+                        <FiTrash2 />{" "}
+                        <span className={styles.productActionLabel}>
+                          {deleting ? "Deleting..." : "Delete"}
+                        </span>
+                      </button>
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -580,15 +767,53 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
             <p>{config.productsEmpty}</p>
           </div>
         )}
-        {selectMode && <div className={styles.productSelectionBar}>
-          <Checkbox checked={selectableKeys.length > 0 && selectedKeyCount === selectableKeys.length} indeterminate={selectedKeyCount > 0 && selectedKeyCount < selectableKeys.length} onChange={(event) => setSelectedProductKeys(event.target.checked ? selectableKeys : [])}>Select all</Checkbox>
-          <span role="status">{selectedKeyCount} selected</span>
-          <div className={styles.selectionBarActions}>
-            <button type="button" onClick={() => setSelectedProductKeys([])} disabled={!selectedKeyCount}>Clear</button>
-            <button type="button" onClick={() => { setSelectMode(false); setSelectedProductKeys([]); }}>Cancel</button>
-            <button type="button" className={styles.shareSelectedButton} onClick={() => openShare("products")} disabled={!selectedKeyCount}>Share Selected</button>
+        {selectMode && (
+          <div className={styles.productSelectionBar}>
+            <Checkbox
+              checked={
+                selectableKeys.length > 0 &&
+                selectedKeyCount === selectableKeys.length
+              }
+              indeterminate={
+                selectedKeyCount > 0 && selectedKeyCount < selectableKeys.length
+              }
+              onChange={(event) =>
+                setSelectedProductKeys(
+                  event.target.checked ? selectableKeys : [],
+                )
+              }
+            >
+              Select all
+            </Checkbox>
+            <span role="status">{selectedKeyCount} selected</span>
+            <div className={styles.selectionBarActions}>
+              <button
+                type="button"
+                onClick={() => setSelectedProductKeys([])}
+                disabled={!selectedKeyCount}
+              >
+                Clear
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectMode(false);
+                  setSelectedProductKeys([]);
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className={styles.shareSelectedButton}
+                onClick={() => openShare("products")}
+                disabled={!selectedKeyCount}
+              >
+                Share Selected
+              </button>
+            </div>
           </div>
-        </div>}
+        )}
       </Modal>
 
       <CustomerShareModal
@@ -636,17 +861,29 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
           <div className={styles.productDetailsPanel}>
             <div className={styles.productDetailsImage}>
               {getProductImage(drawerProduct) ? (
-                <img src={getProductImage(drawerProduct)} alt={getProductName(drawerProduct)} loading="lazy" />
+                <img
+                  src={getProductImage(drawerProduct)}
+                  alt={getProductName(drawerProduct)}
+                  loading="lazy"
+                />
               ) : (
                 <FiImage />
               )}
             </div>
             <div className={styles.productDetailsContent}>
               <h3>{getProductName(drawerProduct)}</h3>
-              {getProductPrice(drawerProduct) ? <p>{getProductPrice(drawerProduct)}</p> : null}
-              {getProductCode(drawerProduct) ? <small>{getProductCode(drawerProduct)}</small> : null}
-              {drawerProduct?.brand ? <span>Brand: {drawerProduct.brand}</span> : null}
-              {drawerProduct?.description ? <span>{drawerProduct.description}</span> : null}
+              {getProductPrice(drawerProduct) ? (
+                <p>{getProductPrice(drawerProduct)}</p>
+              ) : null}
+              {getProductCode(drawerProduct) ? (
+                <small>{getProductCode(drawerProduct)}</small>
+              ) : null}
+              {drawerProduct?.brand ? (
+                <span>Brand: {drawerProduct.brand}</span>
+              ) : null}
+              {drawerProduct?.description ? (
+                <span>{drawerProduct.description}</span>
+              ) : null}
             </div>
           </div>
         ) : null}
@@ -656,13 +893,25 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
               <span className={styles.coverEditLabel}>Cover image</span>
               {editCoverImage ? (
                 <div className={styles.coverPreviewWrap}>
-                  <img src={editCoverImage} alt={`${selectedCollectionName} cover`} />
+                  <img
+                    src={editCoverImage}
+                    alt={`${selectedCollectionName} cover`}
+                  />
                   <div className={styles.coverActions}>
-                    <button type="button" onClick={() => setEditCoverImage("")} disabled={uploadingCoverImage || savingCollection}>
+                    <button
+                      type="button"
+                      onClick={() => setEditCoverImage("")}
+                      disabled={uploadingCoverImage || savingCollection}
+                    >
                       Remove cover
                     </button>
-                    <Dragger {...uploadCoverProps} disabled={uploadingCoverImage || savingCollection}>
-                      <span>{uploadingCoverImage ? "Uploading..." : "Change cover"}</span>
+                    <Dragger
+                      {...uploadCoverProps}
+                      disabled={uploadingCoverImage || savingCollection}
+                    >
+                      <span>
+                        {uploadingCoverImage ? "Uploading..." : "Change cover"}
+                      </span>
                     </Dragger>
                   </div>
                 </div>
@@ -672,8 +921,12 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
                     <Spin />
                   ) : (
                     <Dragger {...uploadCoverProps} disabled={savingCollection}>
-                      <p className="ant-upload-drag-icon"><PictureOutlined /></p>
-                      <p className="ant-upload-text">Click or drag a file to add a cover image</p>
+                      <p className="ant-upload-drag-icon">
+                        <PictureOutlined />
+                      </p>
+                      <p className="ant-upload-text">
+                        Click or drag a file to add a cover image
+                      </p>
                     </Dragger>
                   )}
                 </div>
@@ -681,17 +934,32 @@ const StoreAssistantLookBooks = ({ mode = "lookbooks" }) => {
             </div>
             <label>
               Collection name
-              <input value={editCollectionName} onChange={(event) => setEditCollectionName(event.target.value)} />
+              <input
+                value={editCollectionName}
+                onChange={(event) => setEditCollectionName(event.target.value)}
+              />
             </label>
             <label>
               Description
-              <textarea value={editDescription} onChange={(event) => setEditDescription(event.target.value)} rows={3} />
+              <textarea
+                value={editDescription}
+                onChange={(event) => setEditDescription(event.target.value)}
+                rows={3}
+              />
             </label>
             <div className={styles.collectionEditActions}>
-              <button type="button" onClick={closeDrawer} disabled={savingCollection}>
+              <button
+                type="button"
+                onClick={closeDrawer}
+                disabled={savingCollection}
+              >
                 Cancel
               </button>
-              <button type="button" onClick={onSaveCollection} disabled={savingCollection || !editCollectionName.trim()}>
+              <button
+                type="button"
+                onClick={onSaveCollection}
+                disabled={savingCollection || !editCollectionName.trim()}
+              >
                 {savingCollection ? "Saving..." : "Save"}
               </button>
             </div>

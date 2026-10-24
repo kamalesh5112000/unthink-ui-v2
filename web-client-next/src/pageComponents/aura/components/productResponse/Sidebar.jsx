@@ -28,8 +28,8 @@ const Sidebar = ({
   };
   return (
     <>
-      <div className=" hidden  lg:flex  lg:flex-col lg:w-[70px]  lg:items-center h-full ">
-        <div className="flex-1 flex flex-col gap-8 items-center w-full justify-center">
+      <div className="   flex  lg:flex-col lg:w-[70px]  lg:items-center h-full ">
+        <div className="flex-1 bg-white lg:relative fixed bottom-0 shadow-[0_-4px_12px_3px_rgba(255,255,255,0.5)] z-10 flex lg:flex-col gap-8 items-center w-full justify-center">
        
         <div
           className="flex w-full p-1 cursor-pointer flex-col items-center rounded-lg   text-slate-900 hover:bg-slate-100 hover:text-slate-950"

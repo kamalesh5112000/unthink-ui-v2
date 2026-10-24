@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Tooltip, Spin } from "antd";
+import { Spin } from "antd";
 import { ArrowUpOutlined, HistoryOutlined, FormOutlined, CloseOutlined, Loading3QuartersOutlined, FolderOutlined } from "@ant-design/icons";
 
 import { openWishlistModal } from "../../../wishlist/redux/actions";
@@ -94,50 +94,6 @@ const ChatProducts = ({
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const containerRef = useRef(null);
   const [showScrollBtn, setShowScrollBtn] = useState(false);
-
-  const [isSwipeDrawerOpen, setIsSwipeDrawerOpen] = useState(false);
-
-  const [touchStartX, setTouchStartX] = useState(null);
-  const [touchEndX, setTouchEndX] = useState(null);
-
-  const handleTouchStart = (e) => {
-    setTouchStartX(e.targetTouches[0].clientX);
-  };
-
-  const handleTouchMove = (e) => {
-    setTouchEndX(e.targetTouches[0].clientX);
-  };
-
-  const handleTouchEnd = () => {
-    if (!touchStartX || !touchEndX) return;
-    const diff = touchStartX - touchEndX;
-    if (diff > 50) {
-      setIsSwipeDrawerOpen(true);
-    }
-    setTouchStartX(null);
-    setTouchEndX(null);
-  };
-
-  const [drawerTouchStartX, setDrawerTouchStartX] = useState(null);
-  const [drawerTouchEndX, setDrawerTouchEndX] = useState(null);
-
-  const handleDrawerTouchStart = (e) => {
-    setDrawerTouchStartX(e.targetTouches[0].clientX);
-  };
-
-  const handleDrawerTouchMove = (e) => {
-    setDrawerTouchEndX(e.targetTouches[0].clientX);
-  };
-
-  const handleDrawerTouchEnd = () => {
-    if (!drawerTouchStartX || !drawerTouchEndX) return;
-    const diff = drawerTouchEndX - drawerTouchStartX;
-    if (diff > 50) {
-      setIsSwipeDrawerOpen(false);
-    }
-    setDrawerTouchStartX(null);
-    setDrawerTouchEndX(null);
-  };
 
   useEffect(() => {
     if (onOpenMobileSidebar) {
@@ -298,20 +254,6 @@ const ChatProducts = ({
     [activeSearchOption?.id],
   );
 
-  const isAuraSwipeSectionActive = useMemo(
-    () =>
-      isShopByThemeOptionActive ||
-      isShopALookOptionActiveCustom ||
-      isCompleteTheLookOptionActive ||
-      isProductSearchOptionActive,
-    [
-      isShopByThemeOptionActive,
-      isShopALookOptionActiveCustom,
-      isCompleteTheLookOptionActive,
-      isProductSearchOptionActive,
-    ],
-  );
-
   const isSuggestionsWithProductsAvailable = useMemo(
     () =>
       Object.values(suggestionsWithProducts || {}).some(
@@ -354,10 +296,6 @@ const ChatProducts = ({
     () => (suggestionsWithProducts?.suggestions?.tags || []).slice(0, 6),
     [suggestionsWithProducts?.suggestions?.tags],
   );
-
-  useEffect(() => {
-    setIsSwipeDrawerOpen(false);
-  }, [activeSearchOption]);
 
   const onWishlistClick = () => {
     dispatch(openWishlistModal());
@@ -523,7 +461,7 @@ const ChatProducts = ({
         {!shouldShowShopLookSplitLayout ? productDisplay : null}
 
         {shouldShowShopLookSplitLayout && (
-          <div className={`${styles["chat-products-shop-look-wrapper"]} flex flex-col lg:flex-row`}>
+          <div className="relative flex h-full min-h-0 w-full flex-col lg:flex-row">
             {!isSmartSearchActive ? (
               <Sidebar
                 chatHistory={chatHistory}
@@ -580,161 +518,11 @@ const ChatProducts = ({
                 </div>
               ) : null}
 
-              {productDisplay}
+              {layoutMode === "left" ? "" : productDisplay}
             </div>
           </div>
         ) }
       </div>
-
-      {isMobile && (
-        isAuraSwipeSectionActive ? (
-          <>
-            {showScrollBtn && !isSwipeDrawerOpen && (
-              <div
-                className="fixed top-[75px] right-4 z-[1050] cursor-pointer rounded-full bg-brand border border-white/35 py-2 px-4 text-white font-bold flex items-center justify-center shadow-[0_4px_15px_rgba(114,104,236,0.35),inset_0_1px_0_rgba(255,255,255,0.2)] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:scale-[1.03] hover:shadow-[0_8px_25px_rgba(114,104,236,0.5),inset_0_1px_0_rgba(255,255,255,0.4)] hover:border-white/60 active:scale-[0.97] animate-[auraGlowPulse_2.5s_infinite_ease-in-out,auraGradientShift_4s_infinite_linear]"
-                onClick={() => setIsSwipeDrawerOpen(true)}
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
-                role="button"
-                tabIndex={0}
-              >
-                <div className="flex items-center gap-1.5">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style={{ marginRight: '4px' }} className="inline-block text-[#ffd84d] animate-[auraSparkleRotate_3s_infinite_ease-in-out]">
-                    <path d="M12 2c0 5.523 4.477 10 10 10-5.523 0-10 4.477-10 10 0-5.523-4.477-10-10-10 5.523 0 10-4.477 10-10z" />
-                  </svg>
-                  <span className="text-[11px] tracking-wider uppercase font-bold drop-shadow-[0_1px_2px_color-secondary]">Info & Search</span>
-                </div>
-              </div>
-            )}
-
-            {isSwipeDrawerOpen && (
-              <>
-                <div
-                  className="fixed inset-0 bg-[#0b0d17]/40 backdrop-blur-[4px] z-[1060] transition-opacity duration-300"
-                  style={{ opacity: isSwipeDrawerOpen ? 1 : 0 }}
-                  onClick={() => setIsSwipeDrawerOpen(false)}
-                />
-                <div
-                  className="fixed top-0 right-0 bottom-0 w-[85%] max-w-[420px] bg-white/85 backdrop-blur-[20px] backdrop-saturate-[180%] border-l border-white/40 shadow-[-10px_0_30px_rgba(0,0,0,0.1)] z-[1070] flex flex-col p-4 pb-[calc(16px+env(safe-area-inset-bottom))] transition-transform duration-400 ease-[cubic-bezier(0.16,1,0.3,1)]"
-                  style={{ transform: isSwipeDrawerOpen ? "translateX(0)" : "translateX(100%)" }}
-                  onTouchStart={handleDrawerTouchStart}
-                  onTouchMove={handleDrawerTouchMove}
-                  onTouchEnd={handleDrawerTouchEnd}
-                >
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-[60px] bg-secondary/20 rounded-r" />
-                  <div className="flex items-center justify-between mb-4 border-b border-secondary/10 pb-3">
-                    {/* <h3 className="text-base font-bold text-[#1a2035] m-0 uppercase tracking-wider">
-                      {activeSearchOption?.title || "Aura Info"}
-                    </h3> */}
-                    <button
-                      type="button"
-                      className="bg-transparent border-none cursor-pointer text-[#384467] text-lg flex items-center justify-center p-1 rounded-full transition-colors duration-200 hover:bg-secondary/10 hover:text-secondary"
-                      onClick={() => setIsSwipeDrawerOpen(false)}
-                    >
-                      <CloseOutlined />
-                    </button>
-                  </div>
-                  <div className="flex-1 overflow-y-auto p-1 flex flex-col gap-3 min-h-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-                    {(shopLookPreviewImage || auraServerImage) && (
-                      <div className={styles["chat-products-shop-look-image-wrapper"]} style={{ margin: "0 auto" }}>
-                        <img
-                          src={shopLookPreviewImage || auraServerImage}
-                          alt="PreviewImage"
-                          className={styles["chat-products-shop-look-image"]}
-                        />
-                        {Array.isArray(auraOverlayCoordinates) &&
-                          auraOverlayCoordinates.map((item, index) => {
-                            const leftPercent = (item.point[0] / originalWidth) * 100;
-                            const topPercent = (item.point[1] / originalHeight) * 100;
-                            return (
-                              <Tooltip
-                                key={index}
-                                title={item.attributes.label}
-                                color="blue"
-                              >
-                                <div
-                                  onClick={() => {
-                                    handleSuggestionClick(item.attributes.label);
-                                    setIsSwipeDrawerOpen(false);
-                                  }}
-                                  className={styles["chat-products-overlay-point"]}
-                                  style={{
-                                    left: `${leftPercent}%`,
-                                    top: `${topPercent}%`,
-                                  }}
-                                />
-                              </Tooltip>
-                            );
-                          })}
-                      </div>
-                    )}
-
-                    {widgetHeader && (
-                      <div className={styles["chat-products-shop-look-description-block"]} style={{ margin: "0.25rem 0" }}>
-                        {showChatLoader ? (
-                          <div className="flex flex-col items-center justify-center py-4 gap-2 animate-pulse w-full">
-                            <Spin
-                              indicator={
-                                <Loading3QuartersOutlined
-                                  style={{ fontSize: 20, color: "var(--color-secondary)" }}
-                                  spin
-                                />
-                              }
-                            />
-                            <span className="text-secondary font-medium text-xs tracking-wide">
-                              Loading new description...
-                            </span>
-                          </div>
-                        ) : (
-                          <div
-                            className={styles["chat-products-shop-look-description-text"]}
-                            dangerouslySetInnerHTML={{ __html: widgetHeader }}
-                          />
-                        )}
-                      </div>
-                    )}
-
-                    <div className="mt-2">
-                      <ChatInput
-                        showChatLoader={showChatLoader}
-                        uploadImageProps={uploadImageProps}
-                        chatImageUrl={chatImageUrl}
-                        chatImagePreviewUrl={chatImagePreviewUrl}
-                        isUploadingImage={isUploadingImage}
-                        handleClearChatImage={handleClearChatImage}
-                        activeSearchOption={activeSearchOption}
-                        chatTypeKey={chatTypeKey}
-                        inputRef={inputRef}
-                        localChatMessage={localChatMessage}
-                        handleInputChange={handleInputChange}
-                        handlePromptKeyDown={handlePromptKeyDown}
-                        handleSubmitChatInput={() => {
-                          handleSubmitChatInput();
-                          setIsSwipeDrawerOpen(false);
-                        }}
-                        isFollowUpQuery={isFollowUpQuery}
-                        isDrawer={true}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-          </>
-        ) : (
-          ''
-          // <button
-          //   className={`${styles["chat-products-scroll-top-btn"]} ${showScrollBtn ? styles["chat-products-scroll-top-btn-visible"] : ""}`}
-          //   onClick={handleScrollToDescription}
-          //   title="Go to Description"
-          //   type="button"
-          // >
-          //   <ArrowUpOutlined style={{ marginRight: '6px' }} />
-          //   <span>Go to Description</span>
-          // </button>
-        )
-      )}
 
       <button
         className={`fixed bottom-[145px] right-5 w-[42px] h-[42px] rounded-full bg-brand text-white border border-white/15 shadow-[0_8px_24px_rgba(114,104,236,0.4)] flex items-center justify-center text-[18px] cursor-pointer z-[1000] transition-all duration-300 hover:bg-brand hover:scale-110 active:scale-95 ${
