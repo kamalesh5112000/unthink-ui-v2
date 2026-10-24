@@ -3,6 +3,10 @@ import React, { useCallback, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Skeleton } from "antd";
 import { ArrowLeftOutlined, CloseOutlined } from "@ant-design/icons";
+import { Swiper, SwiperSlide } from "swiper/react";
+import SwiperCore, { FreeMode } from "swiper";
+import "swiper/css";
+import "swiper/css/free-mode";
 
 import AuraResponseProducts from "./AuraResponseProducts";
 import {
@@ -12,6 +16,8 @@ import {
 	setMoreSearchSelectedTag,
 } from "../../hooks/chat/redux/actions";
 import { isEmpty } from "../../helper/utils";
+
+SwiperCore.use([FreeMode]);
 
 const AuraResponseProductsWithTags = ({
 	enableClickFetchRec,
@@ -204,21 +210,66 @@ const AuraResponseProductsWithTags = ({
 						/>
 					</div>
 				) : null}
+				<Swiper
+					slidesPerView="auto"
+					freeMode
+					spaceBetween={8}
+					className="w-full"
+					style={{ padding: 0 }}>
 					{!isEmpty(allProductList) && tags.length > 1 ? (
+						<SwiperSlide key='All' style={{ width: "auto" }}>
+							<div
+								className={`relative border-gray-300 flex h-[34px] w-max min-w-12 items-center justify-center rounded-full px-1 transition-all duration-200 ease-in-out max-[768px]:min-w-0 max-[768px]:py-0.5 ${!selectedTag && isAllEnabled
+									? 'bg-secondary text-white '
+									: isAllEnabled
+										? 'cursor-pointer border border-common [&_h5]:cursor-pointer [&_h5]:font-medium [&_h5]:text-highlight [&_.aura-tag-close-icon]:cursor-pointer [&_.aura-tag-close-icon]:border-highlight'
+										: 'cursor-pointer border border-secondary/30 [&_h5]:cursor-pointer [&_h5]:font-medium [&_h5]:text-highlight [&_.aura-tag-close-icon]:cursor-pointer [&_.aura-tag-close-icon]:bg-secondary/10 [&_.aura-tag-close-icon]:text-secondary'
+									}`}
+								onClick={() => isAllEnabled && handleSuggestionClick("")}>
+								<h5
+									className="m-0 cursor-inherit px-2.5 text-xs font-normal leading-4 sm:px-3 md:text-sm max-[768px]:px-1.5 max-[768px]:py-0.5">
+									All
+								</h5>
+								{!isAllEnabled ? (
+									<Skeleton.Button
+										className="absolute top-0 h-full [&_.ant-skeleton-button]:h-full"
+										active
+										shape='round'
+										block
+									/>
+								) : null}
+							</div>
+						</SwiperSlide>
+					) : null}
+				{tags?.map((suggestion, index) => (
+					<SwiperSlide key={index} style={{ width: "auto" }}>
 						<div
-							key='All'
-							className={`relative flex h-[34px] w-max min-w-12 items-center justify-center rounded-full px-1 transition-all duration-200 ease-in-out max-[768px]:min-w-0 max-[768px]:py-0.5 ${!selectedTag && isAllEnabled
-								? 'bg-secondary text-white '
-								: isAllEnabled
+							id={`tag-${suggestion}`}
+							className={`relative border-gray-300 flex h-[34px]   w-max min-w-12 items-center justify-center rounded-full px-1 transition-all duration-200 ease-in-out max-[768px]:min-w-0 max-[768px]:py-0.5 ${suggestion === selectedTag
+								? 'bg-secondary text-white font-medium'
+								: checkIsTagEnabled(suggestion)
 									? 'cursor-pointer border border-common [&_h5]:cursor-pointer [&_h5]:font-medium [&_h5]:text-highlight [&_.aura-tag-close-icon]:cursor-pointer [&_.aura-tag-close-icon]:border-highlight'
-									: 'cursor-pointer border border-secondary/30 [&_h5]:cursor-pointer [&_h5]:font-medium [&_h5]:text-highlight [&_.aura-tag-close-icon]:cursor-pointer [&_.aura-tag-close-icon]:bg-secondary/10 [&_.aura-tag-close-icon]:text-secondary'
-								}`}
-							onClick={() => isAllEnabled && handleSuggestionClick("")}>
+									: 'cursor-pointer border border-common [&_h5]:cursor-pointer [&_h5]:font-medium [&_h5]:text-highlight [&_.aura-tag-close-icon]:cursor-pointer [&_.aura-tag-close-icon]:bg-secondary/10 [&_.aura-tag-close-icon]:text-secondary'
+								} ${tags.length > 1 ? 'gap-1 ' : ''}`}>
 							<h5
-								className="m-0 cursor-inherit px-2.5 text-xs font-normal leading-4 sm:px-3 md:text-sm max-[768px]:px-1.5 max-[768px]:py-0.5">
-								All
+								className="m-0 cursor-inherit px-2.5 text-xs font-normal leading-4 sm:px-3 md:text-sm max-[768px]:px-1.5 max-[768px]:py-0.5"
+								onClick={() =>
+									checkIsTagEnabled(suggestion) &&
+									handleSuggestionClick(suggestion)
+								}>
+								{suggestion}
 							</h5>
-							{!isAllEnabled ? (
+							{tags.length > 1 ? (
+								<CloseOutlined
+									className="aura-tag-close-icon mr-1.5 ml-0.5 flex h-[18px] w-[18px] items-center justify-center rounded-full border border-white text-xs"
+									role='button'
+									onClick={() =>
+										checkIsTagEnabled(suggestion) &&
+										handleRemoveTagData(suggestion)
+									}
+								/>
+							) : null}
+							{!checkIsTagEnabled(suggestion) ? (
 								<Skeleton.Button
 									className="absolute top-0 h-full [&_.ant-skeleton-button]:h-full"
 									active
@@ -227,45 +278,9 @@ const AuraResponseProductsWithTags = ({
 								/>
 							) : null}
 						</div>
-					) : null}
-				{tags?.map((suggestion, index) => (
-					<div
-						id={`tag-${suggestion}`}
-						key={index}
-						className={`relative flex h-[34px] border-common w-max min-w-12 items-center justify-center rounded-full px-1 transition-all duration-200 ease-in-out max-[768px]:min-w-0 max-[768px]:py-0.5 ${suggestion === selectedTag
-							? 'bg-secondary text-white font-medium'
-							: checkIsTagEnabled(suggestion)
-								? 'cursor-pointer border border-common [&_h5]:cursor-pointer [&_h5]:font-medium [&_h5]:text-highlight [&_.aura-tag-close-icon]:cursor-pointer [&_.aura-tag-close-icon]:border-highlight'
-								: 'cursor-pointer border border-common [&_h5]:cursor-pointer [&_h5]:font-medium [&_h5]:text-highlight [&_.aura-tag-close-icon]:cursor-pointer [&_.aura-tag-close-icon]:bg-secondary/10 [&_.aura-tag-close-icon]:text-secondary'
-							} ${tags.length > 1 ? 'gap-1 pl-2' : ''}`}>
-						<h5
-							className="m-0 cursor-inherit px-2.5 text-xs font-normal leading-4 sm:px-3 md:text-sm max-[768px]:px-1.5 max-[768px]:py-0.5"
-							onClick={() =>
-								checkIsTagEnabled(suggestion) &&
-								handleSuggestionClick(suggestion)
-							}>
-							{suggestion}
-						</h5>
-						{tags.length > 1 ? (
-							<CloseOutlined
-								className="aura-tag-close-icon mr-1.5 ml-0.5 flex h-[18px] w-[18px] items-center justify-center rounded-full border border-white text-xs"
-								role='button'
-								onClick={() =>
-									checkIsTagEnabled(suggestion) &&
-									handleRemoveTagData(suggestion)
-								}
-							/>
-						) : null}
-						{!checkIsTagEnabled(suggestion) ? (
-							<Skeleton.Button
-								className="absolute top-0 h-full [&_.ant-skeleton-button]:h-full"
-								active
-								shape='round'
-								block
-							/>
-						) : null}
-					</div>
+					</SwiperSlide>
 				))}
+				</Swiper>
 			</div>
 
 			<AuraResponseProducts
@@ -276,6 +291,7 @@ const AuraResponseProductsWithTags = ({
 				moreProducts={moreProductToShow}
 				RecomTag={recommendationsTagToShow}
 				tag={tagToShow}
+				availableTags={tags}
 				suggestionsProducts={suggestionsProducts}
 				isTagEnabled={isTagEnabled}
 				enableClickFetchRec={enableClickFetchRec}
