@@ -87,7 +87,7 @@ const ProductCardHeaderTop = ({
     
       {enableSelect && product?.custom_product !== false && (
         <div
-          className={`m-1 flex h-6 w-6 items-center self-baseline box-border lg:pl-0 lg:pt-0 ${size === "small" ? "pl-1 pt-1" : ""}`}
+          className={`m-1 flex h-6 w-6 items-center self-baseline box-border lg:pl-0 lg:pt-0 ${size === "small" ? "pl-1 pt-1 absolute top-1 right-1" : ""}`}
         >
           <input
             type="checkbox"
@@ -102,7 +102,7 @@ const ProductCardHeaderTop = ({
       ) }
       <>
           <ProductRemoveAction
-            isVisible={showWishlistModal && isDefaultWidget || isActionCoverWidget}
+            isVisible={showWishlistModal && isDefaultWidget && !enableSelect|| isActionCoverWidget}
             size={size}
             onRemove={removeFromWishlistClick}
             hideOnMedium
