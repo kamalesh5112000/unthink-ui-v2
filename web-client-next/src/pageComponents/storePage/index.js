@@ -1363,7 +1363,8 @@ const isAdminLog = authUser?.user_name ===  super_admin;
 										)}
 										{/* hidden for now temporarily */}
 										{isStoreHomePage && (
-											<CreatorsListView pageUser={pageUser} />
+											// <CreatorsListView pageUser={pageUser} />
+											''
 										)}
 
 										{isStoreHomePage &&
