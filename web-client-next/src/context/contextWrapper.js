@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { notification } from "antd";
 
@@ -44,7 +44,12 @@ import { socket, SocketContext } from "./socketV2";
 import useAudio from "../hooks/chat/useAudio";
 import { handleRecProductClick } from "../pageComponents/recommendations/redux/actions";
 import { updateWishlist } from "../pageComponents/wishlistActions/updateWishlist/redux/actions";
-import { CHAT_TYPE_CHAT, COLLECTION_GENERATED_BY_DESC_BASED, EDIT_ACTION } from "../constants/codes";
+import {
+	CHAT_SEARCH_OPTION_ID,
+	CHAT_TYPE_CHAT,
+	COLLECTION_GENERATED_BY_DESC_BASED,
+	EDIT_ACTION,
+} from "../constants/codes";
 import { collectionPageAPIs } from "../helper/serverAPIs";
 import { replaceAndUpdateUserCollectionData } from "../pageComponents/Auth/redux/actions";
 
@@ -58,6 +63,7 @@ const ContextWrapper = ({ children }) => {
 		showChatLoader,
 		userDataSent,
 		isFreshSearch,
+		activeSearchOption,
 	] = useSelector((state) => [
 		state.auth.user,
 		state.chatV2.socketId,
@@ -67,11 +73,17 @@ const ContextWrapper = ({ children }) => {
 		state.chatV2.showChatLoader,
 		state.chatV2.userDataSent,
 		state.chatV2.isFreshSearch,
+		state.chatV2.activeSearchOption || {},
 	]);
-	// console.log('socketId',socketId);
+	// console.log('activeSearchOption',activeSearchOption);
 	
 	const dispatch = useDispatch();
 	const { onTrackStream } = useAudio(isAuraSpeaking);
+	const activeSearchOptionRef = useRef(activeSearchOption);
+
+	useEffect(() => {
+		activeSearchOptionRef.current = activeSearchOption;
+	}, [activeSearchOption]);
 
 	const sendSocketClientMessage = ({
 		message,
@@ -230,7 +242,12 @@ const ContextWrapper = ({ children }) => {
 	 
 
 
-		dispatch(setShowChatLoader(false));
+		const shouldWaitForSuggestionProducts =
+			activeSearchOptionRef.current?.id === CHAT_SEARCH_OPTION_ID.product_search;
+
+		if (!shouldWaitForSuggestionProducts) {
+			dispatch(setShowChatLoader(false));
+		}
 
 		if (isDebugCookie()) console.timeEnd("##responseTime"); // added for testing purpose only . should be remove later
 
@@ -361,6 +378,7 @@ const ContextWrapper = ({ children }) => {
 			}
 			if (data.products) {
 				dispatch(setSuggestionsProducts(data.products));
+				dispatch(setShowChatLoader(false));
 			}
 		}
 	};

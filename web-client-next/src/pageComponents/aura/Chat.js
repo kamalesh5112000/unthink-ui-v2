@@ -245,7 +245,7 @@ const Chat = ({
             showAuraIntro && dispatch(setShowAuraIntro(false));
             // onChatClick && onChatClick();
           }}>
-          {isBTNormalUserLoggedIn ? (
+          {/* {isBTNormalUserLoggedIn ? (
             <div className="h-10">
               <div className={`flex items-center border border-brand rounded-full gap-1 p-1 ${
                 // aura_header_theme === "dark" ? "bg-gray-100 border-gray-100" : ""
@@ -255,7 +255,7 @@ const Chat = ({
                 <TypeSearchUIRender />
               </div>
             </div>
-          ) : null}
+          ) : null} */}
 
           {inputControls?.length && !showChatModal ? (
             <div className="flex items-center gap-2 pl-0">
