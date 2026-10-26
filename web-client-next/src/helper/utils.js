@@ -1014,6 +1014,24 @@ export const AdminCheck = (authUser, currentStoreName, adminUserId, admin_list) 
 	return !!(isUserIdMatch || isEmailAdmin);
 };
 
+const getUserEmail = (user) => user?.email || user?.emailId || user?.currentUser?.email;
+
+const hasEmailInList = (list, email) => {
+	if (!email || !Array.isArray(list)) return false;
+
+	return !!list.find((item) => (typeof item === "string" ? item : getUserEmail(item)) === email);
+};
+
+export const canManageStoreSettings = (storeData, authUser, isStoreAdminLoggedIn) => {
+	const email = getUserEmail(authUser);
+
+	return !!(
+		hasEmailInList(storeData?.admin_list, email) ||
+		hasEmailInList(storeData?.associate_seller, email) ||
+		isStoreAdminLoggedIn
+	);
+};
+
 export const cleanImage = (img)=> typeof img === "string" ? img.replace(/"/g, "").trim() : "";
 export const KIOSK_LOGIN_STORAGE_KEY = "Kiosk-login";
 
