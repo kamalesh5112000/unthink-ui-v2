@@ -88,6 +88,7 @@ const AuraResponseProducts = ({
 	moreProducts = {},
 	RecomTag,
 	tag,
+	availableTags = [],
 	suggestionsProducts,
 	isTagEnabled = false,
 	enableClickFetchRec,
@@ -166,8 +167,7 @@ const [notData,setNotData] = useState(null)
 		show_filters = {},
 		filters: productsFilters = {},
 		isLoading = false,
-	} = products;
-
+	} = products
 	const { text: requestedText, image_url: requestedImageUrl } =
 		widgetHeaderRequest;
 	const { filter_settings = {}, catalog_attributes = [] } = storeData;
@@ -185,7 +185,7 @@ const [notData,setNotData] = useState(null)
 		});
 		return obj;
 	}, [productsFilters, displayableFilter]);
-
+	
 	useEffect(() => {
 		const optionalFilters = productsFilters.optional_filters || [];
 		const keys = Object.keys(filters).filter(
@@ -248,6 +248,10 @@ const [notData,setNotData] = useState(null)
 
 	const sendSocketMessage = (newFilters = {}, page = currentPage) => {
 		const filtersToSubmit = { ...newFilters };
+		const tagsToSubmit = [
+			...(currentTag === "all" ? availableTags : [tag]),
+			products.selectedAdditionalTag,
+		].filter(Boolean);
 
 		filtersToSubmit.optional_filters = checked.current;
 
@@ -256,7 +260,7 @@ const [notData,setNotData] = useState(null)
 		}
 		const finalFilters = removeEmptyItems(filtersToSubmit);
 		sendMessage(requestedText || undefined, requestedImageUrl || undefined, {
-			tags: currentTag === "all" ? [] : [tag],
+			tags: [...new Set(tagsToSubmit)],
 			filters: !isEmpty(finalFilters) ? finalFilters : undefined,
 			tag_map: show_filters.tag_map,
 			show_filters,
