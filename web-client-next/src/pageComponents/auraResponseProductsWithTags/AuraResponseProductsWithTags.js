@@ -201,7 +201,7 @@ const AuraResponseProductsWithTags = ({
 				/>
 			) : null}
 
-			<div className="mb-4 flex flex-wrap gap-3 max-[768px]:mb-3 max-[768px]:w-full max-[768px]:gap-2">
+			<div className="mb-4 flex flex-wrap gap-3 max-[768px]:mb-3 max-[768px]:w-full max-[768px]:gap-2 ">
 				{isProductSearchOptionActive ? (
 					<div className="flex h-[60px] w-full shrink-0 text-highlight hover:text-secondary">
 						<ArrowLeftOutlined

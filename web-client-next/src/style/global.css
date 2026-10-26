@@ -23,11 +23,12 @@
 }
 [data-theme="giva_neeladri_hs"],
 [data-theme="giva_indiranagar2_hs"] {
-  --color-brand: #B63753;
-  --color-secondary: #DCB4B3;
-  --color-accent: #D1B8A0;
+  --color-brand: #981336;
+  --color-secondary: #E9718B;
+  --color-accent: #FFDDE4;
   --color-tertiary: #D6CEBE;
 }
+
 @theme {
   --color-kiosk-primary:#B63753;
   --color-kiosk-secondary:#DCB4B3;

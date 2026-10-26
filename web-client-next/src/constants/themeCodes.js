@@ -23,7 +23,7 @@ export const THEME_CODES = {
 		},
 		header: {
 			announcement_bar_bg: "var(--color-secondary)",
-			announcement_bar_text: "black",
+			announcement_bar_text: "white",
 			header_bg: "#f2f2f2",
 			font_weight:'860'
 		},
