@@ -23,6 +23,7 @@ function GuestUserPopUp({
   persistKioskLogin = false,
   cookieExpireDays = DEFAULT_GUEST_COOKIE_EXPIRE_DAYS,
   isUserLogin,
+  login_msg,
 }) {
   const dispatch = useDispatch();
   const [guestData, setGuestData] = useState({ email: "", phone: "" });
@@ -138,9 +139,11 @@ function GuestUserPopUp({
 
          
 
-          notification.success({
-            message: "Login Successfully",
-          });
+          if (login_msg !== false) {
+            notification.success({
+              message: "Login Successfully",
+            });
+          }
           closePopup({ skipOnClose: true });
           await onSuccess?.({
             userId,
@@ -171,6 +174,7 @@ function GuestUserPopUp({
       validateEmail,
       dispatch,
       isUserLogin,
+      login_msg,
     ],
   );
 

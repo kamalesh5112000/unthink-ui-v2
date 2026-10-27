@@ -694,6 +694,7 @@ const [notData,setNotData] = useState(null)
 					waitForAuth: false,
 					onSuccess: handleGuestSuccess,
 					onSkip: handleGuestSkip,
+					login_msg:false,
 				});
 				return;
 			}
