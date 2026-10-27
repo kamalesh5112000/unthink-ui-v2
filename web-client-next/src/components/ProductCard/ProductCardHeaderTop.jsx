@@ -102,7 +102,7 @@ const ProductCardHeaderTop = ({
       ) }
       <>
           <ProductRemoveAction
-            isVisible={showWishlistModal && isDefaultWidget && !enableSelect|| isActionCoverWidget}
+            isVisible={showWishlistModal && isDefaultWidget && !enableSelect || isActionCoverWidget && !enableSelect}
             size={size}
             onRemove={removeFromWishlistClick}
             hideOnMedium

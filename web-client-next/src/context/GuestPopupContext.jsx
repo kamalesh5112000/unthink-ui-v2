@@ -72,6 +72,7 @@ export const GuestPopupProvider = ({ children }) => {
       onSkip,
       onCancel,
       metadata,
+      login_msg,
       ...options
     } = {}) => {
       const id = `${Date.now()}-${Math.random()}`;
@@ -83,6 +84,7 @@ export const GuestPopupProvider = ({ children }) => {
         onSuccess,
         onSkip,
         onCancel,
+        login_msg,
         waitForAuth: options.waitForAuth ?? DEFAULT_POPUP_OPTIONS.waitForAuth,
       };
       executionRef.current = null;
@@ -90,6 +92,7 @@ export const GuestPopupProvider = ({ children }) => {
       setPopupOptions({
         ...DEFAULT_POPUP_OPTIONS,
         ...options,
+        login_msg,
       });
       dispatch(GuestPopUpShow(true));
     },
@@ -213,6 +216,7 @@ export const GuestPopupProvider = ({ children }) => {
         phoneValidator={popupOptions.phoneValidator}
         phoneErrorMessage={popupOptions.phoneErrorMessage}
         isUserLogin={popupOptions.refreshUserInfo ?? !isUserLogin}
+        login_msg={popupOptions.login_msg}
         onSuccess={handleSuccess}
         onSkip={handleSkip}
         onClose={handleCancel}
