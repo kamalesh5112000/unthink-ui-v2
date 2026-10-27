@@ -20,6 +20,7 @@ import {
   setChatProductsData,
   setShowChatModal,
   resetAuraSearchResponse,
+  restoreAuraSearchResponse,
 } from "../../hooks/chat/redux/actions";
 import { useChat } from "../../hooks/chat/useChat";
 import Chat from "./Chat";
@@ -49,6 +50,13 @@ const ChatContainer = ({ disabledOutSideClick, config, trackCollectionData, isBT
     searchOptions,
     admin_list,
     storeData,
+    chatProductsData,
+    products,
+    shopALookData,
+    suggestionsWithProducts,
+    widgetHeader,
+    widgetImage,
+    lastAuraResponse,
   ] = useSelector((state) => [
     state.auth.user,
     state.chatV2.userDataSent,
@@ -62,6 +70,13 @@ const ChatContainer = ({ disabledOutSideClick, config, trackCollectionData, isBT
     state.store.data.searchOptions || [],
     state.store.data.admin_list,
     state.store.data,
+    state.chatV2.chatProductsData || [],
+    state.chatV2[CHAT_TYPES_KEYS[CHAT_TYPE_CHAT].products] || {},
+    state.chatV2[CHAT_TYPES_KEYS[CHAT_TYPE_CHAT].shopALook] || {},
+    state.chatV2.suggestions || {},
+    state.chatV2.widgetHeader,
+    state.chatV2.widgetImage,
+    state.chatV2.lastAuraResponse,
   ]);
   
 
@@ -84,6 +99,31 @@ const ChatContainer = ({ disabledOutSideClick, config, trackCollectionData, isBT
 
   const { sendMessage, sendShopALookImageUrl } = useChat();
   const setMessage = (message) => dispatch(setChatMessage(message));
+  const hasExistingAuraResponse =
+    Boolean(widgetHeader) ||
+    Boolean(widgetImage) ||
+    chatProductsData.length > 0 ||
+    Object.keys(products).length > 0 ||
+    Object.keys(shopALookData).length > 0 ||
+    (suggestionsWithProducts?.allProductList?.length ?? 0) > 0;
+  const hasProductResponse =
+    chatProductsData.length > 0 ||
+    Object.keys(products).length > 0 ||
+    Object.keys(shopALookData).length > 0 ||
+    (suggestionsWithProducts?.allProductList?.length ?? 0) > 0;
+  const hasLastProductResponse =
+    (lastAuraResponse?.chatProductsData?.length ?? 0) > 0 ||
+    Object.keys(lastAuraResponse?.products || {}).length > 0 ||
+    Object.keys(lastAuraResponse?.shopALook || {}).length > 0 ||
+    (lastAuraResponse?.suggestions?.allProductList?.length ?? 0) > 0;
+
+  useEffect(() => {
+    if (!isAuraChatPage || hasProductResponse || !hasLastProductResponse) {
+      return;
+    }
+
+    dispatch(restoreAuraSearchResponse());
+  }, [dispatch, hasLastProductResponse, hasProductResponse, isAuraChatPage]);
 
   const isAdminLoggedIn = AdminCheck(user?.data, current_store_name, adminUserId, admin_list);
 
@@ -110,16 +150,15 @@ const ChatContainer = ({ disabledOutSideClick, config, trackCollectionData, isBT
     if (refParam === "aura") dispatch(setShowChatModal(true));
   }, []);
 
-  useEffect(() => {
-    if (!isAuraChatPage) return;
+  // useEffect(() => {
+  //   if (!isAuraChatPage) return;
 
-    dispatch(setShowChatModal(true));
-    dispatch(resetAuraSearchResponse());
-    dispatch(setChatMessage(""));
-    dispatch(setServerChatMessage(""));
-    dispatch(setChatProductsData([]));
-  }, [dispatch, isAuraChatPage]);
-
+  //   dispatch(setShowChatModal(true));
+  //   dispatch(resetAuraSearchResponse());
+  //   dispatch(setChatMessage(""));
+  //   dispatch(setServerChatMessage(""));
+  //   dispatch(setChatProductsData([]));
+  // }, [dispatch, isAuraChatPage]);
   useEffect(() => {
     if (widgetHeaderRequest?.metadata?.searchOptionId !== activeSearchOption?.id) setIsFollowUpQuery(false);
   }, [widgetHeaderRequest?.metadata?.searchOptionId, activeSearchOption?.id]);
@@ -160,13 +199,26 @@ const ChatContainer = ({ disabledOutSideClick, config, trackCollectionData, isBT
     if (user?.data?.user_id && userDataSent) {
       if (auraSearchText) {
       } else {
+        if (hasExistingAuraResponse) return;
+
         sendFinalMessage(defaultHiMessage);
         dispatch(setChatMessage(chatMessage));
         dispatch(setServerChatMessage(""));
         dispatch(setChatProductsData([]));
       }
     }
-  }, [auraSearchText, isAuraChatPage, user?.data?.user_id, userDataSent]);
+  }, [
+    auraSearchText,
+    isAuraChatPage,
+    user?.data?.user_id,
+    userDataSent,
+    widgetHeader,
+    widgetImage,
+    chatProductsData.length,
+    products,
+    shopALookData,
+    suggestionsWithProducts?.allProductList?.length,
+  ]);
 
   const chatInputMetadata = useMemo(
     () =>

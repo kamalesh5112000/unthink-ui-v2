@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Image, Dropdown, Menu, Typography, notification} from "antd";
+import { Image, Dropdown, Menu, Typography, notification } from "antd";
 import {
   // MenuOutlined,
   CloseOutlined,
@@ -54,6 +54,7 @@ import {
   makeBodyOverflowUnset,
   getIsSellerLoggedIn,
   AdminCheck,
+  canManageStoreSettings,
   getThemeCollectionsPagePath,
 } from "../../helper/utils";
 import AttributionModal from "../shared/AttributionModal";
@@ -81,7 +82,10 @@ import { connectVenlyWallet } from "../earnedRewardModal/redux/actions";
 import { FaRegHeart } from "react-icons/fa";
 import styles from "./storePage.module.scss";
 import { THEME_ALL } from "../../constants/themeCodes";
-import { fetchMyTryonsCollection, fetchMyWishlistCollection } from "./redux/action";
+import {
+  fetchMyTryonsCollection,
+  fetchMyWishlistCollection,
+} from "./redux/action";
 
 const { Text } = Typography;
 
@@ -113,7 +117,7 @@ const Header = ({
   pageUser,
   isRootPage,
   setisDropDown,
-  isAuraChatPage
+  isAuraChatPage,
 }) => {
   const navigate = useNavigate();
   const [
@@ -223,7 +227,11 @@ const Header = ({
 
   const onSignOut = () => {
     showMenu && setShowMenu(false);
-    router.push(hasKioskAccess || router.pathname.startsWith("/kiosk") ? "/kiosk/signout" : "/signout");
+    router.push(
+      hasKioskAccess || router.pathname.startsWith("/kiosk")
+        ? "/kiosk/signout"
+        : "/signout",
+    );
   };
 
   const aura_header_theme = config.aura_header_theme;
@@ -258,7 +266,10 @@ const Header = ({
   const isSellerLoggedIn = useMemo(
     () =>
       (isAdminLoggedIn ||
-        getIsSellerLoggedIn(storeSellerList,currentUser.emailId || currentUser?.phone)) &&
+        getIsSellerLoggedIn(
+          storeSellerList,
+          currentUser.emailId || currentUser?.phone,
+        )) &&
       isMyProductsEnable,
     [isAdminLoggedIn, isMyProductsEnable, storeSellerList, currentUser.emailId],
   );
@@ -269,6 +280,11 @@ const Header = ({
       currentUser.user_name &&
       currentUser.user_name === super_admin,
     [currentUser.user_name],
+  );
+
+  const canManageStore = useMemo(
+    () => canManageStoreSettings(storeData, authUser, isStoreAdminLoggedIn),
+    [storeData, authUser, isStoreAdminLoggedIn],
   );
 
   const showProfileIcon = useMemo(
@@ -324,8 +340,8 @@ const Header = ({
       //   ),
       // });
     } else {
-      items.push(
-        {
+      if (canManageStore) {
+        items.push({
           key: "createcollections",
           className: styles.headerMenuItemPy2,
           label: (
@@ -336,8 +352,9 @@ const Header = ({
               Create {WISHLIST_TITLE}
             </Link>
           ),
-        },
-
+        });
+      }
+      items.push(
         {
           key: "My Collections",
           className: styles.headerMenuItemPy2,
@@ -364,15 +381,14 @@ const Header = ({
             showMenu && setShowMenu(false);
           },
         },
-          {
+        {
           key: "my points",
           className: styles.headerMenuItemPy2,
           label: (
-            <Link className={styles.headerMenuLinkTextBase} href={'/my-points'}>
+            <Link className={styles.headerMenuLinkTextBase} href={"/my-points"}>
               My points
             </Link>
           ),
- 
         },
       );
       if (window.innerWidth <= 1024) {
@@ -435,7 +451,7 @@ const Header = ({
         },
       });
 
-      if (enablePlist && !currentUser.trial_user) {
+      if (canManageStore) {
         items.push({
           key: "store_settings",
           className: styles.headerMenuItemPy2,
@@ -472,7 +488,6 @@ const Header = ({
           label: <span className={styles.headerMenuSpanTextBase}>Stats</span>,
         });
       }
-
 
       if (
         storeData?.is_droppWallet_connect_enabled &&

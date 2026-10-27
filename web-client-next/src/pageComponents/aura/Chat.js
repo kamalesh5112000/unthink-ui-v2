@@ -13,6 +13,7 @@ import {
   setShowAuraIntro,
   setShowChatLoader,
   setAuraHelperMessage,
+  clearLastAuraResponse,
 } from "../../hooks/chat/redux/actions";
 import header_aura from "../../images/chat/header_aura_image_transparent.png";
 import star_ai_icon_logo from "../../images/unthink_star_ai_icon.svg";
@@ -241,6 +242,7 @@ const Chat = ({
             !isBTInstance ? "border border-gray-300" : ""
           }`}
           onClick={() => {
+            dispatch(clearLastAuraResponse())
             router.push("/search");
             showAuraIntro && dispatch(setShowAuraIntro(false));
             // onChatClick && onChatClick();

@@ -7,6 +7,7 @@ import {
   COLLECTIONS_ID,
 } from "../../../../constants/codes";
 import {
+  clearLastAuraResponse,
   resetAuraSearchResponse,
   setActiveSearchOption,
   setShowChatModal,
@@ -79,6 +80,7 @@ const SearchOptionsTab = ({
 
     dispatch(setActiveSearchOption(option));
     dispatch(resetAuraSearchResponse());
+    dispatch(clearLastAuraResponse());
     setIsSearchOptionsVisible(false);
   };
 
