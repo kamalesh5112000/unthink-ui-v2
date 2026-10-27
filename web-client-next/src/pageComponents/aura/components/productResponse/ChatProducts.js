@@ -12,6 +12,7 @@ import {
 import { setSuggestionsSelectedTag } from "../../../../hooks/chat/redux/actions";
 import styles from "./ChatProducts.module.css";
 import ChatInput from "./ChatInput";
+import GoBack from "../../../../components/common/GoBack";
 import ProductDisplay from "./ProductDisplay";
 import Sidebar from "./Sidebar";
 import SearchWorkspace from "./SearchWorkspace";
@@ -457,7 +458,7 @@ const ChatProducts = ({
               </div>
             </>
           ))}
-
+        {isMobile ?  <GoBack  handleGoBack={handleGoBack} Home /> : null }
         {!shouldShowShopLookSplitLayout ? productDisplay : null}
 
         {shouldShowShopLookSplitLayout && (

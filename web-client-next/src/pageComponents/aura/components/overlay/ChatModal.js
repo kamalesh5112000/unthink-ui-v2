@@ -24,6 +24,7 @@ import {
   resetAuraSearchResponse,
   clearLastAuraResponse,
   setSuggestionsSelectedTag,
+  restoreAuraSearchResponse,
 } from "../../../../hooks/chat/redux/actions";
 import {
   enable_recommendations,
@@ -293,6 +294,7 @@ const ChatModal = ({
     dispatch(clearLastAuraResponse());
     setIsFollowUpQuery(false);
     sessionStorage.removeItem("widgetHeaderRequestHistory");
+    dispatch(restoreAuraSearchResponse())
   };
 
   const handleHomeClick = () => {

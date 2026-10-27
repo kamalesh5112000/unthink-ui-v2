@@ -378,6 +378,7 @@ const ProductDetails = ({ params, ...props }) => {
         <div
           className={`flex flex-col bg-white w-full self-center ${!hasKioskAccess ? "lg:pt-10 pt-7 " : ""} gap-3.5 lg:gap-8 `}
         >
+           <GoBack  style ={'mb-2 lg:hidden block '} Home />
           {hasKioskAccess && (
             <div className="flex h-12  items-start sticky py-7  z-30 top-0 bg-white">
               <GoBack />

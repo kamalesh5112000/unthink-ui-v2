@@ -16,6 +16,7 @@ import {
 	setMoreSearchSelectedTag,
 } from "../../hooks/chat/redux/actions";
 import { isEmpty } from "../../helper/utils";
+import GoBack from "../../components/common/GoBack";
 
 SwiperCore.use([FreeMode]);
 
@@ -203,12 +204,7 @@ const AuraResponseProductsWithTags = ({
 
 			<div className="mb-4 flex flex-wrap gap-3 max-[768px]:mb-3 max-[768px]:w-full max-[768px]:gap-2 ">
 				{isProductSearchOptionActive ? (
-					<div className="flex h-[60px] w-full shrink-0 text-highlight hover:text-secondary">
-						<ArrowLeftOutlined
-							className="cursor-pointer text-2xl"
-							onClick={handleGoBack}
-						/>
-					</div>
+					 <GoBack  handleGoBack={handleGoBack}  style ={'mb-2 lg:block hidden'} />
 				) : null}
 				<Swiper
 					slidesPerView="auto"

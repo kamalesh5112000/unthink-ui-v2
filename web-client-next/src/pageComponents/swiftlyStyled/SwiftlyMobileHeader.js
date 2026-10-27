@@ -5,7 +5,7 @@ import { Typography } from "antd";
 import searchIcon from "../../images/swiftly-styled/Aura - Search.svg";
 import Link from "next/link";
 import useTheme from "../../hooks/chat/useTheme";
-import { setShowChatModal } from "../../hooks/chat/redux/actions";
+import { clearLastAuraResponse, setShowChatModal } from "../../hooks/chat/redux/actions";
 import {
   PATH_ROOT,
   STORE_USER_NAME_SWIFTLYSTYLED,
@@ -120,7 +120,7 @@ const SwiftlyMobileHeader = ({
               style={{ filter: "brightness(0) opacity(0.7)" }}
               alt="searchIcon"
               className={styles.searchIcon}
-              onClick={()=>navigate('/search')}
+              onClick={()=>  {navigate('/search'); dispatch(clearLastAuraResponse()) }}
               // style={{ filter: "invert(1)" }}
             />
           </button>
