@@ -41,6 +41,8 @@ import {
 	SET_AURA_SERVER_IMAGE,
 	SET_OVERLAY_COORDINATES,
 	SET_WIDGET_CHATHISTORY,
+	RESTORE_AURA_SEARCH_RESPONSE,
+	CLEAR_LAST_AURA_RESPONSE,
 } from "./constants";
 
 export const setSocketId = (payload) => ({ type: SET_SOCKET_ID, payload });
@@ -279,4 +281,13 @@ export const setIsFreshSearch = (payload) => ({
 export const resetAuraSearchResponse = (payload) => ({
 	type: RESET_AURA_SEARCH_RESPONSE,
 	payload,
+});
+
+export const restoreAuraSearchResponse = (payload) => ({
+	type: RESTORE_AURA_SEARCH_RESPONSE,
+	payload,
+});
+
+export const clearLastAuraResponse = () => ({
+	type: CLEAR_LAST_AURA_RESPONSE,
 });

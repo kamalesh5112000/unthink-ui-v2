@@ -22,6 +22,7 @@ import {
   setActiveSearchOption,
   setShowChatModal,
   resetAuraSearchResponse,
+  clearLastAuraResponse,
   setSuggestionsSelectedTag,
 } from "../../../../hooks/chat/redux/actions";
 import {
@@ -265,6 +266,7 @@ const ChatModal = ({
   const resetResponseState = () => {
     resetPromptState();
     dispatch(resetAuraSearchResponse());
+    dispatch(clearLastAuraResponse());
     setIsFollowUpQuery(false);
     sessionStorage.removeItem("widgetHeaderRequestHistory");
   };
@@ -274,6 +276,7 @@ const ChatModal = ({
     setIsSearchOptionManuallySelected(false);
     setIsSearchOptionsVisible(true);
     dispatch(setActiveSearchOption({}));
+    dispatch(clearLastAuraResponse());
   };
 
   const closeChatModal = () => {
@@ -287,6 +290,7 @@ const ChatModal = ({
   const handleGoBack = () => {
     resetSearchSelectionState();
     dispatch(resetAuraSearchResponse());
+    dispatch(clearLastAuraResponse());
     setIsFollowUpQuery(false);
     sessionStorage.removeItem("widgetHeaderRequestHistory");
   };

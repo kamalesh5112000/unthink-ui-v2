@@ -73,6 +73,9 @@ import { useGuestPopup } from "../../context/GuestPopupContext";
 
 SwiperCore.use([FreeMode, Navigation]);
 
+const EMPTY_AVAILABLE_FILTERS = {};
+const EMPTY_DISPLAY_FILTERS = [];
+
 const getPriceRangeText = (price) => {
 	if (!isEmpty(price?.min) && !isEmpty(price?.max)) {
 		return price.min + " - " + price.max;
@@ -171,16 +174,17 @@ const [notData,setNotData] = useState(null)
 	const { text: requestedText, image_url: requestedImageUrl } =
 		widgetHeaderRequest;
 	const { filter_settings = {}, catalog_attributes = [] } = storeData;
-	const availableFilters = filter_settings.available_filters;
-	const displayFilters = filter_settings.display_filters;
+	const availableFilters =
+		filter_settings.available_filters || EMPTY_AVAILABLE_FILTERS;
+	const displayFilters = filter_settings.display_filters || EMPTY_DISPLAY_FILTERS;
 	const displayableFilter = useMemo(
-		() => displayFilters.map((v) => v.key),
+		() => displayFilters?.map((v) => v.key),
 		[displayFilters]
 	);
 
 	const filters = useMemo(() => {
 		const obj = { optional_filters: productsFilters.optional_filters || [] };
-		displayableFilter.forEach((v) => {
+		displayableFilter?.forEach((v) => {
 			obj[v] = productsFilters[v];
 		});
 		return obj;

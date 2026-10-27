@@ -365,9 +365,9 @@ const ProductDetails = ({ params, ...props }) => {
     }
   }, [sharePageUrl, qrCodeGeneratorURL]);
 
-  // if (fetchProductLoading) {
-  //   return <PDPPageSkeleton />;
-  // }
+  if (fetchProductLoading) {
+    return <PDPPageSkeleton />;
+  }
 
   return (
     <div

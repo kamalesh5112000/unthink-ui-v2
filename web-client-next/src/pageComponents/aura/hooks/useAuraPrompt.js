@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 
 import {
   chatHistoryAction,
+  clearLastAuraResponse,
   resetAuraSearchResponse,
   setAuraHelperMessage,
   setAuraSreverImage,
@@ -346,6 +347,7 @@ export const useAuraPrompt = ({
     dispatch(setChatProducts([]));
     dispatch(setChatProductsData([]));
     dispatch(setChatShopALook([]));
+    dispatch(clearLastAuraResponse());
     setIsSearchOptionManuallySelected(true);
     sessionStorage.removeItem("widgetHeaderRequestHistory");
     sessionStorage.removeItem("widgetHeader");
