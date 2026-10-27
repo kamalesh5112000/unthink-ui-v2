@@ -45,6 +45,8 @@ import {
 	SET_AURA_SERVER_IMAGE,
 	SET_OVERLAY_COORDINATES,
 	SET_WIDGET_CHATHISTORY,
+	RESTORE_AURA_SEARCH_RESPONSE,
+	CLEAR_LAST_AURA_RESPONSE,
 } from "./constants";
 
 const getDefaultSuggestions = () => ({
@@ -78,6 +80,32 @@ const areSameTags = (currentTags = [], nextTags = []) => {
 const doProductKeysMatchTags = (products = {}, tags = []) => {
 	const productKeys = Object.keys(products);
 	return productKeys.length > 0 && productKeys.every((tag) => tags.includes(tag));
+};
+
+const hasArrayItems = (value) => Array.isArray(value) && value.length > 0;
+
+const hasObjectItems = (value) =>
+	value && typeof value === "object" && !Array.isArray(value) && Object.keys(value).length > 0;
+
+const getAuraResponseSnapshot = (state) => ({
+	auraHelperMessage: state.auraHelperMessage,
+	auraServerImage: state.auraServerImage,
+	auraOverlayCoordinates: state.auraOverlayCoordinates,
+	widgetHeader: state.widgetHeader,
+	widgetImage: state.widgetImage,
+	widgetHeaderRequest: state.widgetHeaderRequest,
+	chatProductsData: state.chatProductsData,
+	products: state[CHAT_TYPES_KEYS[CHAT_TYPE_CHAT].products],
+	shopALook: state[CHAT_TYPES_KEYS[CHAT_TYPE_CHAT].shopALook],
+	suggestions: state.suggestions,
+	recommendations: state.recommendations,
+	moreProducts: state.moreProducts,
+	activeSearchOption: state.activeSearchOption,
+	chatHistory: state.chatHistory,
+});
+
+const preserveAuraResponse = (state) => {
+	state.lastAuraResponse = getAuraResponseSnapshot(state);
 };
 
 // export const getDefaultFilters = () => ({
@@ -160,6 +188,7 @@ const initialState = {
 	auraServerImage: "",
 	auraOverlayCoordinates: [],
 	isFreshSearch: true,
+	lastAuraResponse: null,
 };
 
 const chatReducerV2 = (state = initialState, action) => {
@@ -312,6 +341,7 @@ const chatReducerV2 = (state = initialState, action) => {
 					? CHAT_TYPES_KEYS[action.key].products
 					: CHAT_TYPES_KEYS[CHAT_TYPE_CHAT].products
 			] = payload ?? {};
+			if (hasObjectItems(payload)) preserveAuraResponse(newState);
 			return newState;
 		case SET_CHAT_SHOP_A_LOOK:
 			newState[
@@ -319,6 +349,7 @@ const chatReducerV2 = (state = initialState, action) => {
 					? CHAT_TYPES_KEYS[action.key].shopALook
 					: CHAT_TYPES_KEYS[CHAT_TYPE_CHAT].shopALook
 			] = payload ?? {};
+			if (hasObjectItems(payload)) preserveAuraResponse(newState);
 			return newState;
 		case RESET_SUGGESTIONS_LIST: {
 			newState.suggestions = getDefaultSuggestions();
@@ -347,6 +378,7 @@ const chatReducerV2 = (state = initialState, action) => {
 			newState.suggestions.suggestions.tag_map = tag_map;
 			// newState.suggestions.suggestions.AI_filters = AI_filters;
 			newState.suggestions.suggestions.title = title;
+			if (hasArrayItems(tags)) preserveAuraResponse(newState);
 
 			return newState;
 		}
@@ -375,6 +407,7 @@ const chatReducerV2 = (state = initialState, action) => {
 					...data,
 					isLoading: false,
 				};
+				preserveAuraResponse(newState);
 
 				if (
 					!newState.moreProducts.products[tag].filters
@@ -444,6 +477,7 @@ const chatReducerV2 = (state = initialState, action) => {
 					...data,
 					isLoading: false,
 				};
+				preserveAuraResponse(newState);
 
 				if (
 					!newState.recommendations.products[tag].filters
@@ -513,6 +547,7 @@ const chatReducerV2 = (state = initialState, action) => {
 					...data,
 					isLoading: false,
 				};
+				preserveAuraResponse(newState);
 
 				if (
 					!newState.suggestions.products[tag].filters
@@ -648,6 +683,7 @@ const chatReducerV2 = (state = initialState, action) => {
 			return newState;
 		case SET_CHAT_PRODUCTS_DATA:
 			newState.chatProductsData = payload ?? [];
+			if (hasArrayItems(payload)) preserveAuraResponse(newState);
 			return newState;
 		case SET_WIDGET_HEADER:
 			newState.widgetHeader = payload ?? "";
@@ -710,6 +746,37 @@ const chatReducerV2 = (state = initialState, action) => {
 			newState.recommendations = getDefaultRecommendation();
 			newState.moreProducts = getDefaultmoreProduct();
 			newState.chatHistory = [...initialState.chatHistory];
+			return newState;
+		case RESTORE_AURA_SEARCH_RESPONSE: {
+			const snapshot = action.payload || newState.lastAuraResponse;
+			if (!snapshot) return newState;
+			newState.auraHelperMessage =
+				snapshot.auraHelperMessage ?? newState.auraHelperMessage;
+			newState.auraServerImage =
+				snapshot.auraServerImage ?? newState.auraServerImage;
+			newState.auraOverlayCoordinates =
+				snapshot.auraOverlayCoordinates ?? newState.auraOverlayCoordinates;
+			newState.widgetHeader = snapshot.widgetHeader ?? newState.widgetHeader;
+			newState.widgetImage = snapshot.widgetImage ?? newState.widgetImage;
+			newState.widgetHeaderRequest =
+				snapshot.widgetHeaderRequest ?? newState.widgetHeaderRequest;
+			newState.chatProductsData =
+				snapshot.chatProductsData ?? newState.chatProductsData;
+			newState[CHAT_TYPES_KEYS[CHAT_TYPE_CHAT].products] =
+				snapshot.products ?? newState[CHAT_TYPES_KEYS[CHAT_TYPE_CHAT].products];
+			newState[CHAT_TYPES_KEYS[CHAT_TYPE_CHAT].shopALook] =
+				snapshot.shopALook ?? newState[CHAT_TYPES_KEYS[CHAT_TYPE_CHAT].shopALook];
+			newState.suggestions = snapshot.suggestions ?? newState.suggestions;
+			newState.recommendations =
+				snapshot.recommendations ?? newState.recommendations;
+			newState.moreProducts = snapshot.moreProducts ?? newState.moreProducts;
+			newState.activeSearchOption =
+				snapshot.activeSearchOption ?? newState.activeSearchOption;
+			newState.chatHistory = snapshot.chatHistory ?? newState.chatHistory;
+			return newState;
+		}
+		case CLEAR_LAST_AURA_RESPONSE:
+			newState.lastAuraResponse = null;
 			return newState;
 		default:
 			return newState;
