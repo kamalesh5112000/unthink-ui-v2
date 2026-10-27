@@ -28,8 +28,9 @@ const ProductFiltersTags = ({
 	isproductSection,
 	isShowHashtagButton = true,
 }) => {
-	const [catalog_attributes] = useSelector((state) => [
+	const [catalog_attributes,selectedSearchOption] = useSelector((state) => [
 		state.store.data.catalog_attributes,
+		state.chatV2.activeSearchOption,
 	]);
 
 	const [showCustomFilterInput, setShowCustomFilterInput] = useState(false);
@@ -320,7 +321,7 @@ const ProductFiltersTags = ({
 							</div>
 						))}
 
-					{typeof handleFilterOptionsVisibleChange === "function" && (
+					{(typeof handleFilterOptionsVisibleChange === "function" || selectedSearchOption?.id === 'product_search' ) &&  (
 						<div
 							className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-100 text-[#334155] cursor-pointer border border-[#e2e8f0] shadow-sm hover:bg-[#e2e8f0]"
 							title="More filter"

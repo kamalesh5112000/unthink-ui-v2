@@ -332,7 +332,10 @@ const ProductCard = ({
   }),[handleVtoClick,onStarClick])
 
   const handleCardClick = (event) => {
-    if (enableSelect) return;
+    if (enableSelect){
+       setSelectValue && setSelectValue(!isSelected)  ;
+      return 
+      }
 
     const interactiveElement = event.target?.closest?.(
       "a, button, input, select, textarea, [role='button']",
