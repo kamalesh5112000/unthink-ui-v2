@@ -427,6 +427,55 @@
   background: #111827;
 }
 
+.cameraGuidance {
+  margin-bottom: 14px;
+  padding: 12px;
+  border: 1px solid #c7d2fe;
+  border-radius: 14px;
+  background: #eef2ff;
+
+  strong { font-size: 16px; color: #111827; }
+
+  p { margin: 6px 0 0; color: #374151; }
+}
+
+.qrPhotoActions {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid #d1d5db;
+
+  strong { color: #111827; }
+
+  .redeemScannerActions button {
+    border: 1px solid #d1d5db;
+    background: #fff;
+    color: #111827;
+    border-radius: 14px;
+  }
+}
+
+.cameraHelp {
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 14px;
+  background: #fff;
+  color: #374151;
+  font-size: 14px;
+
+  summary {
+    min-height: 44px;
+    align-content: center;
+    cursor: pointer;
+    font-weight: 700;
+    color: #111827;
+  }
+
+  ol { margin: 8px 0 16px; padding-left: 22px; list-style: decimal; }
+  li { margin-bottom: 8px; line-height: 1.5; }
+  strong { display: block; margin-top: 14px; }
+}
+
 .redeemCameraPlaceholder {
   position: absolute;
   inset: 0;
